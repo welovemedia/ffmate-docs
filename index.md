@@ -7,8 +7,8 @@ hero:
   tagline: A wrapper around ffmpeg
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: What is FFmate?
+      link: /docs/what-is-ffmate
     - theme: alt
       text: API Examples
       link: /api-examples

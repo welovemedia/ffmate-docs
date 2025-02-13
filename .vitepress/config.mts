@@ -8,31 +8,18 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
+      { text: 'Examples', link: '/docs/what-is-ffmate' }
     ],
 
     sidebar: [
       {
         text: 'Welcome',
         items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
-        ]
-      },
-      {
-        text: 'Welcome',
-        items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
-        ]
-      },
-      {
-        text: 'Welcome',
-        items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
+          { text: 'What is FFmate', link: '/docs/what-is-ffmate' },
+          { text: 'Getting Started', link: '/docs/getting-started' }
         ]
       }
+
     ],
 
     socialLinks: [
