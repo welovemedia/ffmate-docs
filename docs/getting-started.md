@@ -6,6 +6,7 @@ Setting up FFmate is quick and straightforward. Follow these steps to get up and
 
 Get the latest release of FFmate from [GitHub](https://github.com/welovemedia/ffmate/releases)..
 
+## 📦 Update
 
 ## 🏁 Running FFmate
 
@@ -14,6 +15,14 @@ Once installed, start the FFmate server from the command line:
 ```sh
 ffmate server
 ```
+
+💡 Tip: Want to start FFmate with a convenient tray menu? Simply run:
+
+```sh
+ffmate server --tray
+```
+
+
 
 By default, the server runs on **[http://localhost:3000](http://localhost:3000)**. Is port 3000 unavailable, or do you want to start FFmate on a different port? Learn how to change the port here 👉 [Learn more](#port-configuration).
 
@@ -33,32 +42,6 @@ curl -X POST http://localhost:3000/api/v1/tasks \
        "priority": 2
      }'
 ```
-
-
-
-### 📌 Task Properties:
-
-Each property in the request body has a specific role:
-
-## Task Submission Parameters
-
-## Task Submission Parameters
-
-### `command`
-This represents the FFmpeg command that will be executed. FFmate implicitly calls the FFmpeg binary, so you only need to specify the command-line parameters and flags without including the FFmpeg executable itself. Use `${INPUT_FILE}` and `${OUTPUT_FILE}` as placeholders for the actual input and output file paths.
-
-<div class="tip custom-block" style="padding-top: 8px">
-• <code>${INPUT_FILE}</code> will be replaced by the full path of the input file.<br>
-• <code>${OUTPUT_FILE}</code> will be replaced by the full path of the output file.
-</div>
-
-- **`inputFile`**: Path to the input media file that will be processed.
-- **`inputFile`**: Path where the transcoded file should be saved.
-- **`priority`**: Determines the processing order of the task. Higher values are processed first (e.g., `1` for low priority, `4` for critical priority).
-
-After submitting a task, FFmate will respond with a JSON object containing the `taskId`. This `taskId` can be used to monitor the task’s progress in the next section.
-
-
 
 
 ### 🔍 Monitoring the Task
@@ -103,22 +86,7 @@ curl -X POST http://localhost:3000/api/v1/watchfolders \
 ```
 
 
-
-### 📌 Watchfolder properties:
-
-- **`name`**: A unique name for the watchfolder.
-- **`description`**: A brief description of its purpose.
-- **`interval`**: Time (in seconds) between folder scans.
-- **`growthChecks`**: Number of times a file is checked to ensure it's fully copied before processing.
-- **`preset`**: The ID of a predefined transcoding preset to apply.
-- **`path`**: The absolute path of the folder to monitor.
-- **`filter`**: Rules for file selection.
-  - **`include`**: List of file extensions to process (e.g., `mp4`, `mov`).
-  - **`exclude`**: List of file extensions to ignore (e.g., `tmp`, `log`).
-
 Once configured, any new file matching the criteria will be automatically processed when added to the watchfolder.
-
-
 
 🌐 Are you more in the mood to configure your watchfolder in a more visual way? No problem! Learn how to configure your first watchfolder using our Web UI 👉 [Check it out](#web-ui) 
 

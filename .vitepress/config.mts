@@ -13,12 +13,32 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: 'Welcome',
+        text: 'Introduction',
         items: [
           { text: 'What is FFmate', link: '/docs/what-is-ffmate' },
           { text: 'Getting Started', link: '/docs/getting-started' }
         ]
+      },
+      {
+        text: 'FFmate in action',
+        items: [
+          { text: 'Tasks', link: '/docs/tasks' },
+          { text: 'Presets', link: '/docs/presets' },
+          { text: 'Watchfolder', link: '/docs/watchfolder' },
+          { text: 'Webhooks', link: '/docs/webhooks' },
+          { text: 'Web UI', link: '/docs/web-ui' }
+        ]
+      },
+      {
+        text: 'Advanced',
+        items: [
+          { text: 'FFmate Internals', link: '/docs/ffmate-internals' },
+          { text: 'Debugging', link: '/docs/debugging' },
+          { text: 'Swagger', link: '/docs/swagger' },
+          { text: 'Flags', link: '/docs/flags' }
+        ]
       }
+
 
     ],
 

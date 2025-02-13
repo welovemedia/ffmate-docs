@@ -17,15 +17,15 @@ FFmate fills these gaps, bringing FFmpeg’s full power to developers, workflow 
 - **Lightweight Web UI** – Monitor and configure transcoding workflows with an intuitive interface.
 
 <div class="tip custom-block" style="padding-top: 8px">
-🔄 Want to see it in action? Skip to the <a href="#quickstart">Quickstart</a>.
+🔄 Want to see it in action? Skip to the <a href="/docs/getting-started">Getting started</a>.
 </div>
 
 ## 📌 Use Cases
 
-### 📽️ Automated Media Transcoding
+### 📽️ Automated media transcoding
 Convert videos, extract audio, or generate thumbnails with minimal setup.
 
-## ⚙️ Workflow & Pipeline Engineering
+## ⚙️ Workflow & Pipeline automation
 Webhooks provide real-time notifications for seamless integration with:
 - **Internal pipeline tooling** 
 - **Media asset management systems**
@@ -35,5 +35,5 @@ Webhooks provide real-time notifications for seamless integration with:
 ### ☁️ Scalable FFmpeg API Backend
 Deploy FFmate as a centralized transcoding service with intelligent job management.
 
-### 🗂️ Watchfolder Automation
+### 🗂️ Watchfolder
 Drop media files into a **monitored folder**, and FFmate will automatically process them based on predefined rules.
