@@ -2,10 +2,10 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  ignoreDeadLinks: true,
   title: "ffmate docs",
   description: "Documentation for ffmate",
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Examples', link: '/docs/what-is-ffmate' }
@@ -23,7 +23,17 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ]
+      { icon: 'github', link: 'https://github.com/welovemedia/ffmate' }
+    ],
+
+    editLink: {
+      pattern: 'https://github.com/welovemedia/ffmate-docs/edit/main/:path',
+      text: 'Edit this page on GitHub'
+    },
+
+    footer: {
+      message: 'Released under the SSPL License.',
+      copyright: 'Copyright © 2025-present we love media'
+    }
   }
 })
