@@ -23,7 +23,9 @@ export default defineConfig({
         text: 'FFmate in action',
         items: [
           { text: 'Tasks', link: '/docs/tasks' },
+          { text: 'Wildcards', link: '/docs/wildcards' },
           { text: 'Presets', link: '/docs/presets' },
+          { text: 'Pre and Post processing', link: '/docs/pre-post-prcessing' },
           { text: 'Watchfolder', link: '/docs/watchfolder' },
           { text: 'Webhooks', link: '/docs/webhooks' },
           { text: 'Web UI', link: '/docs/web-ui' }

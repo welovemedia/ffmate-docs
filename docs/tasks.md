@@ -2,7 +2,28 @@
 
 In FFmate, a **task** is an individual FFmpeg job, whether it's transcoding, extracting audio, or applying filters. Tasks can be submitted **individually** or as part of a **batch**, allowing multiple files to be processed efficiently in a single request. Every task follows a structured **lifecycle**, progressing from submission to execution and ultimately reaching completion or failure.
 
-Let's start by exploring how **single** tasks work.
+Before diving into task execution, let's first go through the **lifecycle** of tasks and their corresponding **statuses** in FFmate.
+
+| Status       | Description                                         |
+|-------------|-----------------------------------------------------|
+| `queued`     | The task is waiting to be processed.               |
+| `processing` | The task is currently being executed by FFmpeg.   |
+| `completed`  | The task has finished successfully.               |
+| `failed`     | The task encountered an error during execution.   |
+| `canceled`   | The task was manually canceled before completion. |
+
+### Task Flow:
+The diagram below shows how a task progresses through its lifecycle in FFmate
+
+```mermaid
+graph TD;
+    queued -->|Starts processing| processing;
+    processing -->|Finishes successfully| completed;
+    processing -->|Fails| failed;
+    queued -->|Canceled| canceled;
+```
+
+Next, let's explore how to trigger and manage single tasks in FFmate
 
 ## 📝 Creating a Task
 
@@ -58,62 +79,6 @@ curl -X 'GET' \
 
 Replace `{taskId}` with the actual task ID from the submission response.
 
-### Example Response:
-
-```json
-{
-  "batch": "string",
-  "command": {
-    "raw": "string",
-    "resolved": "string"
-  },
-  "createdAt": 0,
-  "error": "string",
-  "finishedAt": 0,
-  "inputFile": {
-    "raw": "string",
-    "resolved": "string"
-  },
-  "name": "string",
-  "outputFile": {
-    "raw": "string",
-    "resolved": "string"
-  },
-  "postProcessing": {
-    "error": "string",
-    "finishedAt": 0,
-    "scriptPath": {
-      "raw": "string",
-      "resolved": "string"
-    },
-    "sidecarPath": {
-      "raw": "string",
-      "resolved": "string"
-    },
-    "startedAt": 0
-  },
-  "preProcessing": {
-    "error": "string",
-    "finishedAt": 0,
-    "scriptPath": {
-      "raw": "string",
-      "resolved": "string"
-    },
-    "sidecarPath": {
-      "raw": "string",
-      "resolved": "string"
-    },
-    "startedAt": 0
-  },
-  "priority": 0,
-  "progress": 0,
-  "source": "string",
-  "startedAt": 0,
-  "status": "QUEUED",
-  "updatedAt": 0,
-  "uuid": "string"
-}
-```
 ---
 
 ## 🔍 Monitoring All Tasks
@@ -151,64 +116,53 @@ curl -X 'PATCH' \
 
 - **`{taskId}`** *[mandatory]* – Specifies unique ID of the task you want to cancel.
 
-<div class="tip custom-block" style="padding-top: 8px">
-note
-If the task is already processing, FFmate will attempt to **stop** it, but cancellation may not always be immediate.
-</div>
-
+> [!NOTE]
+> If the task is already processing, FFmate will attempt to **stop** it, but cancellation may not always be immediate.
 
 ---
 
-## ⏳ Task Lifecycle & Statuses
+## 🔄 Restarting a Task
 
-Each task progresses through different states:
+If a task has failed or been canceled, FFmate allows you to restart it without needing to resubmit the job manually.
 
-| Status       | Description                                         |
-|-------------|-----------------------------------------------------|
-| `queued`     | The task is waiting to be processed.               |
-| `processing` | The task is currently being executed by FFmpeg.   |
-| `completed`  | The task has finished successfully.               |
-| `failed`     | The task encountered an error during execution.   |
-| `canceled`   | The task was manually canceled before completion. |
-
-### Task Flow:
-
-```mermaid
-graph TD;
-    queued -->|Starts processing| processing;
-    processing -->|Finishes successfully| completed;
-    processing -->|Fails| failed;
-    queued -->|Canceled| canceled;
-```
-
----
-
-## ✋ Cancelling a Task
-
-To cancel a task before it finishes:
+To restart a task, send a `PATCH` request:
 
 ```sh
-curl -X PATCH http://localhost:3000/api/v1/tasks/{taskId}/cancel
+curl -X 'PATCH' \
+  'http://localhost:3000/api/v1/tasks/{taskId}/restart' \
+  -H 'accept: application/json'
 ```
 
-This works for **queued** and **processing** tasks.
+**Query Parameters:**
+
+- **`{taskId}`** *[mandatory]* – The unique identifier of the task to restart.
+
+> [!TIP]
+> - Restarting a task will **re-run the exact same command** using the original input and output paths.  
+> - If the task was previously processing, it will start from the beginning.
+
+Once restarted, the task will move back into the **queued** state and follow the standard task lifecycle.
 
 ---
 
 ## 🗑️ Deleting a Task
 
-Once a task is completed or canceled, you can delete it:
+Once a task is completed, canceled, or no longer needed, you can **permanently remove** it from FFmate.
+
+To delete a task, make a `DELETE` request:
 
 ```sh
-curl -X DELETE http://localhost:3000/api/v1/tasks/{taskId}
+curl -X 'DELETE' \
+  'http://localhost:3000/api/v1/tasks/{taskId}' \
+  -H 'accept: application/json'
 ```
 
-**Note:** Deleting a task **does not** remove its input/output files.
+**Query Parameters:**
+- **`{taskId}`** *(mandatory)* – The unique ID of the task to be deleted.
+
+::: warning Important
+- Deleting a task **removes the database entry** from FFmate but **does not** delete the input or output files.  
+- If the task is still processing, FFmate will attempt to **stop** it before deletion.
+:::
 
 ---
-
-
-
-
-
-

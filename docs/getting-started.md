@@ -4,9 +4,9 @@ Setting up FFmate is quick and straightforward. Follow these steps to get up and
 
 ## 📦 Download FFmate
 
-Get the latest release of FFmate from [GitHub](https://github.com/welovemedia/ffmate/releases)..
+Get the latest release of FFmate from [GitHub](https://github.com/welovemedia/ffmate/releases)
 
-## 📦 Update
+---
 
 ## 🏁 Running FFmate
 
@@ -21,8 +21,6 @@ ffmate server
 ```sh
 ffmate server --tray
 ```
-
-
 
 By default, the server runs on **[http://localhost:3000](http://localhost:3000)**. Is port 3000 unavailable, or do you want to start FFmate on a different port? Learn how to change the port here 👉 [Learn more](#port-configuration).
 
@@ -42,7 +40,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
        "priority": 2
      }'
 ```
-
+---
 
 ### 🔍 Monitoring the Task
 
@@ -105,3 +103,27 @@ curl --location 'http://localhost:3000/api/v1/webhooks' \
 ```
 
 FFmate will send a `POST` request to the specified URL when the  event occurs.
+
+---
+
+## 🔄 Updating FFmate
+
+Keeping FFmate up to date ensures you have the latest features, bug fixes, and performance improvements.
+
+### Update FFmate via CLI
+
+To update FFmate to the latest version, run the following command in your terminal:
+
+```sh
+ffmate update
+```
+
+This command will check for the latest release and install the update automatically.
+
+### Verify the Installed Version
+
+After updating, you can confirm that FFmate is running the latest version:
+
+```sh
+ffmate --version
+```
