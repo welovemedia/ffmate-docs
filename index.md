@@ -5,6 +5,9 @@ hero:
   name: "ffmate docs"
   text: "Documentation for ffmate"
   tagline: A wrapper around ffmpeg
+  image:
+    src: /icon.webp
+    alt: ffmate
   actions:
     - theme: brand
       text: What is FFmate?
