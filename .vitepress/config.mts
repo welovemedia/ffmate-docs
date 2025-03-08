@@ -94,7 +94,7 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/welovemedia/ffmate-docs" },
+      { icon: "github", link: "https://github.com/welovemedia/ffmate" },
     ],
 
     editLink: {
