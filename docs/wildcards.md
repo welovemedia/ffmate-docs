@@ -1,10 +1,10 @@
-## 🏷️ Dynamic Wildcards
+# Dynamic Wildcards
 
 FFmate's dynamic wildcards are designed for smart, customizable file and directory naming.  Instead of tedious manual setup for each output, FFmate allows you to use placeholders. These placeholders provide a flexible method to dynamically generate both filenames and directory paths, as FFmate intelligently replaces them with actual data as it processes your tasks.  Essentially, placeholders deliver a simple yet efficient way to achieve truly dynamic and automated filename and directory naming within FFmate.
 
 For example, you can include the **date, time, input file name, or a unique ID** in your output file names. This helps keep your files **organized, consistent, and easy to track**, without extra effort.
 
-## 📁 Input & Output File Information
+## Input & Output File Information
 
 ### Full File Path:
 
@@ -26,8 +26,6 @@ curl -X POST http://localhost:3000/api/v1/tasks \
        "outputFile": "/volumes/ffmate/destination/output.mp4"
      }'
 ```
-
----
 
 ### Filename Information:
 
@@ -90,9 +88,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 /volumes/ffmate/destination/input_converted.mp4
 ```
 
-
-
-## 📅 Date & Time Wildcards
+## Date & Time Wildcards
 
 These wildcards insert **dynamic timestamps** into your output paths, making it easy to organize processed files based on date and time.
 
@@ -156,8 +152,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 /volumes/ffmate/destination/video_1705318712.mp4
 ```
 
-
-## 🖥️ System Information
+## System Information
 
 These wildcards return **system information**, specifically the **operating system name** and **CPU architecture**.
 
@@ -184,7 +179,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 /volumes/ffmate/processed/linux/amd64/video.mp4
 ```
 
-## 🔄 Unique Identifier
+## Unique Identifier
 
 This wildcard generate **random unique identifiers**.
 

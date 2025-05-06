@@ -1,10 +1,8 @@
-### 📡 Webhooks
+# Webhooks
 
 FFmate supports **webhooks**, allowing external systems to receive **real-time notifications** when specific events occur. By registering a webhook, you can automatically trigger actions in response to changes in FFmate, such as task creation, status updates, batch processing, or preset modifications.
 
----
-
-## 🔗 Setting Up a Webhook  
+## Setting Up a Webhook  
 
 To configure a webhook, make a `POST` request to the API with the event you want to subscribe to and the URL where FFmate should send notifications.
 
@@ -32,8 +30,6 @@ When the specified event occurs, FFmate will send an HTTP `POST` request to the 
   }
 }
 ```
-
----
 
 ## Available Webhook Events  
 
@@ -84,9 +80,8 @@ FFmate provides a variety of webhook events, grouped into different categories:
 | `webhook.created` | Triggered when a new webhook is registered. |
 | `webhook.deleted` | Triggered when a webhook is removed. |
 
----
 
-## ❌ Deleting a Webhook  
+## Deleting a Webhook  
 
 To remove a webhook, send a `DELETE` request with its ID:
 
@@ -95,15 +90,22 @@ curl -X DELETE http://localhost:3000/api/v1/webhooks/{webhookId} \
      -H "accept: application/json"
 ```
 
----
 
-## 📢 Handling Webhook Requests  
+## Setting Up Your Webhook Endpoint
 
-Ensure your webhook handler:
-- Accepts **HTTP POST** requests.  
-- Responds with **200 OK** to confirm receipt.  
-- **Retries failed requests** if needed.  
+When FFmate sends a webhook, it expects your server to be ready to receive and respond to the event. Here's what your endpoint should do:
 
-FFmate **does not store** webhook logs, so ensure your server **logs incoming requests** for debugging.
+1. **Accept HTTP POST requests**
 
----
+FFmate sends events using a `POST` request with a JSON payload.  
+Your endpoint should be configured to accept and correctly parse these requests.
+
+2. **Return a 200 OK response**
+
+To confirm that the event was received successfully, your server **must** return an HTTP `200 OK` status.  
+Any other status code may cause FFmate to assume the delivery failed.
+
+3. **Log incoming requests**
+
+FFmate **does not store webhook logs**.  
+If something goes wrong, your application should log incoming webhook events to support debugging or auditing.

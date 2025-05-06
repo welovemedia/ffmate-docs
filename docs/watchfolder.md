@@ -2,17 +2,13 @@
 
 FFmate's **watchfolder** feature allows you to **automatically detect and process new files** in a specified directory. Once a watchfolder is configured, FFmate will **continuously scan** the folder for new or modified files and create **tasks** to process them based on a task preset. The watchfolder feature is useful for automatically transcoding footage from a camera SD card dropped into a network share or creating low-resolution versions of high-resolution files exported from an NLE for review.
 
----
-
-## 🔧 How Watchfolders Work:
+## How Watchfolders Work:
 
 1. **Monitor a Folder** – FFmate scans the specified directory at a set interval.  
 2. **Detect New Files** – When a new file is detected, FFmate ensures it’s **fully copied** before processing.   
 3. **Create Tasks** – FFmate creates a **new FFmate task** for each detected file.  
 
----
-
-## 🛠️ Creating a Watchfolder  
+## Creating a Watchfolder  
 
 To configure a watchfolder, send a `POST` request to the API:
 
@@ -35,7 +31,7 @@ curl -X POST http://localhost:3000/api/v1/watchfolders \
      }'
 ```
 
-## 📌 Watchfolder Properties:
+## Watchfolder Properties:
 
 - **`name`** – A unique name for the watchfolder.  
 - **`description`** – Optional description of what this watchfolder does.  
@@ -47,9 +43,7 @@ curl -X POST http://localhost:3000/api/v1/watchfolders \
   - **`include`** – Only process files with these extensions (e.g., `mp4`, `mov`).  
   - **`exclude`** – Ignore files with these extensions (e.g., `tmp`, `log`).  
 
----
-
-## 🔄 How File Detection Works:
+## How File Detection Works:
 
 FFmate ensures that only **fully copied** files are processed by using a **growth check validation**:  
 
@@ -60,9 +54,7 @@ FFmate ensures that only **fully copied** files are processed by using a **growt
 
 This prevents **incomplete** files from being prematurely processed.  
 
----
-
-## 🛑 Deleting a Watchfolder  
+## Deleting a Watchfolder  
 
 To remove a watchfolder, send a `DELETE` request:
 
@@ -71,21 +63,19 @@ curl -X DELETE http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
      -H "accept: application/json"
 ```
 
----
-
-### 📋 List All Watchfolders  
+### List All Watchfolders  
 
 ```sh
 curl -X GET http://localhost:3000/api/v1/watchfolders
 ```
 
-### 🏷️ Get Watchfolder Details  
+### Get Watchfolder Details  
 
 ```sh
 curl -X GET http://localhost:3000/api/v1/watchfolders/{watchfolderId}
 ```
 
-### ✏️ Update a Watchfolder  
+### Update a Watchfolder  
 
 ```sh
 curl -X PATCH http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
@@ -97,5 +87,3 @@ curl -X PATCH http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
        }
      }'
 ```
-
----

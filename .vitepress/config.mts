@@ -4,8 +4,8 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   ignoreDeadLinks: true,
 
-  title: "ffmate documentation",
-  description: "Documentation for ffmate",
+  title: "FFmate documentation",
+  description: "Documentation for FFmate",
 
   lastUpdated: true,
   cleanUrls: true,
