@@ -8,6 +8,10 @@
     "vitepress": "^1.6.3"
   },
   "dependencies": {
+    "@braintree/sanitize-url": "^7.1.1",
+    "cytoscape": "^3.32.0",
+    "cytoscape-cose-bilkent": "^4.1.0",
+    "dayjs": "^1.11.13",
     "vitepress-plugin-llms": "^1.1.3",
     "vitepress-plugin-mermaid": "^2.0.17"
   }
