@@ -1,7 +1,7 @@
-import { defineConfig } from "vitepress";
+import { withMermaid } from "vitepress-plugin-mermaid"
 
 // https://vitepress.dev/reference/site-config
-export default defineConfig({
+export default withMermaid({
   ignoreDeadLinks: true,
 
   title: "FFmate documentation",
@@ -11,16 +11,14 @@ export default defineConfig({
   cleanUrls: true,
   metaChunk: true,
 
+  mermaid: {},
 
   sitemap: {
     hostname: "https://docs.ffmate.io",
   },
 
   head: [
-    [
-      "link",
-      { rel: "icon", type: "image/webp", href: "/icon.webp" },
-    ],
+    ["link", { rel: "icon", type: "image/webp", href: "/icon.webp" }],
     ["meta", { name: "theme-color", content: "#ff4052" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:locale", content: "en" }],
@@ -87,8 +85,6 @@ export default defineConfig({
       },
     ],
 
-    
-
     search: {
       provider: "local",
     },
@@ -107,4 +103,4 @@ export default defineConfig({
       copyright: "Copyright © 2025-present we love media",
     },
   },
-});
+})
