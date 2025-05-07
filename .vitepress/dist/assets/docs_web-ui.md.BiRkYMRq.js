@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as a}from"./chunks/framework.COcSrLCv.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"docs/web-ui.md","filePath":"docs/web-ui.md","lastUpdated":1739483282000}'),o={name:"docs/web-ui.md"};function s(c,r,d,n,i,p){return a(),t("div")}const f=e(o,[["render",s]]);export{m as __pageData,f as default};

@@ -1,3 +1,4 @@
+import llmstxt from "vitepress-plugin-llms"
 import { withMermaid } from "vitepress-plugin-mermaid"
 
 // https://vitepress.dev/reference/site-config
@@ -102,5 +103,9 @@ export default withMermaid({
       message: "Released under the SSPL License.",
       copyright: "Copyright © 2025-present we love media",
     },
+  },
+
+  vite: {
+    plugins: [llmstxt({})],
   },
 })

@@ -8,6 +8,7 @@
     "vitepress": "^1.6.3"
   },
   "dependencies": {
+    "vitepress-plugin-llms": "^1.1.3",
     "vitepress-plugin-mermaid": "^2.0.17"
   }
 }
