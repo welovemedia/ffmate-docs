@@ -122,7 +122,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 /volumes/ffmate//destination/2024/02/15/video_14-30-45.mp4
 ```
 
-## ⏳ Timestamps
+## Timestamps
 
 These wildcards generate **precise timestamps** to create unique file and directory names based on the **current time**.
 

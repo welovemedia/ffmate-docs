@@ -64,7 +64,7 @@ export default withMermaid({
         ],
       },
       {
-        text: "FFmate in action",
+        text: "FFmate Features",
         items: [
           { text: "Tasks", link: "/docs/tasks" },
           { text: "Wildcards", link: "/docs/wildcards" },
@@ -76,12 +76,18 @@ export default withMermaid({
         ],
       },
       {
-        text: "Advanced",
+        text: "Advanced Features",
         items: [
           { text: "FFmate Internals", link: "/docs/ffmate-internals" },
           { text: "Debugging", link: "/docs/debugging" },
           { text: "Swagger", link: "/docs/swagger" },
           { text: "Flags", link: "/docs/flags" },
+        ],
+      },
+      {
+        text: "Contact",
+        items: [
+          { text: "How to reach out", link: "/docs/ffmate-internals" }
         ],
       },
     ],

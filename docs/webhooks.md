@@ -1,3 +1,8 @@
+---
+title: "FFmate Webhooks: Real-Time Event Notifications"
+description: "Integrate external systems with FFmate using webhooks. Get instant notifications for task updates, batch processing, preset changes and more."
+---
+
 # Webhooks
 
 FFmate supports **webhooks**, allowing external systems to receive **real-time notifications** when specific events occur. By registering a webhook, you can automatically trigger actions in response to changes in FFmate, such as task creation, status updates, batch processing, or preset modifications.

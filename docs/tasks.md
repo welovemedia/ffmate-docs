@@ -42,11 +42,11 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 
 ### Task Properties
 
-- **`command`** *[mandatory]*
+-   **`name`** *[optional]* - A short, descriptive name to help track this task in logs and interfaces (e.g., "Convert wedding video to MP4").
 
-Defines the FFmpeg command to execute. FFmate **implicitly calls the FFmpeg binary**, so you only need to specify the **command-line parameters and flags**, without including `ffmpeg` itself.
+- **`command`** *[mandatory]* - Defines the FFmpeg command to execute. FFmate **implicitly calls the FFmpeg binary**, so you only need to specify the **command-line parameters and flags**, without including `ffmpeg` itself.
 
-- **`inputFile`** *[optional]* – The path to the input media file that will be processed..
+- **`inputFile`** *[optional]* – The path to the input media file that will be processed.
 
 - **`outputFile`** *[optional]* – The path where the transcoded file should be saved.
 
@@ -62,6 +62,35 @@ Defines the FFmpeg command to execute. FFmate **implicitly calls the FFmpeg bina
   - `2` → Normal priority (default)
   - `3` → High priority
   - `4` → Critical priority (executed first)
+
+-   **`preset`** *[optional]*
+    The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task.
+
+-   **`preProcessing`** *[optional]*
+    Define a [Pre-Processing Script](/docs/pre-post-prcessing.md) for this task.
+    *   **`scriptPath`**: Command/path to the script.
+    *   **`sidecarPath`**: (Optional) Path for the task data JSON file.
+
+-   **`postProcessing`** *[optional]*
+    Define a [Post-Processing Script](/docs/pre-post-prcessing.md) for this task.
+    *   **`scriptPath`**: Command/path to the script.
+    *   **`sidecarPath`**: (Optional) Path for the task data JSON file.
+
+-   **`metadata`** *[optional]* – An optional JSON object that allows the submitting system to include custom key-value pairs.
+
+    ```json
+    "metadata": {
+      "original_filename": "interview_session_03_cam_A.mxf",
+      "project_code": "PROJ-SUMMER2025",
+      "editor_notes": "Needs color correction pass after this transcode."
+    }
+    ```
+
+    This is a powerful feature for:
+    *   **Identifying the Source Asset:** Store unique identifiers from your originating system (e.g., a CMS asset ID, a DAM UUID, a production tracking code). This allows you to easily correlate the `FFmate` task back to its source.
+    *   **Workflow Integration:** Pass information needed by other parts of your workflow.
+    *   **Custom Scripting:** Provide parameters or context for your [Pre or Post-Processing Scripts](/docs/pre-post-prcessing.md).
+
 
 After submitting a task, FFmate will respond with a JSON object containing the `taskId`. This `taskId` can be used to monitor the task’s progress in the next section.
 
@@ -133,7 +162,7 @@ curl -X 'PATCH' \
 > - Restarting a task will **re-run the exact same command** using the original input and output paths.  
 > - If the task was previously processing, it will start from the beginning.
 
-Once restarted, the task will move back into the **queued** state and follow the standard task lifecycle.
+Once restarted, the task will move back into the **queued** state and follow the standard [task lifecycle](#task-flow).
 
 ## Deleting a Task
 
@@ -156,35 +185,31 @@ curl -X 'DELETE' \
 :::
 
 
+## Batch Operations 
 
-Okay, let's document how Batch Operations work in `ffmate`.
+`FFmate` allows you to submit multiple transcoding tasks in a single request, known as a "batch." This is particularly useful when you have a collection of files to process with similar (or different) settings, as it streamlines the submission process and helps `FFmate` manage them as a related group.
 
-## Batch Operations: Processing Multiple Tasks Efficiently
+### Batch details
 
-`ffmate` allows you to submit multiple transcoding tasks in a single request, known as a "batch." This is particularly useful when you have a collection of files to process with similar (or different) settings, as it streamlines the submission process and helps `ffmate` manage them as a related group.
+When you submit multiple transcoding tasks in one API call, `FFmate` assigns a unique **Batch ID** (a UUID) to all tasks created from that submission. This Batch ID serves as a common identifier for the group.
 
-### What is a Batch?
-
-When you submit multiple task definitions in one API call, `ffmate` assigns a unique **Batch ID** (a UUID) to all tasks created from that submission. This Batch ID serves as a common identifier for the group.
-
-*   **Individual Tasks:** Each item in your batch request still becomes an individual task within `ffmate`. This means each task will:
+*   **Individual Tasks:** Each task in your batch request still becomes an individual task within `FFmate`. This means each task will:
     *   Go through its own lifecycle (Queued, Pre-Processing, Running, Post-Processing, Done).
     *   Be processed independently by `ffmpeg` according to its specific settings (or preset).
     *   Have its own progress, status, and potential errors.
-*   **No Inter-Task Dependency (by default):** `ffmate` processes tasks in a batch concurrently (up to the `max-concurrent-tasks` limit) or sequentially based on their priority and queue order. The success or failure of one task in a batch does not inherently affect other tasks *within the same batch* unless you implement such logic in your pre/post-processing scripts.
+*   **No Inter-Task Dependency (by default):** `FFmate` processes tasks in a batch concurrently (up to the `max-concurrent-tasks` limit) or sequentially based on their priority and queue order. The success or failure of one task in a batch does not inherently affect other tasks *within the same batch* unless you implement such logic in your pre/post-processing scripts.
 
 ### How to Submit a Batch of Tasks
 
-You submit a batch of tasks using the REST API by sending a `POST` request to the `/api/v1/tasks/batch` endpoint. The request body should be a JSON array, where each element in the array is a standard `NewTask` object (the same object you'd use for creating a single task via `/api/v1/tasks`).
+You submit a batch of tasks using the REST API by sending a `POST` request to the `/api/v1/tasks/batch` endpoint. The request body will be a JSON array, where each element in the array is a standard `Task` object (the same object you'd use for creating a single task via `/api/v1/tasks`).
 
 **API Endpoint:** `POST /api/v1/tasks/batch`
 
-**Request Body:** An array of `NewTask` objects.
+**Request Body:** An array of `Task` objects.
 
 **Example: Submitting a Batch of Two Tasks**
 
 ```json
-// POST /api/v1/tasks/batch
 [
   {
     "name": "Convert Episode 1 to WebM",
@@ -213,25 +238,24 @@ You submit a batch of tasks using the REST API by sending a `POST` request to th
 Upon successful submission, `ffmate` will respond with a JSON array containing the full `Task` objects for each task created in the batch. Each of these task objects will include the same `batch` ID.
 
 ```json
-// 200 OK
 [
   {
     "uuid": "task-uuid-1",
-    "batch": "batch-uuid-for-this-submission", // Same for all tasks in this batch
+    "batch": "batch-uuid-for-this-submission", 
     "name": "Convert Episode 1 to WebM",
     "status": "QUEUED",
     // ... other task details
   },
   {
     "uuid": "task-uuid-2",
-    "batch": "batch-uuid-for-this-submission", // Same for all tasks in this batch
+    "batch": "batch-uuid-for-this-submission", 
     "name": "Convert Episode 2 to WebM",
     "status": "QUEUED",
     // ... other task details
   },
   {
     "uuid": "task-uuid-3",
-    "batch": "batch-uuid-for-this-submission", // Same for all tasks in this batch
+    "batch": "batch-uuid-for-this-submission", 
     "name": "Extract Thumbnail for Promo Image",
     "status": "QUEUED",
     // ... other task details

@@ -10,27 +10,17 @@ hero:
     alt: ffmate
   actions:
     - theme: brand
-      text: What is FFmate?
+      text: Get Started
       link: /docs/what-is-ffmate
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: View on GitHub
+      link: https://github.com/welovemedia/ffmate
 
 features:
-  - title: Watchfolder
+  - title: Hassle-free integration
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Presets
+  - title:  Fully controllable
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Queue
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Webhooks
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Websocket
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Websocket
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Websocket
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Websocket
+  - title:  Fully customizable
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---

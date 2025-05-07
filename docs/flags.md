@@ -1,10 +1,15 @@
+---
+title: "FFmate Command-Line Flags: Server, Update & Global Options"
+description: "Comprehensive guide to all FFmate command-line flags. Learn to configure FFmate's server settings (FFmpeg path, port, DB), manage updates, enable debug logs, and more."
+---
+
 # Command-Line Flags and Options
 
 The `ffmate` binary offers several command-line flags to customize its behavior when starting the server or performing other actions. These flags allow you to configure paths, ports, operational parameters, and debugging options.
 
-You can typically see a list of available commands and their flags by running `ffmate --help` or `ffmate <command> --help`.
+You can see a list of available commands and their flags by running `ffmate --help` or `ffmate <command> --help`.
 
-### Global Flags
+## Global Flags
 
 These flags can usually be used with any `ffmate` command (like `server`, `update`, `reset`).
 
@@ -19,9 +24,9 @@ These flags can usually be used with any `ffmate` command (like `server`, `updat
     *   **Environment Variable:** Debug namespaces can also be set using the `DEBUGO` environment variable. If both are set, the command-line flag usually takes precedence.
     *   **Default:** Debug logging is off by default.
 
-### `server` Command Flags
+## Server Command Flags
 
-These flags are specific to the `ffmate server` command, which starts the main `ffmate` application (API, Web UI, queue processor, etc.).
+These flags are specific to the `FFmate server` command, which starts the main `FFmate` application (API, Web UI, queue processor, etc.).
 
 *   **`-f, --ffmpeg <path>`** or **`--ffmpeg="<path>"`**
     *   **Purpose:** Specifies the path to the `ffmpeg` executable.
@@ -55,12 +60,12 @@ These flags are specific to the `ffmate server` command, which starts the main `
     *   **Example:** `ffmate server --max-concurrent-tasks="5"` (allows up to 5 tasks to run at once)
 
 *   **`-s, --send-telemetry <true|false>`** or **`--send-telemetry=<true|false>`**
-    *   **Purpose:** Enables or disables the sending of anonymous usage telemetry data to `telemetry.ffmate.io`. This data helps the developers understand how `ffmate` is used and improve the product.
+    *   **Purpose:** Enables or disables the sending of anonymous usage telemetry data to `telemetry.ffmate.io`.
     *   **Value:** `true` or `false`.
     *   **Default:** `true` (telemetry is enabled).
     *   **Example:** `ffmate server --send-telemetry=false`
 
-### `update` Command Flags
+## Update Command Flags
 
 These flags are specific to the `ffmate update` command, which checks for and applies updates to the `ffmate` binary itself.
 
@@ -70,15 +75,15 @@ These flags are specific to the `ffmate update` command, which checks for and ap
     *   **Default:** `false` (updates are applied if available).
     *   **Example:** `ffmate update --dry`
 
-### `reset` Command Flags
+## Reset Command Flags
 
-These flags are specific to the `ffmate reset` command, which is used to reset the status of any tasks that were marked as `RUNNING` to `DONE_CANCELED`. This can be useful if `ffmate` was shut down unexpectedly while tasks were in progress.
+These flags are specific to the `ffmate reset` command, which is used to reset the status of any tasks that were marked as `RUNNING` to `DONE_CANCELED`. This can be useful if `FFmate` was shut down unexpectedly while tasks were in progress.
 
-### How Flags are Processed
+## How Flags are Processed
 
-`ffmate` uses the Viper library for configuration management. This means that flag values can often be overridden by environment variables or configuration files if `ffmate` were set up to use them (though the provided code primarily focuses on flags and defaults). Command-line flags generally have the highest precedence.
+`ffmate` uses the Viper library for configuration management. This means that flag values can often be overridden by environment variables. Command-line flags generally have the highest precedence.
 
-### Example Usage
+## Example
 
 Starting the `ffmate` server with a custom port, a specific `ffmpeg` binary, and disabling telemetry:
 `ffmate server --port="3030" --ffmpeg="/opt/custom_ffmpeg/bin/ffmpeg" --send-telemetry=false --debug="queue,api"`
