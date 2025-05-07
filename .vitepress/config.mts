@@ -30,7 +30,7 @@ export default withMermaid({
         content: "ffmate | A wrapper around ffmpeg",
       },
     ],
-    ["meta", { property: "og:site_name", content: "ffmate" }],
+    ["meta", { property: "og:site_name", content: "FFmate" }],
     [
       "meta",
       {
