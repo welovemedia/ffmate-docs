@@ -2,7 +2,7 @@
 
 **FFmate is not just another media processing server, it’s a powerful extension of FFmpeg that makes it more accessible, automated, and feature-rich.** 
 
-While FFmpeg is an incredible media toolkit, it lacks essential capabilities like queue management, a REST API, watchfolder monitoring, out-of-the-box presets, webhook notifications, and a user-friendly interface.
+While FFmpeg is an incredible media toolkit, it lacks essential capabilities like queue management, a REST API, watchfolder, out-of-the-box presets, webhook notifications, and a user-friendly Web interface.
 
 FFmate fills these gaps, bringing FFmpeg’s full power to developers, workflow engineers, and non-technical users alike.
 

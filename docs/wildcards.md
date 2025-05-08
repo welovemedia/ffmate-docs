@@ -1,8 +1,12 @@
-# Dynamic Wildcards
+# Wildcards
 
-FFmate's dynamic wildcards are designed for smart, customizable file and directory naming.  Instead of tedious manual setup for each output, FFmate allows you to use placeholders. These placeholders provide a flexible method to dynamically generate both filenames and directory paths, as FFmate intelligently replaces them with actual data as it processes your tasks.  Essentially, placeholders deliver a simple yet efficient way to achieve truly dynamic and automated filename and directory naming within FFmate.
+FFmate supports wildcards to help you generate file and directory names dynamically—no manual renaming required.  
+Instead of hardcoding output paths for each task, you can use smart placeholders that FFmate automatically replaces with actual values during processing.
 
-For example, you can include the **date, time, input file name, or a unique ID** in your output file names. This helps keep your files **organized, consistent, and easy to track**, without extra effort.
+Wildcards offer a flexible and efficient way to automate naming patterns, making it easy to organize outputs based on things like input file names, file extension, timestamps, and more.
+
+
+For example, you can include the **date, time, input file name, or a UUID** in your output file names. This helps keep your files and folders **organized, consistent, and easy to track**, without extra effort.
 
 ## Input & Output File Information
 

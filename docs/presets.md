@@ -1,10 +1,11 @@
 # Presets
 
-Presets in `ffmate` are powerful templates that allow you to pre-configure common `ffmpeg` operations. They help you save time, ensure consistency, and simplify the process of creating new transcoding tasks.
+Presets in FFmate are reusable templates that simplify how you define and run FFmpeg tasks.
+They let you preconfigure commands, output patterns, priorities, and optional pre/post-processing scripts.
 
-Think of a preset as a named, reusable recipe for a specific type of video or audio conversion.
+Think of a preset as a named, shareable "recipe" for media processing. Presets help streamline task creation, reduce errors, and ensure that jobs follow a standardized workflow every time they're run.
 
-### What Can You Define in a Preset?
+## Creating 
 
 When you create a preset, you can specify several key parameters that will be automatically applied to tasks created using that preset:
 
@@ -49,7 +50,7 @@ When you create a preset, you can specify several key parameters that will be au
 
 ### How to Manage Presets
 
-You can manage presets through `ffmate`'s:
+You can manage presets through FFmate's:
 
 *   **REST API:**
     *   `POST /api/v1/presets`: Create a new preset.
