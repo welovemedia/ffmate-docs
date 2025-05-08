@@ -1,6 +1,13 @@
+---
+title: "FFmate Task Management: Lifecycle, API, Batch & Automation"
+description: "Detailed FFmate task documentation: Understand the complete task lifecycle, statuses, and API usage for creating, monitoring, managing, and batching FFmpeg jobs"
+---
+
 # Understanding Tasks in FFmate
 
-In FFmate, a **task** is an individual FFmpeg job, whether it's transcoding, extracting audio, or applying filters. Tasks can be submitted **individually** or as part of a **batch**, allowing multiple files to be processed efficiently in a single request. Every task follows a structured **lifecycle**, progressing from submission to execution and ultimately reaching completion or failure.
+In FFmate, a **task** represents a single FFmpeg command execution such as transcoding a video, extracting audio, or applying filters. When you submit a task, FFmate uses FFmpeg under the hood to perform the media processing. Tasks can be submitted on their own or grouped into batches to handle multiple files efficiently in one go  
+Every task follows a structured **lifecycle**, progressing from submission to execution and ultimately reaching completion or failure.
+
 
 Before diving into task execution, let's first go through the **lifecycle** of tasks and their corresponding **statuses** in FFmate.
 
@@ -21,6 +28,18 @@ graph TD;
     processing -->|Finishes successfully| completed;
     processing -->|Fails| failed;
     queued -->|Canceled| canceled;
+
+    classDef queued fill:#fdf6b2,stroke:#facc15,stroke-width:2px,color:#000;
+    classDef processing fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px,color:#000;
+    classDef completed fill:#bbf7d0,stroke:#22c55e,stroke-width:2px,color:#000;
+    classDef failed fill:#fecaca,stroke:#ef4444,stroke-width:2px,color:#000;
+    classDef canceled fill:#e0e7ff,stroke:#6366f1,stroke-width:2px,color:#000;
+
+    class queued queued;
+    class processing processing;
+    class completed completed;
+    class failed failed;
+    class canceled canceled;
 ```
 
 Next, let's explore how to trigger and manage single tasks in FFmate
@@ -42,9 +61,11 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 
 ### Task Properties
 
--   **`name`** *[optional]* - A short, descriptive name to help track this task in logs and interfaces (e.g., "Convert wedding video to MP4").
+These are the properties you can set when creating a task in FFmate:
 
-- **`command`** *[mandatory]* - Defines the FFmpeg command to execute. FFmate **implicitly calls the FFmpeg binary**, so you only need to specify the **command-line parameters and flags**, without including `ffmpeg` itself.
+-   **`name`** *[optional]* -A short, descriptive name to help identify and track the task in the web UI and API (e.g., "Convert wedding video to MP4")
+
+- **`command`** *[mandatory]* - Define the FFmpeg command to run. FFmate automatically invokes the FFmpeg binary, so you only need to provide the command-line arguments—no need to include `ffmpeg` at the start.
 
 - **`inputFile`** *[optional]* – The path to the input media file that will be processed.
 
@@ -63,34 +84,36 @@ curl -X POST http://localhost:3000/api/v1/tasks \
   - `3` → High priority
   - `4` → Critical priority (executed first)
 
--   **`preset`** *[optional]*
-    The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task.
+-   **`preset`** *[optional]* - The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task.
 
--   **`preProcessing`** *[optional]*
-    Define a [Pre-Processing Script](/docs/pre-post-prcessing.md) for this task.
+- **`preProcessing`** *[optional]* – Defines a [Pre-Processing Script](/docs/pre-post-prcessing.md) to run before the task starts. Useful for preparing files, validating input, or setting up the environment.
     *   **`scriptPath`**: Command/path to the script.
     *   **`sidecarPath`**: (Optional) Path for the task data JSON file.
 
--   **`postProcessing`** *[optional]*
-    Define a [Post-Processing Script](/docs/pre-post-prcessing.md) for this task.
+- **`postProcessing`** *[optional]* – Defines a [Post-Processing Script](/docs/pre-post-prcessing.md) to run after the task completes. Useful for cleanup, moving output files, or triggering follow-up actions.
     *   **`scriptPath`**: Command/path to the script.
     *   **`sidecarPath`**: (Optional) Path for the task data JSON file.
 
--   **`metadata`** *[optional]* – An optional JSON object that allows the submitting system to include custom key-value pairs.
+- **`metadata`** *[optional]* – A JSON object for including custom key-value pairs with the task. Useful for adding context, referencing source files, or integrating with external systems.
 
-    ```json
-    "metadata": {
-      "original_filename": "interview_session_03_cam_A.mxf",
-      "project_code": "PROJ-SUMMER2025",
-      "editor_notes": "Needs color correction pass after this transcode."
-    }
-    ```
+::: details **Example:** {open}
 
-    This is a powerful feature for:
-    *   **Identifying the Source Asset:** Store unique identifiers from your originating system (e.g., a CMS asset ID, a DAM UUID, a production tracking code). This allows you to easily correlate the `FFmate` task back to its source.
-    *   **Workflow Integration:** Pass information needed by other parts of your workflow.
-    *   **Custom Scripting:** Provide parameters or context for your [Pre or Post-Processing Scripts](/docs/pre-post-prcessing.md).
+A sample `metadata` object containing useful context about the source file, provided as key-value pairs:
 
+```json
+"metadata": {
+  "original_filename": "interview_session_03_cam_A.mxf",
+  "project_code": "PROJ-SUMMER2025",
+  "editor_notes": "Needs color correction pass after this transcode."
+}
+```
+:::
+
+This is a powerful feature for:
+
+- **`Identifying the Source Asset:`** Store unique identifiers from your originating system (e.g., a CMS asset ID, a DAM UUID, a production tracking code). This allows you to easily correlate the `FFmate` task back to its source.  
+
+- **`Workflow Integration:`** Include metadata like project IDs, Naming conventions, or destination apths to help downstream systems—such as asset managers, review platforms, or render farms—automate and coordinate their tasks.
 
 After submitting a task, FFmate will respond with a JSON object containing the `taskId`. This `taskId` can be used to monitor the task’s progress in the next section.
 
@@ -106,9 +129,12 @@ curl -X 'GET' \
 
 Replace `{taskId}` with the actual task ID from the submission response.
 
+💡 Tip: You can also check the status of each task directly in the FFmate Web UI [FFmate Web UI](/docs/web-ui.md)
+
+
 ## Monitoring All Tasks
 
-FFmate allows you to retrieve a list of all tasks, regardless of their current state—whether they are waiting in the queue, actively processing, successfully completed, or encountered an error.
+FFmate lets you retrieve a list of all tasks, no matter their current state—queued, processing, completed, or failed.
 
 To retrieve a list of all tasks, send a GET request to the API:
 
@@ -123,9 +149,12 @@ curl -X 'GET' \
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
 - **`perPage`** *[optional]* – Defines how many tasks should be included in each page. Default: `100`.
 
+💡 Tip: You can also check the status of all tasks: queued, processing, completed, or failed directly in the [FFmate Web UI](/docs/web-ui.md)
+
+
 ## Canceling a Task
 
-FFmate allows you to cancel a task that is currently **queued** or **processing**. Once canceled, the task will not be executed or will be stopped if already in progress.
+FFmate lets you to cancel a task that is currently **queued** or **processing**. Once canceled, the task will not be executed or will be stopped if already in progress.
 
 To cancel a task, make a `PATCH` request:
 
@@ -141,6 +170,8 @@ curl -X 'PATCH' \
 
 > [!NOTE]
 > If the task is already processing, FFmate will attempt to **stop** it, but cancellation may not always be immediate.
+
+💡 Tip: You can also cancel a running task directly from the [FFmate Web UI](/docs/web-ui.md) with a single click—no API call needed.
 
 ## Restarting a Task
 
@@ -158,11 +189,13 @@ curl -X 'PATCH' \
 
 - **`{taskId}`** *[mandatory]* – The unique identifier of the task to restart.
 
-> [!TIP]
+> [!Note]
 > - Restarting a task will **re-run the exact same command** using the original input and output paths.  
 > - If the task was previously processing, it will start from the beginning.
 
 Once restarted, the task will move back into the **queued** state and follow the standard [task lifecycle](#task-flow).
+
+💡 Tip: Need to rerun a task? You can restart it directly in the [FFmate Web UI](/docs/web-ui.md)
 
 ## Deleting a Task
 
@@ -184,78 +217,84 @@ curl -X 'DELETE' \
 - If the task is still processing, FFmate will attempt to **stop** it before deletion.
 :::
 
+💡 Tip: Tasks can also be deleted from the [FFmate Web UI](/docs/web-ui.md)
 
-## Batch Operations 
+## Submitting Multiple Tasks as a Batch
 
-`FFmate` allows you to submit multiple transcoding tasks in a single request, known as a "batch." This is particularly useful when you have a collection of files to process with similar (or different) settings, as it streamlines the submission process and helps `FFmate` manage them as a related group.
+FFmate allows you to submit multiple transcoding tasks in a single request, referred to as a `batch`. This is ideal when processing a set of files—whether they use the same settings or different ones—as it simplifies submission and keeps related tasks grouped together.
 
-### Batch details
+Each batch is automatically assigned a unique `batch ID`, making it easy to monitor, manage, and reference the entire group of tasks as a single unit. While a batch groups multiple task submissions together, each task within it remains fully independent.
 
-When you submit multiple transcoding tasks in one API call, `FFmate` assigns a unique **Batch ID** (a UUID) to all tasks created from that submission. This Batch ID serves as a common identifier for the group.
+- **Individual Tasks:**  
+  Every task in the batch is submitted as a standalone task in FFmate. This means:
+  - Each task follows its own lifecycle (`Queued`, `Pre-Processing`, `Running`, `Post-Processing`, `Done`).
+  - Each is executed independently by `ffmpeg`, based on its own command or preset.
+  - Each task maintains its own progress, status, and error reporting.
 
-*   **Individual Tasks:** Each task in your batch request still becomes an individual task within `FFmate`. This means each task will:
-    *   Go through its own lifecycle (Queued, Pre-Processing, Running, Post-Processing, Done).
-    *   Be processed independently by `ffmpeg` according to its specific settings (or preset).
-    *   Have its own progress, status, and potential errors.
-*   **No Inter-Task Dependency (by default):** `FFmate` processes tasks in a batch concurrently (up to the `max-concurrent-tasks` limit) or sequentially based on their priority and queue order. The success or failure of one task in a batch does not inherently affect other tasks *within the same batch* unless you implement such logic in your pre/post-processing scripts.
-
+- **No Inter-Task Dependency (by default):**  
+  FFmate processes batch tasks concurrently (up to the `max-concurrent-tasks` limit) or sequentially, based on priority and queue order.  
+  
+> [!NOTE]
+> One task's success or failure does not affect others in the same batch.
+  
 ### How to Submit a Batch of Tasks
 
-You submit a batch of tasks using the REST API by sending a `POST` request to the `/api/v1/tasks/batch` endpoint. The request body will be a JSON array, where each element in the array is a standard `Task` object (the same object you'd use for creating a single task via `/api/v1/tasks`).
+You submit a batch of tasks using the REST API by sending a `POST` request to the `/api/v1/tasks/batch` endpoint. 
 
-**API Endpoint:** `POST /api/v1/tasks/batch`
+The request body will be a JSON array, where each element in the array is a standard `Task` object (the same object you'd use for creating a single task via [/api/v1/tasks](#creating-a-task).
 
-**Request Body:** An array of `Task` objects.
+To submit multiple tasks as a batch, send a `POST` request to the FFmate API:
 
-**Example: Submitting a Batch of Two Tasks**
+```sh
+curl -X POST http://localhost:3000/api/v1/tasks/batch \
+     -H "Content-Type: application/json" \
+     -d '[
+       {
+         "name": "Convert Episode 1 to WebM",
+         "inputFile": "/mnt/source_videos/seriesA/episode_01.mov",
+         "preset": "uuid-of-webm-720p-preset",
+         "priority": 20
+       },
+       {
+         "name": "Convert Episode 2 to WebM",
+         "inputFile": "/mnt/source_videos/seriesA/episode_02.mov",
+         "preset": "uuid-of-webm-720p-preset",
+         "priority": 20
+       },
+       {
+         "name": "Extract Thumbnail for Promo Image",
+         "command": "ffmpeg -ss 00:01:30 -i ${INPUT_FILE} -frames:v 1 -q:v 2 ${OUTPUT_FILE}",
+         "inputFile": "/mnt/source_videos/seriesA/promo_material.mp4",
+         "outputFile": "/mnt/output_images/promo_thumbnail_${TIMESTAMP_SECONDS}.jpg",
+         "priority": 50
+       }
+     ]'
 
-```json
-[
-  {
-    "name": "Convert Episode 1 to WebM",
-    "inputFile": "/mnt/source_videos/seriesA/episode_01.mov",
-    "preset": "uuid-of-webm-720p-preset", // Reference a preset
-    "priority": 20
-  },
-  {
-    "name": "Convert Episode 2 to WebM",
-    "inputFile": "/mnt/source_videos/seriesA/episode_02.mov",
-    "preset": "uuid-of-webm-720p-preset",
-    "priority": 20
-  },
-  {
-    "name": "Extract Thumbnail for Promo Image",
-    "command": "ffmpeg -ss 00:01:30 -i ${INPUT_FILE} -frames:v 1 -q:v 2 ${OUTPUT_FILE}",
-    "inputFile": "/mnt/source_videos/seriesA/promo_material.mp4",
-    "outputFile": "/mnt/output_images/promo_thumbnail_${TIMESTAMP_SECONDS}.jpg",
-    "priority": 50
-  }
-]
 ```
 
 **Response:**
 
-Upon successful submission, `ffmate` will respond with a JSON array containing the full `Task` objects for each task created in the batch. Each of these task objects will include the same `batch` ID.
+Upon successful submission, FFmate will respond with a JSON array containing the full `Task` objects for each task created in the batch. Each of these task objects will include the same `batch` ID.
 
-```json
+```json{4,11,18}
 [
   {
     "uuid": "task-uuid-1",
-    "batch": "batch-uuid-for-this-submission", 
+    "batch": "c4e8f12a-3b7d-4c9f-a1e8-5d0f2b3c4a9e", 
     "name": "Convert Episode 1 to WebM",
     "status": "QUEUED",
     // ... other task details
   },
   {
     "uuid": "task-uuid-2",
-    "batch": "batch-uuid-for-this-submission", 
+    "batch": "c4e8f12a-3b7d-4c9f-a1e8-5d0f2b3c4a9e", 
     "name": "Convert Episode 2 to WebM",
     "status": "QUEUED",
     // ... other task details
   },
   {
     "uuid": "task-uuid-3",
-    "batch": "batch-uuid-for-this-submission", 
+    "batch": "c4e8f12a-3b7d-4c9f-a1e8-5d0f2b3c4a9e", 
     "name": "Extract Thumbnail for Promo Image",
     "status": "QUEUED",
     // ... other task details
@@ -265,28 +304,34 @@ Upon successful submission, `ffmate` will respond with a JSON array containing t
 
 ### Managing and Monitoring Batches
 
-While `ffmate` treats each task in a batch individually for processing, the Batch ID allows you to group and monitor them:
+While FFmate treats each task in a batch individually for processing, the `batch ID` allows you to group and monitor them as a unit.
 
-1.  **Listing Tasks by Batch ID:**
-    *   You can retrieve all tasks belonging to a specific batch using the API:
-        `GET /api/v1/tasks/batch/{batch_uuid}`
-    *   This is useful for checking the overall progress of a submitted batch.
+**Listing Tasks by Batch ID**
 
-2.  **Webhooks:**
-    *   **`batch.created`**: This webhook event (if configured) fires once when a batch of tasks is successfully submitted. The payload will typically be an array of the created task DTOs.
-    *   **`batch.finished`**: This webhook event fires when *all* tasks belonging to a specific Batch ID have reached a terminal state (e.g., `DONE_SUCCESSFUL`, `DONE_ERROR`, `DONE_CANCELED`).
-        *   The payload for this webhook would likely provide a summary or list of the final states of all tasks in that batch. This is ideal for triggering follow-up actions once an entire set of related jobs is complete.
+You can retrieve all tasks belonging to a specific batch using the following API endpoint:
 
-### Use Cases for Batch Operations
+```sh
+curl -X 'GET' \
+  'http://localhost:3000/api/v1/tasks/batch/{batch_uuid}' \
+  -H 'accept: application/json'
+```
 
-*   **Bulk Transcoding:** Processing an entire folder of videos to a new format or resolution.
-*   **Multi-Rendition Generation:** Creating multiple versions (e.g., different bitrates, resolutions) of the same source file. Each rendition would be a separate task in the batch.
-*   **Sequential Asset Processing:** Submitting tasks for different stages of a media workflow (e.g., Task 1: Clean audio, Task 2: Transcode video, Task 3: Watermark) for a set of source files. While `ffmate` processes them based on queue rules, you can monitor them as a batch.
-*   **Simplifying Client Submissions:** Clients interacting with your `ffmate` instance can submit multiple related jobs in a single API call, reducing network overhead and simplifying their logic.
+::: tip 💡 Webhook Notifications for Batches
 
-### Considerations
+**Webhooks Aren’t Just for Tasks — Use Them to Track Batches Too**
 
-*   **Error Handling:** If the overall batch submission request is malformed (e.g., invalid JSON), the entire request will fail. However, if the JSON array is valid but one of the individual `NewTask` objects within it is invalid (e.g., missing a required field if not using a preset), `ffmate` *may* reject the entire batch or process the valid tasks and report errors for the invalid ones. Check the API response and `ffmate` logs for specific behavior.
-*   **Resource Management:** Submitting very large batches can quickly fill up the task queue. `ffmate`'s `max-concurrent-tasks` setting will prevent system overload, but tasks will remain queued, potentially for a long time. Plan your batch sizes accordingly.
+- **`batch.created`** – Triggered once when a batch of tasks is successfully submitted. The payload includes an array of the created task objects.
 
-Batch operations in `ffmate` provide a convenient way to manage groups of related transcoding jobs, improving workflow efficiency and enabling more complex automation scenarios, especially when combined with webhooks like `batch.finished`.
+- **`batch.finished`** – Triggered when all tasks in the batch have finished processing (either successfully, with errors, or canceled).  
+
+  The payload includes a summary of each task's final status, making this ideal for triggering follow-up actions once the entire batch is complete.
+
+:::
+
+### Common Use Cases for Batch Submission
+
+- **Bulk Transcoding** – Convert an entire folder of videos to a new format or resolution in one go.
+
+- **Multi-Renditions** – Generate multiple versions of the same source file (e.g., different bitrates or resolutions). Each rendition is submitted as an individual task within the batch.
+
+- **Sequential Asset Processing** – Submit tasks that represent different steps in a media pipeline (e.g., clean audio, transcode video, apply watermark). While FFmate handles each task independently based on queue rules, you can still track them together as part of a single batch. While `ffmate` processes them based on queue rules, you can monitor them as a batch.

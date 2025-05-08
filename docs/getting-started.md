@@ -1,3 +1,8 @@
+---
+title: "Quick Start FFmate: Install, Run Server and Core Features"
+description: "Your essential guide to getting started with FFmate. Learn to download, install, run the server, submit your first task, set up watchfolders, webhooks, and update easily."
+---
+
 # 🚀 Getting Started
 
 Setting up FFmate is quick and straightforward. Follow these steps to get up and running in no time.
@@ -6,21 +11,25 @@ Setting up FFmate is quick and straightforward. Follow these steps to get up and
 
 Get the latest release of FFmate from [GitHub](https://github.com/welovemedia/ffmate/releases)
 
+> [!IMPORTANT]
+> FFmate is currently available for `macOS` and `Linux`. Support for Windows is coming soon.
+
+
 ## Running FFmate
 
-Once installed, start the FFmate server from the command line:
+After downloading FFmate, open your terminal, navigate to the folder where you saved it, and start the server by running the following command:
 
 ```sh
 ffmate server
 ```
 
-💡 Tip: Want to start FFmate with a convenient tray menu? Simply run:
+💡 Tip: For easy access to FFmate’s features, start it with a tray icon using the following command:
 
 ```sh
 ffmate server --tray
 ```
 
-By default, the server runs on **[http://localhost:3000](http://localhost:3000)**. Is port 3000 unavailable, or do you want to start FFmate on a different port? Learn how to change the port here 👉 [Learn more](#port-configuration).
+By default, FFmate runs on **[http://localhost:3000](http://localhost:3000)**. If port 3000 is already in use or you prefer a different one, you can easily change it. Learn how to change the port here 👉 [Learn more](#port-configuration).
 
 ## Submitting your first task
 
@@ -47,7 +56,7 @@ curl http://localhost:3000/api/v1/tasks/{taskId}
 
 Replace `{taskId}` with the actual ID returned when submitting the task.
 
-You can  track your FFmate tasks directly in the Web UI. 👉 [Learn more](#web-ui-monitoring)
+You can track the status and progress of your FFmate tasks directly in the Web UI. 👉 [Learn more](/docs/web-ui.md)
 
 ## Watchfolders
 
@@ -76,21 +85,26 @@ curl -X POST http://localhost:3000/api/v1/watchfolders \
 
 Once configured, any new file matching the criteria will be automatically processed when added to the watchfolder.
 
-Are you more in the mood to configure your watchfolder in a more visual way? No problem! Learn how to configure your first watchfolder using our Web UI 👉 [Check it out](#web-ui) 
+Are you more in the mood to configure your watchfolder in a more visual way? No problem! Learn how to configure your first watchfolder using our Web UI 👉 [Check it out](/docs/web-ui.md)
 
 ## Real-Time updates with Webhook notifications
 
-FFmate can notify external systems about job progress, completion, or failures via **webhooks**.
+FFmate can notify external systems about task progress, completion, or failure using webhooks.
 
 To configure a webhook, make a `POST` request to the API:
 
 ```sh
-curl --location 'http://localhost:3000/api/v1/webhooks' \
---header 'Content-Type: application/json' \
---data '{ "event": "task.created", "url": "https://myserver.com/ffmate/webhook.create" }'
+curl -X POST http://localhost:3000/api/v1/webhooks \
+     -H "Content-Type: application/json" \
+     -d '{
+       "event": "task.created",
+       "url": "https://myserver.com/ffmate/webhook.create"
+     }'
 ```
 
-FFmate will send a `POST` request to the specified URL when the  event occurs.
+FFmate will send a `POST` request to the specified URL when the event occurs.
+
+FFmate supports webhook notifications for tasks, batches, presets, watchfolders. You can react to new events, keep external systems in sync, or trigger automations in real time. Learn how to make the most of FFmate’s webhooks 👉 [Learn more](/docs/webhooks.md)
 
 ## Updating FFmate
 
