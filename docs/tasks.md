@@ -63,7 +63,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 
 These are the properties you can set when creating a task in FFmate:
 
--   **`name`** *[optional]* -A short, descriptive name to help identify and track the task in the web UI and API (e.g., "Convert wedding video to MP4")
+-   **`name`** *[optional]* - A short, descriptive name to help identify and track the task in the web UI and API (e.g., "Convert wedding video to MP4")
 
 - **`command`** *[mandatory]* - Define the FFmpeg command to run. FFmate automatically invokes the FFmpeg binary, so you only need to provide the command-line arguments—no need to include `ffmpeg` at the start.
 
