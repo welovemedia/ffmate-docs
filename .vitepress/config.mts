@@ -35,7 +35,7 @@ export default withMermaid({
       "meta",
       {
         property: "og:image",
-        content: "https://docs.ffmate.io/icon.webp",
+        content: "https://docs.ffmate.io/icon_16x9.webp",
       },
     ],
     ["meta", { property: "og:url", content: "https://ffmate.io/" }],
