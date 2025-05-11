@@ -1,7 +1,11 @@
+---
+title: "FFmate Presets: Automate & Standardize FFmpeg Workflows"
+description: "Simplify complex FFmpeg tasks with FFmate presets. Define reusable templates for commands, output paths, and processing scripts to streamline your media encoding and ensure consistency"
+---
+
 # Presets
 
-Presets in FFmate are reusable templates that simplify how you define and run FFmpeg tasks.
-They let you preconfigure commands, output patterns, priorities, and optional pre/post-processing scripts.
+Presets in FFmate are powerful, reusable templates that simplify how you define and run FFmpeg tasks. They allow you to preconfigure FFmpeg commands, output patterns, priorities, and even automated pre/post-processing scripts, streamlining your entire transcoding workflow.
 
 Think of a preset as a named, shareable "recipe" for media processing. Presets help streamline task creation, reduce errors, and ensure that jobs follow a standardized workflow every time they're run.
 
@@ -9,7 +13,7 @@ Think of a preset as a named, shareable "recipe" for media processing. Presets h
 
 When creating a preset, you define a set of parameters that will be automatically applied to any task that uses it. 
 
--   **`name`** *[optional]* - A short, descriptive name help to you quickly identify the preset (e.g., "Convert to MP4 1080p", "Extract Audio as MP3").
+-   **`name`** *[optional]* - A short, descriptive name to help you quickly identify the preset (e.g., "Convert to MP4 1080p", "Extract Audio as MP3").
 
 -   **`description`** *[optional]* – A short note about what the preset is for or how it should be used (e.g., "Converts ProRes to H.264 for review copies").
   
@@ -53,33 +57,55 @@ When creating a preset, you define a set of parameters that will be automaticall
 
       *Example:* `${OUTPUT_FILE_DIR}/${OUTPUT_FILE_BASENAME}_ffmate_task_complete.json`  
 
-### How to Manage Presets
+## Creating a Preset
 
-You can manage presets through FFmate's:
+To create a preset, send a `POST` request to the FFmate API:
 
-*   **REST API:**
-    *   `POST /api/v1/presets`: Create a new preset.
-    *   `GET /api/v1/presets`: List all existing presets.
-    *   `DELETE /api/v1/presets/{uuid}`: Delete a preset by its unique ID.
-*   **Web UI:** The `ffmate` web interface provides a user-friendly way to create, view, and delete presets.
-
-**Example: Creating a Preset via API with Contextualized Post-Processing**
-
-```json
-// POST /api/v1/presets
-{
-  "name": "ProRes HQ for Archive",
-  "description": "Converts input to ProRes HQ and moves it to the archive.",
-  "command": "ffmpeg -i ${INPUT_FILE} -c:v prores_ks -profile:v 3 -vendor apl0 -bits_per_mb 8000 -pix_fmt yuv422p10le -c:a pcm_s16le ${OUTPUT_FILE}",
-  "outputFile": "${INPUT_FILE_BASENAME}_prores_hq.mov",
-  "priority": 50,
-  "postProcessing": {
-    "scriptPath": "/usr/local/bin/move_to_archive.sh --file ${OUTPUT_FILE} --project-id some_project_id_from_metadata",
-    "sidecarPath": "${OUTPUT_FILE_DIR}/${OUTPUT_FILE_BASENAME}.json"
-  }
-}
+```sh
+curl -X POST http://localhost:3000/api/v1/presets \
+     -H "Content-Type: application/json" \
+     -d '{
+       "name": "MP4 Standard Quality",
+       "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k ${OUTPUT_FILE}",
+       "description": "Converts video to MP4 with H.264 video and AAC audio, good balance of quality and size.",
+       "outputFile": "${INPUT_FILE_BASENAME}_standard.mp4",
+       "priority": 1,
+       "postProcessing": {
+         "scriptPath": "/usr/local/bin/notify_completion.sh --file ${OUTPUT_FILE} --status success"
+       }
+     }'
 ```
-*(In this example, `move_to_archive.sh` would be a custom script. The `project-id` could be something passed in the task's `metadata` field and then potentially extracted from the sidecar JSON by the script, though the example script path directly includes a placeholder for simplicity here. A more robust script would parse the sidecar for such dynamic values.)*
+
+After you create a preset, FFmate responds with a JSON object that includes the `uuid` of the newly created preset.
+
+💡 Tip: Prefer a visual approach? You can create new presets directly in the [FFmate Web UI](/docs/web-ui.md) without writing any API requests.
+
+## Listing Presets
+
+To get a list of all available presets, send a `GET` request to the FFmate API
+
+```sh
+curl -X GET 'http://localhost:3000/api/v1/presets?page=0&perPage=10' \
+     -H 'accept: application/json'
+```
+
+**Query Parameters:**
+
+- **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
+- **`perPage`** *[optional]* – Defines how many tasks should be included in each page. Default: `50`.
+
+💡 Tip: Want to browse existing presets? The [FFmate Web UI](/docs/web-ui.md) lets you view and search through all available presets with ease.
+
+## Deleting a Preset
+
+To delete an existing preset, send a `DELETE` request to the FFmate API, replacing `{presetId}` with the UUID of the preset you want to remove.
+
+```sh
+curl -X DELETE 'http://localhost:3000/api/v1/presets/a1b2c3d4-e5f6-7890-1234-567890abcdef' \
+     -H 'accept: application/json'
+```
+
+💡 Tip: Presets can be safely deleted from the [FFmate Web UI](/docs/web-ui.md), with helpful context to avoid accidental removals.
 
 ### How to Use Presets When Creating Tasks
 
@@ -87,21 +113,24 @@ When you create a new task, you can simply reference the `uuid` of an existing p
 
 **Example: Creating a Task using a Preset via API**
 
-```json
-// POST /api/v1/tasks
-{
-  "name": "Archive Raw Footage",
-  "inputFile": "/path/to/raw_footage_01.mxf",
-  "preset": "uuid-of-ProRes-HQ-for-Archive-preset", // Replace with actual preset UUID
-  "metadata": {
-    "project-id": "project_alpha_123",
-    "shot_number": "005"
-  }
-}
+```sh
+curl -X POST http://localhost:3000/api/v1/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Archive Raw Footage",
+    "inputFile": "/path/to/raw_footage_01.mxf",
+    "preset": "uuid-of-ProRes-HQ-for-Archive-preset",
+    "metadata": {
+      "project-id": "project_alpha_123",
+      "shot_number": "005"
+    }
+  }'
 ```
 
-`ffmate` will then automatically:
-1.  Use the `command` from the "ProRes HQ for Archive" preset.
-2.  Generate the output path using the preset's `outputFile` pattern.
-3.  Apply the preset's `priority` (50).
-4.  After successful `ffmpeg` processing, it will create the sidecar file (e.g., `/path/to/raw_footage_01_prores_hq.json` containing task details) and then execute the `postProcessing` script (`/usr/local/bin/move_to_archive.sh ...`).
+FFmate will then automatically:
+
+1. Use the `command` defined in the **"ProRes HQ for Archive"** preset.
+2. Generate the output file path based on the preset’s `outputFile` pattern.
+3. Assign the preset’s `priority` value (`50`) to the task.
+4. After ffmpeg finishes successfully, ffmate will
+    * Run the `postProcessing` script (e.g., `notify_completion.sh`).

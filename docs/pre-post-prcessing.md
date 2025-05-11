@@ -1,74 +1,72 @@
 
 # Pre and Post-Processing
 
-`FFmate` allows you to extend the functionality of your transcoding tasks by executing custom scripts *before* the `ffmpeg` command starts (pre-processing) and *after* it successfully completes (post-processing). This powerful feature enables you to automate a wide range of activities, from input validation and file preparation to notifications, archiving, and integration with other systems.
+FFmate allows you to extend the functionality of your transcoding tasks by executing custom scripts *before* the `ffmpeg` command starts (pre-processing) and *after* it successfully completes (post-processing). This powerful feature enables you to automate a wide range of activities, from input validation and file preparation to notifications, archiving, and integration with other systems.
 
-You can define pre and post-processing steps either directly within a task creation request or as part of a [Preset](#presets). If defined in both, the task-specific definition will take precedence.
+You can define pre and post-processing steps either directly within a task creation request or as part of a [Preset](/docs/presets.md). If defined in both, the task-specific definition will take precedence.
 
-### Configuration Parameters
+## Configuration Parameters
 
 For both pre-processing and post-processing, you can configure the following:
 
-1.  **`scriptPath`**:
-    *   **Purpose**: Defines the command or the full path to the script you want `ffmate` to execute.
-    *   **Wildcards**: This field fully supports `ffmate`'s [Wildcards](#wildcards). This means you can dynamically pass filenames, dates, UUIDs, and other task-related information as arguments to your script.
-    *   **Execution**: `ffmate` will attempt to execute this string as a command. Ensure your script is executable and its path is correct. The script will run with the same environment and permissions as the `ffmate` process itself.
-    *   **Exit Codes**:
-        *   A **zero exit code** (0) from your script indicates success.
-        *   A **non-zero exit code** indicates an error.
-            *   If a *pre-processing* script exits with a non-zero code, the main `ffmpeg` task will **not** run, and the entire task will be marked as failed.
-            *   If a *post-processing* script exits with a non-zero code, the main `ffmpeg` task has already completed successfully, but the overall `ffmate` task will be marked as failed due to the post-processing error.
-    *   *Example*: `python3 /opt/ffmate_scripts/prepare_audio.py --input ${INPUT_FILE} --normalize-level -3dBFS`
+- **`scriptPath`** *[mandatory]* – The command or script FFmate should run before the main `ffmpeg` command. It supports [Wildcards](/docs/wildcards.md) to pass dynamic values like filenames, UUIDs, or dates as arguments to your script.
+    
+*Example*: `python3 /opt/ffmate_scripts/prepare_audio.py --input ${INPUT_FILE} --normalize-level -3dBFS`
 
-2.  **`sidecarPath`**:
-    *   **Purpose**: (Optional) Specifies a path where `ffmate` will write a JSON file containing detailed information about the current task. Your script can then read this "sidecar" file to get context.
-    *   **Wildcards**: This field also supports [Wildcards](#wildcards), allowing you to name and place the sidecar file dynamically.
-    *   **Content**: The sidecar JSON file contains a snapshot of the `ffmate` task object at that point in the workflow.
-        *   For **pre-processing**, this includes the raw and (potentially partially) resolved input/output paths, any metadata you provided with the task, task UUID, name, priority, etc.
-        *   For **post-processing**, this includes all the above, plus the *final resolved* output path from `ffmpeg`, and the task's status will typically be `RUNNING` (just before it's marked `DONE_SUCCESSFUL` if post-processing also succeeds).
-    *   *Example*: `${INPUT_FILE_DIR}/${INPUT_FILE_BASENAME}.task_info.json`
+::: details **Note:** {open}
+FFmate will attempt to run the `scriptPath` as a system command. Make sure the script is executable and the path is correct. It will run with the same environment and permissions as the FFmate process.
 
-### Workflow
+#### How Exit Codes Work
+
+When a script finishes running, it returns an **exit code** — a number that tells `ffmate` whether it succeeded or failed.
+
+- An exit code of `0` means the script completed successfully.
+- A non-zero exit code means the script encountered an error.
+  - For **pre-processing**, if the script fails, the `ffmpeg` command will *not* run, and the task will be marked as **failed**.
+  - For **post-processing**, the `ffmpeg` command will already have completed successfully, but the task will still be marked as **failed** due to the post-processing error.
+:::
+
+- **`sidecarPath`** *[optional]* – Specifies the path where FFmate should write a JSON "sidecar" file containing detailed information about the current task. This path supports [Wildcards](/docs/wildcards.md). Your script can then read this file to get full context and make decisions accordingly.
+
+  - **What’s in the sidecard file?**  
+    The sidecar JSON contains a snapshot of the task at the time the script runs:
+    - For **pre-processing**, this includes input/output paths (raw or partially resolved), task metadata, UUID, name, priority, and more.
+    - For **post-processing**, it includes all of the above plus the final resolved output path from `ffmpeg`. The task status at this point will typically be `RUNNING`, just before it's marked `DONE_SUCCESSFUL` if post-processing completes without errors.
+
+
+*   *Example*: `${INPUT_FILE_DIR}/${INPUT_FILE_BASENAME}.task_info.json`
+
+## Workflow
+
+This section outlines how FFmate runs a task, showing exactly where pre- and post-processing scripts fit into the workflow, how wildcards are resolved, and how errors are handled at each stage.
 
 1.  **Task Queued:** A new task is created (either directly or via a watchfolder).
 2.  **Pre-Processing (if defined):**
-    *   `ffmate` resolves wildcards in `preProcessing.sidecarPath` (if defined) and writes the task data JSON file.
-    *   `ffmate` resolves wildcards in `preProcessing.scriptPath`.
-    *   `ffmate` executes the `scriptPath` command.
+    *   FFmate resolves wildcards in `sidecarPath` (if defined) and writes the task data JSON file.
+    *   FFFmate resolves wildcards in `scriptPath`.
+    *   FFmate executes the `scriptPath` command.
     *   If the script fails (non-zero exit code), the task status is set to `DONE_ERROR`, and the process stops here. The error from the script is logged.
 3.  **FFmpeg Processing:**
-    *   If pre-processing was successful (or not defined), `ffmate` resolves wildcards for the main `ffmpeg` command, input, and output files.
+    *   If pre-processing was successful (or not defined), FFmate resolves wildcards for the main `ffmpeg` command, input, and output files.
     *   The `ffmpeg` command is executed.
     *   If `ffmpeg` fails, the task status is set to `DONE_ERROR`, and the process stops here. Post-processing will not run.
 4.  **Post-Processing (if defined):**
-    *   Assuming `ffmpeg` completed successfully, `ffmate` resolves wildcards in `postProcessing.sidecarPath` (if defined) and writes/updates the task data JSON file (now including the final `ffmpeg` output path).
-    *   `ffmate` resolves wildcards in `postProcessing.scriptPath`.
-    *   `ffmate` executes the `scriptPath` command.
+    *   Assuming `ffmpeg` completed successfully, FFmate resolves wildcards in `sidecarPath` (if defined) and writes the task data JSON file (now including the final `ffmpeg` output path).
+    *   FFmate resolves wildcards in `scriptPath`.
+    *   FFmate executes the `scriptPath` command.
     *   If the script fails (non-zero exit code), the task status is set to `DONE_ERROR`. The error from the script is logged.
 5.  **Task Completion:**
     *   If post-processing was successful (or not defined), the task status is set to `DONE_SUCCESSFUL`.
 
-### Practical Examples
+##  Examples
 
-#### Example 1: Pre-Processing - Input Validation and Metadata Extraction
+#### Post-Processing – Upload to Cloud Storage and Notify
 
-*   **Goal**: Before transcoding, ensure the input video is not too short and extract its duration into the task's metadata for potential use by `ffmpeg` or post-processing.
-*   **Preset/Task Configuration:**
+Once transcoding completes successfully, upload the output file to an S3 bucket and send a Slack notification to keep your team informed.
 
-    ```json
-    {
-      "preProcessing": {
-        "scriptPath": "python /opt/ffmate_scripts/validate_and_get_duration.py --sidecar ${INPUT_FILE_DIR}/${INPUT_FILE_BASENAME}.pre_task_info.json",
-        "sidecarPath": "${INPUT_FILE_DIR}/${INPUT_FILE_BASENAME}.pre_task_info.json"
-      }
-      // ... other preset/task details
-    }
-    ```
+*   **Example:**
 
-#### Example 2: Post-Processing - Upload to Cloud Storage and Notify
-
-*   **Goal**: After a successful transcode, upload the output file to an S3 bucket and send a Slack notification.
-*   **Preset/Task Configuration:**
+This example shows how post-processing can be configured to run a custom script after a successful `ffmpeg` transcode, while also generating a sidecar JSON file containing task details.
 
     ```json
     {
@@ -79,6 +77,7 @@ For both pre-processing and post-processing, you can configure the following:
       // ... other preset/task details
     }
     ```
+
 *   **`upload_and_notify.sh` (Conceptual):**
 
     ```bash

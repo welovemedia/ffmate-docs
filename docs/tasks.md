@@ -71,7 +71,7 @@ These are the properties you can set when creating a task in FFmate:
 
 - **`outputFile`** *[optional]* – The path where the transcoded file should be saved.
 
-::: tip Handling Input and Output Files
+::: 💡 tip Handling Input and Output Files
 
 - The **`inputFile`** and **`outputFile`** properties are **optional** and should only be used if your command includes the placeholders `${INPUT_FILE}` and `${OUTPUT_FILE}`.
 - FFmate **automatically replaces** these placeholders with the actual file paths during execution.
@@ -117,26 +117,28 @@ This is a powerful feature for:
 
 After submitting a task, FFmate will respond with a JSON object containing the `taskId`. This `taskId` can be used to monitor the task’s progress in the next section.
 
+Here’s the improved version in **Markdown**:
+
+````md
 ## Monitoring a Task
 
-Once submitted, you can check a task’s status by making a `GET` request:
+After submitting a task, you can check its current status by sending a `GET` request to the FFmate API:
 
 ```sh
-curl -X 'GET' \
-  'http://localhost:3000/api/v1/tasks/{taskId}' \
-  -H 'accept: application/json'
-```
+curl -X GET \
+  http://localhost:3000/api/v1/tasks/{taskId} \
+  -H "Accept: application/json"
+````
 
-Replace `{taskId}` with the actual task ID from the submission response.
+Replace `{taskId}` with the actual task UUID returned in the response when the task was created.
 
 💡 Tip: You can also check the status of each task directly in the FFmate Web UI [FFmate Web UI](/docs/web-ui.md)
-
 
 ## Monitoring All Tasks
 
 FFmate lets you retrieve a list of all tasks, no matter their current state—queued, processing, completed, or failed.
 
-To retrieve a list of all tasks, send a GET request to the API:
+To get a list of all tasks, send a `GET` request to the FFmate API:
 
 ```sh
 curl -X 'GET' \
@@ -308,7 +310,7 @@ While FFmate treats each task in a batch individually for processing, the `batch
 
 **Listing Tasks by Batch ID**
 
-You can retrieve all tasks belonging to a specific batch using the following API endpoint:
+You can get all tasks belonging to a specific batch using the following API endpoint:
 
 ```sh
 curl -X 'GET' \
