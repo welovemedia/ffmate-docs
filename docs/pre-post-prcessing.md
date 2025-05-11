@@ -68,19 +68,19 @@ This section outlines how FFmate runs a task, showing exactly where pre- and pos
 
 Once transcoding completes successfully, upload the output file to an S3 bucket and send a Slack notification to keep your team informed.
 
-*   **Example:**
+**Example:**
 
-This example shows how post-processing can be configured to run a custom script after a successful `ffmpeg` transcode, while also generating a sidecar JSON file containing task details.
+  This example shows how post-processing can be configured to run a custom script after a successful `ffmpeg` transcode, while also generating a sidecar JSON file containing task details.
 
-    ```json
-    {
-      "postProcessing": {
-        "scriptPath": "/opt/ffmate_scripts/upload_and_notify.sh",
-        "sidecarPath": "${OUTPUT_FILE_DIR}/${OUTPUT_FILE_BASENAME}.post_task_info.json"
-      }
-      // ... other preset/task details
+  ```json
+  {
+    "postProcessing": {
+      "scriptPath": "/opt/ffmate_scripts/upload_and_notify.sh",
+      "sidecarPath": "${OUTPUT_FILE_DIR}/${OUTPUT_FILE_BASENAME}.post_task_info.json"
     }
-    ```
+    // ... other preset/task details
+  }
+  ```
 
 *   **`upload_and_notify.sh` (Conceptual):**
 
