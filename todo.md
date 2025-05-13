@@ -2,7 +2,7 @@ add tray icon
 rework img alt tag
 add description to mermaid diagrams
 add option to expand images
-improve seo
+improve seo/geo
 finish
     features:
  # - title: Hassle-free integration
