@@ -17,10 +17,10 @@ hero:
       link: https://github.com/welovemedia/ffmate
 
 features:
-  - title: Hassle-free integration
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title:  Fully controllable
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title:  Fully customizable
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+ # - title: Hassle-free integration
+ #   details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+ # - title:  Fully controllable
+ #   details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+ # - title:  Fully customizable
+ #   details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---

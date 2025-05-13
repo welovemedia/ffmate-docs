@@ -1,11 +1,11 @@
 ---
-title: "FFmate: API-Powered FFmpeg Wrapper for Automated Transcoding & Workflows"
-description: "Discover FFmate, the API-powered FFmpeg wrapper. Automate media workflows with its queue system, webhooks, presets & watchfolders. Simplify transcoding at scale"
+title: "FFmate: API-Powered FFmpeg automation layer for Automated Transcoding & Workflows"
+description: "Discover FFmate, the modern and powerful API-powered FFmpeg automation layer. Automate media workflows with its queue system, webhooks, presets & watchfolders. Simplify transcoding at scale"
 ---
 
 # What is FFmate?
 
-**FFmate is a modern, API-powered powerful automation layer built on top of [FFmpeg](https://ffmpeg.org/)—designed to make video and audio transcoding simpler, smarter, and easier to integrate.**
+**FFmate is a modern and powerful automation layer built on top of [FFmpeg](https://ffmpeg.org/)—designed to make video and audio transcoding simpler, smarter, and easier to integrate.**
 
 
 While `FFmpeg` is the industry standard for media encoding and conversion, it can be complex to use directly—especially at scale.  
