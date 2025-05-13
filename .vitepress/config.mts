@@ -27,7 +27,7 @@ export default withMermaid({
       "meta",
       {
         property: "og:title",
-        content: "ffmate | A wrapper around ffmpeg",
+        content: "FFmate | FFmpeg Automation for the Modern Stack",
       },
     ],
     ["meta", { property: "og:site_name", content: "FFmate" }],
@@ -85,9 +85,9 @@ export default withMermaid({
         ],
       },
       {
-        text: "Contact",
+        text: "FFmate Communnity",
         items: [
-          { text: "How to reach out", link: "/docs/ffmate-internals" }
+          { text: "Community & Support", link: "/docs/ffmate-community.md" }
         ],
       },
     ],

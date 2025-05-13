@@ -9,6 +9,29 @@ Presets in FFmate are powerful, reusable templates that simplify how you define 
 
 Think of a preset as a named, shareable "recipe" for media processing. Presets help streamline task creation, reduce errors, and ensure that jobs follow a standardized workflow every time they're run.
 
+## Creating a Preset
+
+To create a preset, send a `POST` request to the FFmate API:
+
+```sh
+curl -X POST http://localhost:3000/api/v1/presets \
+     -H "Content-Type: application/json" \
+     -d '{
+       "name": "MP4 Standard Quality",
+       "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k ${OUTPUT_FILE}",
+       "description": "Converts video to MP4 with H.264 video and AAC audio, good balance of quality and size.",
+       "outputFile": "${INPUT_FILE_BASENAME}_standard.mp4",
+       "priority": 1,
+       "postProcessing": {
+         "scriptPath": "/usr/local/bin/notify_completion.sh --file ${OUTPUT_FILE} --status success"
+       }
+     }'
+```
+
+After you create a preset, FFmate responds with a JSON object that includes the `uuid` of the newly created preset.
+
+💡 Tip: Prefer a visual approach? You can create new presets directly in the [FFmate Web UI](/docs/web-ui.md) without writing any API requests.
+
 ## Presets properties
 
 When creating a preset, you define a set of parameters that will be automatically applied to any task that uses it. 
@@ -57,28 +80,6 @@ When creating a preset, you define a set of parameters that will be automaticall
 
       *Example:* `${OUTPUT_FILE_DIR}/${OUTPUT_FILE_BASENAME}_ffmate_task_complete.json`  
 
-## Creating a Preset
-
-To create a preset, send a `POST` request to the FFmate API:
-
-```sh
-curl -X POST http://localhost:3000/api/v1/presets \
-     -H "Content-Type: application/json" \
-     -d '{
-       "name": "MP4 Standard Quality",
-       "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k ${OUTPUT_FILE}",
-       "description": "Converts video to MP4 with H.264 video and AAC audio, good balance of quality and size.",
-       "outputFile": "${INPUT_FILE_BASENAME}_standard.mp4",
-       "priority": 1,
-       "postProcessing": {
-         "scriptPath": "/usr/local/bin/notify_completion.sh --file ${OUTPUT_FILE} --status success"
-       }
-     }'
-```
-
-After you create a preset, FFmate responds with a JSON object that includes the `uuid` of the newly created preset.
-
-💡 Tip: Prefer a visual approach? You can create new presets directly in the [FFmate Web UI](/docs/web-ui.md) without writing any API requests.
 
 ## Listing Presets
 

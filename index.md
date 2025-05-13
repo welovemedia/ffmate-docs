@@ -2,9 +2,9 @@
 layout: home
 
 hero:
-  name: "ffmate docs"
-  text: "Documentation for ffmate"
-  tagline: A wrapper around ffmpeg
+  name: "FFmate"
+  text: "FFmpeg Automation for the Modern Stack"
+  tagline: Turn messy transcoding into clean, reliable workflows
   image:
     src: /icon.webp
     alt: ffmate

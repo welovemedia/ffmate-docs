@@ -1,15 +1,18 @@
 ---
 title: "FFmate Webhooks: Real-Time Event Notifications"
-description: "Integrate external systems with FFmate using webhooks. Get instant notifications for task updates, batch processing, preset changes and more."
+description: "Integrate external systems with FFmate using webhooks. Get instant notifications for task updates, batch processing, preset changes and more"
 ---
 
 # Webhooks
 
-FFmate supports **webhooks**, allowing external systems to receive **real-time notifications** when specific events occur. By registering a webhook, you can automatically trigger actions in response to changes in FFmate, such as task creation, status updates, batch processing, or preset modifications.
+FFmate supports **webhooks**, allowing you to integrate **real-time event notifications** into your media processing workflows.  
+By registering a webhook, external systems can automatically receive `POST` requests from FFmate when specific events occur—such as task creation, task status updates, batch processing events, or changes to presets.
 
-## Setting Up a Webhook  
+This enables powerful automation, seamless third-party integration, and real-time monitoring of FFmpeg-based transcoding jobs—without the need to constantly poll the API.
 
-To configure a webhook, make a `POST` request to the API with the event you want to subscribe to and the URL where FFmate should send notifications.
+## Creating a Webhook  
+
+To create a webhook, send a `POST` request to the FFmate API specifying the event you want to subscribe to and the URL where FFmate should deliver the notification.  
 
 ```sh
 curl -X POST http://localhost:3000/api/v1/webhooks \
@@ -20,8 +23,11 @@ curl -X POST http://localhost:3000/api/v1/webhooks \
      }'
 ```
 
+After you create a webhook, FFmate responds with a JSON object containing the `id` of the newly created webhook. 
+
 ### Webhook Payload:
-When the specified event occurs, FFmate will send an HTTP `POST` request to the provided URL with relevant event data.
+
+When the event is triggered, FFmate sends a `POST` request to your specified URL, containing all relevant data about the event in the request body.
 
 ```json
 {
@@ -36,9 +42,9 @@ When the specified event occurs, FFmate will send an HTTP `POST` request to the 
 }
 ```
 
-## Available Webhook Events  
+## Available Webhook Events
 
-FFmate provides a variety of webhook events, grouped into different categories:
+FFmate supports a range of webhook events, organized into categories based on what they track.
 
 ### Task Events:
 
@@ -84,6 +90,20 @@ FFmate provides a variety of webhook events, grouped into different categories:
 |--------------------|-------------|
 | `webhook.created` | Triggered when a new webhook is registered. |
 | `webhook.deleted` | Triggered when a webhook is removed. |
+
+
+## Listing all Webhooks
+
+
+```sh
+curl -X GET 'http://localhost:3000/api/v1/webhooks?page=0&perPage=10' \
+     -H 'accept: application/json'
+```
+
+**Query Parameters:**
+
+- **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
+- **`perPage`** *[optional]* – Defines how many webhooks should be included in each page. Default: `100`.
 
 
 ## Deleting a Webhook  

@@ -1,6 +1,6 @@
 ---
 title: "Quick Start FFmate: Install, Run Server and Core Features"
-description: "Your essential guide to getting started with FFmate. Learn to download, install, run the server, submit your first task, set up watchfolders, webhooks, and update easily."
+description: "Your essential guide to getting started with FFmate. Learn to download, install, run the server, submit your first task, set up watchfolders, webhooks, and update easily"
 ---
 
 # 🚀 Getting Started

@@ -1,10 +1,15 @@
+---
+title: "FFmate Debugging Guide: CLI Flags, Environment Variables, API & Key Log Namespaces"
+description: "Troubleshoot FFmate with this debugging guide. Control log verbosity using namespaces, command-line flags, environment variables, or dynamically via the REST API"
+---
+
 # Debugging
 
-`FFmate` offers powerful, fine-grained debugging options that allow you to capture detailed debug information from specific internal components, making it easier to trace issues and understand what’s happening under the hood.
+FFmate offers powerful, fine-grained debugging options that allow you to capture detailed debug information from specific internal components, making it easier to trace issues and understand what’s happening under the hood.
 
-### Enabling Debug Mode
+## Enabling Debug Mode
 
-You can enable debug logging in two primary ways:
+You can enable debug logging in two ways:
 
 1.  **Using the Command-Line Flag:**
     *   The most common way is to use the global `-d` or `--debug` flag when running any `ffmate` command (especially `ffmate server`).
@@ -12,14 +17,14 @@ You can enable debug logging in two primary ways:
     *   **Example:** `ffmate server --debug="*"`
 
 2.  **Using OS Environment Variable:**
-    *   You can set the environment variable before running `FFmate`.
+    *   You can set the environment variable before running FFmate.
     *   **Syntax (Linux/macOS):** `DEBUGO="<namespaces>" ffmate server`
     *   **Syntax (Windows PowerShell):** `$env:DEBUGO="<namespaces>"; ffmate server`
     *   If both the flag and the environment variable are set, the command-line flag will take precedence.
 
-### Understanding Namespaces
+## Understanding Namespaces
 
-The core of `FFmate`'s debugging system is **namespaces**. When you enable debugging, you specify which namespaces you're interested in.
+The core of FFmate's debugging system is **namespaces**. When you enable debugging, you specify which namespaces you're interested in.
 
 *   **Wildcards:**
     *   `*`: The asterisk acts as a wildcard, matching any sequence of characters.
@@ -34,12 +39,12 @@ The core of `FFmate`'s debugging system is **namespaces**. When you enable debug
     *   You can specify multiple namespaces by separating them with commas.
     *   `--debug="queue,ffmpeg,watchfolder"`: Enables debug messages only from the `queue`, `ffmpeg`, and `watchfolder` components.
 
-### Debug Namespaces in FFmate
+## Debug Namespaces in FFmate
 
-Below are some of the key namespaces used for debugging. They help generate detailed log output from specific components within `FFmate`:
+Below are some of the key namespaces used for debugging. They help generate detailed log output from specific components within FFmate:
 
 *   **`*` (Global Wildcard):**
-    *   **What to expect:** Extremely verbose output covering every debug message from all parts of `ffmate`, including internal framework (`sev`) operations, Gin request handling, database interactions (if enabled at that level), queue processing, webhook firing, etc.
+    *   **What to expect:** Extremely verbose output covering every debug message from all parts of FFmate, including internal framework (`sev`) operations, Gin request handling, database interactions (if enabled at that level), queue processing, webhook firing, etc.
     *   **Use when:** You're unsure where a problem lies and need a broad overview, or when tracing a complex interaction across multiple components. Be prepared for a lot of output.
 
 *   **`gin`:**
@@ -51,7 +56,7 @@ Below are some of the key namespaces used for debugging. They help generate deta
     *   **Example Log:** `queue no queued tasks found` or `queue processing task (uuid: ...)` or `queue triggered preProcessing script (uuid: ...)`
 
 *   **`ffmpeg`:**
-    *   **What to expect:** Logs specifically from `ffmate`'s interaction with the `ffmpeg` binary. This primarily includes the real-time progress parsing from `ffmpeg`'s stderr. You'll see lines showing frame counts, FPS, bitrate, time, and speed. This namespace **does not** show the raw `ffmpeg` stderr itself (that's part of the main application log if an error occurs), but rather `ffmate`'s interpretation of it for progress.
+    *   **What to expect:** Logs specifically from FFmate's interaction with the `ffmpeg` binary. This primarily includes the real-time progress parsing from `ffmpeg`'s stderr. You'll see lines showing frame counts, FPS, bitrate, time, and speed. This namespace **does not** show the raw `ffmpeg` stderr itself (that's part of the main application log if an error occurs), but rather `ffmate`'s interpretation of it for progress.
     *   **Example Log:** `ffmpeg progress: 25.50 {Frame:123 FPS:29.97 Bitrate:1500k Time:4.10 Speed:1.5x} (uuid: ...)`
 
 *   **`watchfolder`:**
@@ -59,7 +64,7 @@ Below are some of the key namespaces used for debugging. They help generate deta
     *   **Example Log:** `watchfolder initialized new watchfolder watcher (uuid: ...)` or `watchfolder created new task for watchfolder (uuid: ...) file: ...`
 
 *   **`sev:<component>` (Internal Framework):**
-    *   The `sev` namespace is for `ffmate`'s internal framework. You might use these for deeper debugging if you suspect an issue within the core application logic.
+    *   The `sev` namespace is for FFfmate's internal framework. You might use these for deeper debugging if you suspect an issue within the core application logic.
     *   **`sev:webhook`**: Logs related to firing webhooks (e.g., "fired webhook for event 'task:created'").
     *   **`sev:metrics`**: Logs about Prometheus metrics registration.
     *   **`sev:controller`**: Logs related to controller registration.
@@ -74,9 +79,9 @@ Below are some of the key namespaces used for debugging. They help generate deta
     *   **What to expect:** Logs specifically detailing the registration of Prometheus metrics.
     *   **Example Log:** `prometheus:register registered prometheus gauge 'task_created'`
 
-### Setting debug from the API
+## Setting debug from the API
 
-`ffmate` provides API endpoints to change the debug namespaces *while the server is running*, without needing to restart it:
+FFmate provides API endpoints to change the debug namespaces *while the server is running*, without needing to restart it:
 
 *   **`PATCH /api/v1/debug/namespace/{namespaces}`**
     *   **Purpose:** Sets the active debug namespaces.
@@ -87,10 +92,7 @@ Below are some of the key namespaces used for debugging. They help generate deta
 
 This is extremely useful for enabling targeted debugging on a live system without disrupting its normal operation more than necessary.
 
-Sure! Here's the improved version formatted in clean Markdown:
-
-
-### Debug Message Format
+## Debug Message Format
 
 All debug messages follow a consistent structure:
 

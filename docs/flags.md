@@ -1,20 +1,20 @@
 ---
 title: "FFmate Command-Line Flags: Server, Update & Global Options"
-description: "Comprehensive guide to all FFmate command-line flags. Learn to configure FFmate's server settings (FFmpeg path, port, DB), manage updates, enable debug logs, and more."
+description: "Comprehensive guide to all FFmate command-line flags. Learn to configure FFmate's server settings (FFmpeg path, port, DB), manage updates, enable debug logs, and more"
 ---
 
 # Command-Line Flags and Options
 
-The `ffmate` binary offers several command-line flags to customize its behavior when starting the server or performing other actions. These flags allow you to configure paths, ports, operational parameters, and debugging options.
+The FFmate binary offers several command-line flags to customize its behavior when starting the server or performing other actions. These flags allow you to configure paths, ports, operational parameters, and debugging options.
 
 You can see a list of available commands and their flags by running `ffmate --help` or `ffmate <command> --help`.
 
 ## Global Flags
 
-These flags can usually be used with any `ffmate` command (like `server`, `update`, `reset`).
+These flags can usually be used with any FFmate command (like `server`, `update`, `reset`).
 
 *   **`-d, --debug <namespaces>`** or **`--debug="<namespaces>"`**
-    *   **Purpose:** Enables detailed debug logging for specific parts of the application. `ffmate` uses the `debugo` library for this.
+    *   **Purpose:** Enables detailed debug logging for specific parts of the application. FFmate uses the `debugo` library for this.
     *   **Value:** A comma-separated list of namespaces or wildcards.
         *   `"*"`: Enables all debug messages.
         *   `"gin"`: Enables debug messages specifically from the Gin web framework components.
@@ -26,7 +26,7 @@ These flags can usually be used with any `ffmate` command (like `server`, `updat
 
 ## Server Command Flags
 
-These flags are specific to the `FFmate server` command, which starts the main `FFmate` application (API, Web UI, queue processor, etc.).
+These flags are specific to the `FFmate server` command, which starts the main FFmate application (API, Web UI, queue processor, etc.).
 
 *   **`-f, --ffmpeg <path>`** or **`--ffmpeg="<path>"`**
     *   **Purpose:** Specifies the path to the `ffmpeg` executable.
@@ -35,26 +35,26 @@ These flags are specific to the `FFmate server` command, which starts the main `
     *   **Example:** `ffmate server --ffmpeg="/usr/local/bin/ffmpeg"`
 
 *   **`-p, --port <port_number>`** or **`--port="<port_number>"`**
-    *   **Purpose:** Sets the port number on which the `ffmate` server (API and Web UI) will listen.
+    *   **Purpose:** Sets the port number on which the FFmate server (API and Web UI) will listen.
     *   **Value:** A valid port number.
     *   **Default:** `3000`
     *   **Example:** `ffmate server --port="8080"`
 
 *   **`-t, --tray`**
-    *   **Purpose:** Enables the system tray icon (experimental). When enabled, `ffmate` will show an icon in your system tray with status information and basic controls.
+    *   **Purpose:** Enables the system tray icon (experimental). When enabled, FFmate will show an icon in your system tray with status information and basic controls.
     *   **Value:** Not applicable (flag is either present or absent).
     *   **Default:** `false` (tray icon is disabled).
     *   **Example:** `ffmate server --tray`
 
 *   **`-b, --database <path>`** or **`--database="<path>"`**
-    *   **Purpose:** Specifies the path to the SQLite database file where `ffmate` stores its data (tasks, presets, webhooks, etc.).
+    *   **Purpose:** Specifies the path to the SQLite database file where FFmate stores its data (tasks, presets, webhooks, etc.).
     *   **Value:** A file path.
         *   If prefixed with `~/` (e.g., `~/.ffmate/data.sqlite`), `~` will be expanded to your home directory.
     *   **Default:** `~/.ffmate/db.sqlite`
     *   **Example:** `ffmate server --database="/var/lib/ffmate/production.db"`
 
 *   **`-m, --max-concurrent-tasks <number>`** or **`--max-concurrent-tasks="<number>"`**
-    *   **Purpose:** Defines the maximum number of `ffmpeg` tasks that `ffmate` will run simultaneously.
+    *   **Purpose:** Defines the maximum number of `ffmpeg` tasks that FFmate will run simultaneously.
     *   **Value:** A positive integer.
     *   **Default:** `3`
     *   **Example:** `ffmate server --max-concurrent-tasks="5"` (allows up to 5 tasks to run at once)
@@ -73,7 +73,7 @@ These flags are specific to the `FFmate server` command, which starts the main `
 
 ## Update Command Flags
 
-These flags are specific to the `ffmate update` command, which checks for and applies updates to the `ffmate` binary itself.
+These flags are specific to the `ffmate update` command, which checks for and applies updates to the FFmate binary itself.
 
 *   **`--dry`**
     *   **Purpose:** Performs a "dry run" of the update check. It will report if an update is available but will not actually download or install it.
@@ -83,16 +83,13 @@ These flags are specific to the `ffmate update` command, which checks for and ap
 
 ## Reset Command Flags
 
-These flags are specific to the `ffmate reset` command, which is used to reset the status of any tasks that were marked as `RUNNING` to `DONE_CANCELED`. This can be useful if `FFmate` was shut down unexpectedly while tasks were in progress.
+These flags are specific to the `ffmate reset` command, which is used to reset the status of any tasks that were marked as `RUNNING` to `DONE_CANCELED`. This can be useful if FFmate was shut down unexpectedly while tasks were in progress.
 
 ## How Flags are Processed
 
-`ffmate` uses the Viper library for configuration management. This means that flag values can often be overridden by environment variables. Command-line flags generally have the highest precedence.
+FFmate uses the Viper library for configuration management. This means that flag values can often be overridden by environment variables. Command-line flags generally have the highest precedence.
 
 ## Example
 
-Starting the `ffmate` server with a custom port, a specific `ffmpeg` binary, and disabling telemetry:
+Starting the FFmate server with a custom port, a specific `ffmpeg` binary, and disabling telemetry:
 `ffmate server --port="3030" --ffmpeg="/opt/custom_ffmpeg/bin/ffmpeg" --send-telemetry=false --debug="queue,api"`
-
-Checking for updates without applying them:
-`ffmate update --dry`
