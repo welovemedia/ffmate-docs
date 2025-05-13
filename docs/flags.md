@@ -59,6 +59,12 @@ These flags are specific to the `FFmate server` command, which starts the main `
     *   **Default:** `3`
     *   **Example:** `ffmate server --max-concurrent-tasks="5"` (allows up to 5 tasks to run at once)
 
+*   **`-l, --loglevel <info|warn|error|debug|none>`** or **`--loglevel=<info|warn|error|debug|none>`**
+    *   **Purpose:** Set the log level or disables the logging completely.
+    *   **Value:** `info`, `warn`, `error`, `debug` or `none` to disable logging.
+    *   **Default:** `info` (log level is info).
+    *   **Example:** `ffmate server --loglevel=error`
+
 *   **`-s, --send-telemetry <true|false>`** or **`--send-telemetry=<true|false>`**
     *   **Purpose:** Enables or disables the sending of anonymous usage telemetry data to `telemetry.ffmate.io`.
     *   **Value:** `true` or `false`.
