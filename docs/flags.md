@@ -87,7 +87,7 @@ These flags are specific to the `ffmate reset` command, which is used to reset t
 
 ## How Flags are Processed
 
-FFmate uses the Viper library for configuration management. This means that flag values can often be overridden by environment variables. Command-line flags generally have the highest precedence.
+FFmate uses the Cobra library for configuration management. This means that flag values can often be overridden by environment variables. Command-line flags generally have the highest precedence.
 
 ## Example
 
