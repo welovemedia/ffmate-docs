@@ -31,7 +31,7 @@ Want to see it in action? Skip to the [Getting started](/docs/getting-started.md
 ### 📽️ Automated Media Transcoding  
 
 Easily automate common media processing tasks like video conversion, audio extraction, and thumbnail generation.  
-FFmate allows you to submit multiple FFmpeg jobs at once and handles them efficiently through a built-in queueing system.  
+FFmate allows you to submit multiple `FFmpeg` jobs at once and handles them efficiently through a built-in queueing system.  
 Perfect for post-production pipelines, cloud workflows, or any scenario where repetitive transcoding needs to be streamlined.
 
 
@@ -47,7 +47,7 @@ No polling required—just plug in your endpoint and go.
 
 ### ☁️ Scalable FFmpeg Job Management  
 
-Run FFmate as a centralized, API-first backend for FFmpeg job orchestration.  
+Run FFmate as a centralized, API-first backend for `FFmpeg` job orchestration.  
 You can scale the number of **simultaneous jobs** based on available resources—without needing to manage multiple agents.  
 With full control over job priority, queuing, and task lifecycle, FFmate is ideal for high-volume transcoding environments where reliability and automation matter.
 
@@ -55,7 +55,7 @@ Use it to power:
 
 - Cloud-based encoding workflows.  
 - Media conversion microservices.
-- Internal development tools that need FFmpeg processing on demand.
+- Internal development tools that need `FFmpeg` processing on demand.
 
 
 ### 🗂️ Drop Folder Ingest (Watchfolder)  

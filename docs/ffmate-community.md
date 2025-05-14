@@ -15,6 +15,6 @@ Get help, share ideas, and stay up to date with the latest features and updates 
 🚀 **Feature Requests & Bug Reports**
 
 Have an idea for a new feature? Found a bug?  
-Head over to our GitHub repository to open an issue or submit a pull request 👉 [FFmate on GitHub](https://github.com/welovemedia/ffmate/pulls)
+Head over to our GitHub repository to open an issue or submit a pull request 👉 [FFmate on GitHub](https://github.com/welovemedia/ffmate)
 
 Your input helps shape the future of FFmate—thanks for being part of it!

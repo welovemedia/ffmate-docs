@@ -78,11 +78,11 @@ These are the properties you can set when creating a task in FFmate:
 - If your command **directly specifies input and output paths**, you do **not** need to provide these properties separately.
 :::
 
-- **`priority`** *[mandatory]* – Determines the execution order:
-  - `1` → Low priority
-  - `2` → Normal priority (default)
-  - `3` → High priority
-  - `4` → Critical priority (executed first)
+- **`priority`** *[mandatory]* – Sets the execution priority for the task.  
+  FFmate uses this value to determine processing order—**higher numbers mean higher priority**.  
+  For example, a task with priority `100` will be processed before one with priority `10`.  
+  Tasks with the same priority are handled in the order they were created (FIFO).
+
 
 -   **`preset`** *[optional]* - The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task.
 

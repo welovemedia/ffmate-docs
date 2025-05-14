@@ -41,7 +41,6 @@ curl -X POST http://localhost:3000/api/v1/watchfolders \
        "path": "/volumes/media/camera_cards",
        "filter": {
          "extensions": {
-           "include": ["mp4", "mov"],
            "exclude": ["tmp", "log"]
          }
        }
@@ -63,6 +62,13 @@ After you create a preset, FFmate responds with a JSON object that includes the 
 - **`filter`** – Rules for file selection:  
   - **`include`** – Only process files with these extensions (e.g., `mp4`, `mov`).  
   - **`exclude`** – Ignore files with these extensions (e.g., `tmp`, `log`).  
+
+::: tip How filters work  
+FFmate always checks the `exclude` list **first**.  
+If a file’s extension matches anything in `exclude`, the file will be skipped—**even if it also matches an extension in `include`**.
+
+To keep things simple and predictable, it's best to use **either** `include` or `exclude`, not both at the same time.
+:::
 
 ## How File Detection Works
 

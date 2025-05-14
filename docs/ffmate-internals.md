@@ -121,8 +121,9 @@ The [Watchfolder](/docs/watchfolder.md) feature allows FFmate to monitor directo
     *   FFmate starts monitoring configured directories upon startup or configuration changes.
     *   Directories are scanned periodically based on the configured `interval`.
     *   New files are detected.
-    *   Files are checked for stability (size consistency) based on `growthChecks` to ensure they are fully written.
+    *   Files must remain the same size for the number of scans defined by `growthChecks` before they are considered ready for processing.
     *   Configured `filters` are applied to the relevant files.
+        - If a file matches an extension in `exclude`, it will be skipped—even if it also matches `include`.
     *   A new task is automatically created for each stable, filtered file.
     *   The `preset` is applied to the new task.
     *   FFmate keeps track of processed files to avoid creating duplicate tasks.

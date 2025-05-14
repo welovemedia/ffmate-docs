@@ -16,5 +16,19 @@ Once your FFmate server is running, you can access the Swagger UI in your web br
 *   Replace `<your-ffmate-host>` with the hostname or IP address where FFmate is running (e.g., `localhost` if running locally).
 *   Replace `<port>` with the port number FFmate is listening on (default is `3000`).
 
-**Default URL (if running locally on the default port):**
-`http://localhost:3000/swagger/index.html`
+::: tip Default URL
+
+If you're running FFmate locally on the default port, just copy the URL below into your browser's address bar to access the Swagger (OpenAPI) interface:
+
+```sh
+http://localhost:3000/swagger/index.html
+```
+:::
+
+## Postman Collection
+
+Prefer testing APIs in Postman?
+
+Click the button below to open the official FFmate Postman collection and start exploring the API with ready-made requests—no setup required.
+
+[<img src="https://run.pstmn.io/button.svg" alt="Run in Postman" style="width: 128px; height: 32px;">](https://app.getpostman.com/run-collection/18909322-e25d195e-8c32-4de2-a3f2-1d4be3fec01e?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18909322-e25d195e-8c32-4de2-a3f2-1d4be3fec01e%26entityType%3Dcollection%26workspaceId%3D87ae76eb-ae7f-45cb-96f0-f184e9338658)
