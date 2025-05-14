@@ -1,4 +1,10 @@
-import DefaultTheme from 'vitepress/theme'
-import './custom.css'
+import DefaultTheme from "vitepress/theme"
+import ZoomImg from "./components/zoomImage.vue"
+import "./custom.css"
 
-export default DefaultTheme
+export default {
+  ...DefaultTheme,
+  enhanceApp({ app }) {
+    app.component("ZoomImg", ZoomImg)
+  },
+}

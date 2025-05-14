@@ -1,4 +1,3 @@
-import { link } from "fs"
 import llmstxt from "vitepress-plugin-llms"
 import { withMermaid } from "vitepress-plugin-mermaid"
 
@@ -7,7 +6,8 @@ export default withMermaid({
   ignoreDeadLinks: true,
 
   title: "FFmate documentation",
-  description: "Documentation for FFmate.io - FFmpeg Automation for the Modern Stack",
+  description:
+    "Documentation for FFmate.io - FFmpeg Automation for the Modern Stack",
 
   lastUpdated: true,
   cleanUrls: true,
@@ -88,7 +88,7 @@ export default withMermaid({
       {
         text: "FFmate Communnity",
         items: [
-          { text: "Community & Support", link: "/docs/ffmate-community.md" }
+          { text: "Community & Support", link: "/docs/ffmate-community.md" },
         ],
       },
     ],
@@ -107,10 +107,10 @@ export default withMermaid({
     },
 
     footer: {
-      message: 'Released under the <a href="https://www.mongodb.com/licensing/server-side-public-license" target="_blank" rel="noopener">SSPL License</a>',
+      message:
+        'Released under the <a href="https://www.mongodb.com/licensing/server-side-public-license" target="_blank" rel="noopener">SSPL License</a>',
       copyright: "Copyright © 2025-present we love media",
-    }
-    ,
+    },
   },
 
   vite: {
