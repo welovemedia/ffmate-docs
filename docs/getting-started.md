@@ -44,7 +44,7 @@ ffmate server
 ffmate server --tray
 ```
 
-By default, FFmate runs on **[http://localhost:3000](http://localhost:3000)**. If port 3000 is already in use or you prefer a different one, you can easily change it. Learn how to change the port here 👉 [Learn more](#port-configuration).
+By default, FFmate runs on **[http://localhost:3000](http://localhost:3000)**. If port 3000 is already in use or you prefer a different one, you can easily change it. Learn how to change the port here 👉 [Learn more](/docs/flags/#server-command-flags).
 
 
 ### Running FFmate with Docker
