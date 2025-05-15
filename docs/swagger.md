@@ -31,4 +31,4 @@ Prefer testing APIs in Postman?
 
 Click the button below to open the official FFmate Postman collection and start exploring the API with ready-made requests—no setup required.
 
-[<img src="https://run.pstmn.io/button.svg" alt="Run in Postman" style="width: 128px; height: 32px;">](https://www.postman.com/welovemedia/ffmate/overview)
+[<img src="https://run.pstmn.io/button.svg" alt="Run in Postman" style="width: 128px; height: 32px;">](https://www.postman.com/welovemedia/ffmate)
