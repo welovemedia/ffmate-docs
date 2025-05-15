@@ -9,15 +9,30 @@ Setting up FFmate is quick and straightforward. Follow these steps to get up and
 
 ## Download FFmate
 
-Get the latest release of FFmate from [GitHub](https://github.com/welovemedia/ffmate/releases)
+Get FFmate for your platform and start processing in minutes:
+
+###  macOS  
+- [macOS – Apple Silicon (arm64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_arm64.tar.gz)  
+- [macOS – Intel (x86_64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_x86_64.tar.gz)
+
+### 🐧 Linux  
+- [Linux – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Linux_arm64.tar.gz)  
+- [Linux – x86_64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Linux_x86_64.tar.gz)
+
+### 🐳 Docker  
+- [Run FFmate via Docker](https://github.com/welovemedia/ffmate/pkgs/container/ffmate)
 
 > [!IMPORTANT]
-> FFmate is currently available for `macOS` and `Linux`. Support for Windows is coming soon.
-
+> FFmate is currently available for **macOS** and **Linux**.
+> **Windows support is coming soon**—stay tuned!
 
 ## Running FFmate
 
-After downloading FFmate, open your terminal, navigate to the folder where you saved it, and start the server by running the following command:
+You can run FFmate either natively on macOS/Linux or inside a Docker container—whichever best fits your environment
+
+### macOS & Linux
+
+After downloading FFmate, open your terminal, navigate to the folder where you saved it, and start the server with:
 
 ```sh
 ffmate server
@@ -30,6 +45,79 @@ ffmate server --tray
 ```
 
 By default, FFmate runs on **[http://localhost:3000](http://localhost:3000)**. If port 3000 is already in use or you prefer a different one, you can easily change it. Learn how to change the port here 👉 [Learn more](#port-configuration).
+
+
+### Running FFmate with Docker
+
+FFmate is also available as a Docker image hosted on GitHub Container Registry.
+
+You can pull and run FFmate using Docker with a single command:
+
+```sh
+docker run -it --rm \
+  -p 3000:3000 \
+  ghcr.io/welovemedia/ffmate:latest
+```
+
+This will start FFmate and expose the web interface at http://localhost:3000
+
+> [!NOTE]
+> By default, data won't persist after the container stops.
+> To preserve your database, map a local folder to `**/app/db**`.
+> Example: `**-v $(pwd)/ffmate-data:/app/db**`.
+
+### Optional Environment Variables
+
+You can customize FFmate’s behavior using the following environment variables:
+
+| Variable              | Description                                                                 |
+|-----------------------|-----------------------------------------------------------------------------|
+| `PORT`                | The port FFmate will run on (default: `3000`)                              |
+| `DB`                  | Path to the internal SQLite database (default: `/app/db/sqlite.db`)        |
+| `LOGLEVEL`            | Logging level (`info`, `warn`, `error`, `debug`)                           |
+| `MAX_CONCURRENT_TASKS`| Maximum number of FFmpeg tasks to run at the same time (default: `3`)      |
+| `DEBUGO`              | Enables verbose debug output (e.g., `ffmate:*`) |
+
+### Example:
+
+Run FFmate with all environment variables set in a single command:
+
+```sh
+docker run -it --rm \
+  -p 3000:3000 \
+  -v $(pwd)/ffmate-data:/app/db \
+  -e PORT=3000 \
+  -e LOGLEVEL=debug \
+  -e MAX_CONCURRENT_TASKS=5 \
+  ghcr.io/welovemedia/ffmate:latest
+```
+
+### Docker Compose
+
+Prefer using Docker Compose? Here's a ready-to-use docker-compose.yml to get FFmate up and running quickly:
+
+```yaml
+version: "3.8"
+
+services:
+  ffmate:
+    image: ghcr.io/welovemedia/ffmate:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./ffmate-data:/app/db
+    environment:
+      - PORT=3000
+      - DB=/app/db/sqlite.db
+      - LOGLEVEL=info
+      - MAX_CONCURRENT_TASKS=3
+```
+
+Start FFmate using your `docker-compose.yml` file:
+
+```sh
+docker compose up -d
+```
 
 ## Submitting your first task
 

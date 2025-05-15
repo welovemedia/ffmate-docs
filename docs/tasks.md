@@ -71,7 +71,7 @@ These are the properties you can set when creating a task in FFmate:
 
 - **`outputFile`** *[optional]* – The path where the transcoded file should be saved.
 
-::: 💡 tip Handling Input and Output Files
+::: tip Handling Input and Output Files
 
 - The **`inputFile`** and **`outputFile`** properties are **optional** and should only be used if your command includes the placeholders `${INPUT_FILE}` and `${OUTPUT_FILE}`.
 - FFmate **automatically replaces** these placeholders with the actual file paths during execution.
@@ -226,18 +226,16 @@ curl -X 'DELETE' \
 FFmate allows you to submit multiple transcoding tasks in a single request, referred to as a `batch`. This is ideal when processing a set of files—whether they use the same settings or different ones—as it simplifies submission and keeps related tasks grouped together.
 
 Each batch is automatically assigned a unique `batch ID`, making it easy to monitor, manage, and reference the entire group of tasks as a single unit. While a batch groups multiple task submissions together, each task within it remains fully independent.
-
-- **Individual Tasks:**  
+ 
   Every task in the batch is submitted as a standalone task in FFmate. This means:
+
   - Each task follows its own lifecycle (`Queued`, `Pre-Processing`, `Running`, `Post-Processing`, `Done`).
   - Each is executed independently by `ffmpeg`, based on its own command or preset.
   - Each task maintains its own progress, status, and error reporting.
-
-- **No Inter-Task Dependency (by default):**  
-  FFmate processes batch tasks concurrently (up to the `max-concurrent-tasks` limit) or sequentially, based on priority and queue order.  
+  - The task's success or failure does not affect others in the same batch.
   
 > [!NOTE]
-> One task's success or failure does not affect others in the same batch.
+> FFmate processes batch tasks concurrently (up to the `max-concurrent-tasks` limit) or sequentially, based on priority and queue order. 
   
 ### How to Submit a Batch of Tasks
 
@@ -276,7 +274,7 @@ curl -X POST http://localhost:3000/api/v1/tasks/batch \
 
 **Response:**
 
-Upon successful submission, FFmate will respond with a JSON array containing the full `Task` objects for each task created in the batch. Each of these task objects will include the same `batch` ID.
+FFmate will respond with a JSON array containing the full `Task` objects for each task created in the batch. Each of these task objects will include the same `batch` ID.
 
 ```json{4,11,18}
 [
@@ -320,7 +318,7 @@ curl -X 'GET' \
 
 ::: tip 💡 Webhook Notifications for Batches
 
-**Webhooks Aren’t Just for Tasks — Use Them to Track Batches Too**
+**Webhooks Aren’t Just for single Tasks — Use Them to Track Batches Too**
 
 - **`batch.created`** – Triggered once when a batch of tasks is successfully submitted. The payload includes an array of the created task objects.
 
@@ -336,4 +334,4 @@ curl -X 'GET' \
 
 - **Multi-Renditions** – Generate multiple versions of the same source file (e.g., different bitrates or resolutions). Each rendition is submitted as an individual task within the batch.
 
-- **Sequential Asset Processing** – Submit tasks that represent different steps in a media pipeline (e.g., clean audio, transcode video, apply watermark). While FFmate handles each task independently based on queue rules, you can still track them together as part of a single batch. While `ffmate` processes them based on queue rules, you can monitor them as a batch.
+- **Sequential Asset Processing** – Submit tasks that represent different steps in a media pipeline (e.g., clean audio, transcode video, apply watermark). While FFmate handles each task independently based on queue rules, you can still track them together as part of a single batch. While FFmate processes them based on queue rules, you can monitor them as a batch.

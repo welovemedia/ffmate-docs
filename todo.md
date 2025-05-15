@@ -1,7 +1,6 @@
 add tray icon
 rework img alt tag
 add description to mermaid diagrams
-add option to expand images
 improve seo/geo
 finish
     features:
@@ -14,3 +13,4 @@ finish
 ---
 Add new logo
 Add background for logo
+Add public presets
