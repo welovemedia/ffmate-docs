@@ -11,13 +11,15 @@ Every task follows a structured **lifecycle**, progressing from submission to ex
 
 Before diving into task execution, let's first go through the **lifecycle** of tasks and their corresponding **statuses** in FFmate.
 
-| Status       | Description                                         |
-|-------------|-----------------------------------------------------|
-| `queued`     | The task is waiting to be processed.               |
-| `processing` | The task is currently being executed by FFmpeg.   |
-| `completed`  | The task has finished successfully.               |
-| `failed`     | The task encountered an error during execution.   |
-| `canceled`   | The task was manually canceled before completion. |
+| Status            | Description                                       |
+|-------------------|---------------------------------------------------|
+| `QUEUED`          | The task is waiting in the processing queue.      |
+| `PRE_PROCESSING`  | The task's pre-processing script is running.      |
+| `RUNNING`         | The main FFmpeg command is currently executing.   |
+| `POST_PROCESSING` | The task's post-processing script is running.     |
+| `DONE_SUCCESSFUL` | The task completed successfully.                  |
+| `DONE_ERROR`      | The task encountered an error and failed.         |
+| `DONE_CANCELED`   | The task was manually canceled before completion. |
 
 ### Task Flow:
 The diagram below shows how a task progresses through its lifecycle in FFmate
@@ -58,6 +60,8 @@ curl -X POST http://localhost:3000/api/v1/tasks \
        "priority": 2
      }'
 ```
+
+FFmate responds with a JSON object that contains the newly created task including its `ID`. An `task.created` event is also fired via [webhooks](/docs/webhooks#task-events)
 
 ### Task Properties
 
@@ -117,9 +121,6 @@ This is a powerful feature for:
 
 After submitting a task, FFmate will respond with a JSON object containing the `taskId`. This `taskId` can be used to monitor the task’s progress in the next section.
 
-Here’s the improved version in **Markdown**:
-
-````md
 ## Monitoring a Task
 
 After submitting a task, you can check its current status by sending a `GET` request to the FFmate API:
@@ -128,9 +129,11 @@ After submitting a task, you can check its current status by sending a `GET` req
 curl -X GET \
   http://localhost:3000/api/v1/tasks/{taskId} \
   -H "Accept: application/json"
-````
+```
 
 Replace `{taskId}` with the actual task UUID returned in the response when the task was created.
+
+FFmate responds with a JSON object containing the full details of the task.
 
 💡 Tip: You can also check the status of each task directly in the FFmate Web UI [FFmate Web UI](/docs/web-ui.md)
 
@@ -145,6 +148,7 @@ curl -X 'GET' \
   'http://localhost:3000/api/v1/tasks?page=0&perPage=100' \
   -H 'accept: application/json'
 ```
+FFmate returns a JSON array containing all configured tasks. The `X-Total` response header provides the total number of tasks.
 
 **Query Parameters:**
 
@@ -158,7 +162,7 @@ curl -X 'GET' \
 
 FFmate lets you to cancel a task that is currently **queued** or **processing**. Once canceled, the task will not be executed or will be stopped if already in progress.
 
-To cancel a task, make a `PATCH` request:
+To cancel a task, send a `PATCH` request to the FFmate API by including the task's `taskID` in the path:
 
 ```sh
 curl -X 'PATCH' \
@@ -166,9 +170,7 @@ curl -X 'PATCH' \
   -H 'accept: application/json'
 ```
 
-**Query Parameters:**
-
-- **`{taskId}`** *[mandatory]* – Specifies unique ID of the task you want to cancel.
+FFmate responds with a JSON object containing the updated details of the task. The task's status will be changed to `DONE_CANCELED`, and the progress will be set to 100. An `task.canceled` event is also fired via [webhooks](/docs/webhooks#task-events)
 
 > [!NOTE]
 > If the task is already processing, FFmate will attempt to **stop** it, but cancellation may not always be immediate.
@@ -179,7 +181,7 @@ curl -X 'PATCH' \
 
 If a task has failed or been canceled, FFmate allows you to restart it without needing to resubmit the job manually.
 
-To restart a task, send a `PATCH` request:
+To restart a task, send a `PATCH` request to the FFmate API by including the task's `ID` in the path:
 
 ```sh
 curl -X 'PATCH' \
@@ -187,9 +189,7 @@ curl -X 'PATCH' \
   -H 'accept: application/json'
 ```
 
-**Query Parameters:**
-
-- **`{taskId}`** *[mandatory]* – The unique identifier of the task to restart.
+FFmate responds with a JSON object containing the updated details of the task. The task's `status` will be reset to `QUEUED`, `progress` to `0`, `error` cleared, and `startedAt`/`finishedAt` timestamps reset. The task will then be re-added to the processing queue according to its priority.
 
 > [!Note]
 > - Restarting a task will **re-run the exact same command** using the original input and output paths.  
@@ -203,16 +203,14 @@ Once restarted, the task will move back into the **queued** state and follow the
 
 Once a task is completed, canceled, or no longer needed, you can **permanently remove** it from FFmate.
 
-To delete a task, make a `DELETE` request:
+To delete a task, send a `DELETE` request to the FFmate API by including the task's `ID` in the path:
 
 ```sh
 curl -X 'DELETE' \
   'http://localhost:3000/api/v1/tasks/{taskId}' \
   -H 'accept: application/json'
 ```
-
-**Query Parameters:**
-- **`{taskId}`** *(mandatory)* – The unique ID of the task to be deleted.
+FFmate responds with a `204` No Content status. The task will be removed from the system. An `task.deleted` event is also fired via [webhooks](/docs/webhooks#task-events)
 
 ::: warning Important
 - Deleting a task **removes the database entry** from FFmate but **does not** delete the input or output files.  
@@ -272,9 +270,7 @@ curl -X POST http://localhost:3000/api/v1/tasks/batch \
 
 ```
 
-**Response:**
-
-FFmate will respond with a JSON array containing the full `Task` objects for each task created in the batch. Each of these task objects will include the same `batch` ID.
+FFmate will respond with a JSON array containing the full `Task` objects for each task created in the batch. Each of these task objects will include the same `batch` ID. An `batch.created` event is also fired via [webhooks](/docs/webhooks#batch-events)
 
 ```json{4,11,18}
 [
@@ -308,13 +304,20 @@ While FFmate treats each task in a batch individually for processing, the `batch
 
 **Listing Tasks by Batch ID**
 
-You can get all tasks belonging to a specific batch using the following API endpoint:
+You can retrieve all tasks that belong to a specific batch by sending a `GET` request to the FFmate API, including the batch's `uuid` in the path:
 
 ```sh
 curl -X 'GET' \
-  'http://localhost:3000/api/v1/tasks/batch/{batch_uuid}' \
+  'http://localhost:3000/api/v1/tasks/batch/{batch_uuid}?page=0&perPage=10' \
   -H 'accept: application/json'
 ```
+
+FFmate returns a JSON array of task objects. The `X-Total` response header provides the total number of tasks in the batch.
+
+**Query Parameters:**
+
+- **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
+- **`perPage`** *[optional]* – Defines how many tasks should be included in each page. Default: `50`.
 
 ::: tip 💡 Webhook Notifications for Batches
 

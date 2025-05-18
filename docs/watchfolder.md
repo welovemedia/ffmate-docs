@@ -47,7 +47,7 @@ curl -X POST http://localhost:3000/api/v1/watchfolders \
      }'
 ```
 
-After you create a preset, FFmate responds with a JSON object that includes the `id` of the newly created watchfolder.
+After you create a preset, FFmate responds with a JSON object that includes the `ID` of the newly created watchfolder.An `watchfolder.created` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
 
 💡 Tip: Creating a new preset? You can define and save presets directly in the [FFmate Web UI](/docs/web-ui.md) without writing any API requests
 
@@ -81,24 +81,15 @@ FFmate ensures that only **fully copied** files are processed by using a **growt
 
 This prevents **incomplete** files from being prematurely processed.  
 
-
-## Getting a Watchfolder
-
-Send a `GET` request to the FFmate API to retrieve the details of a specific watchfolder by its `ID`.
-
-```sh
-curl -X GET http://localhost:3000/api/v1/watchfolders/{watchfolderId}
-```
-
-💡 Tip: Want a quick way to check the watchfolder details? You can view watchfolder configurations directly in the [FFmate Web UI](/docs/web-ui.md) without using the API.
-
-## Listing All Watchfolders  
+## Listing Watchfolders  
 
 Send a `GET` request to the FFmate API to list all configured watchfolders.
 
 ```sh
 curl -X GET 'http://localhost:3000/api/v1/watchfolders?page=0&perPage=10'
 ```
+
+FFmate rreturns a JSON array containing all configured watchfolders. The `X-Total` response headers provides the total number of presets available.
 
 **Query Parameters:**
 
@@ -107,30 +98,53 @@ curl -X GET 'http://localhost:3000/api/v1/watchfolders?page=0&perPage=10'
 
 💡 Tip: Need an overview of all watchfolders? You can browse and manage them easily in the [FFmate Web UI](/docs/web-ui.md).
 
-## Updating a Watchfolder  
+## Getting a Single Watchfolder
 
-Send a `PATCH` request to the FFmate API to update a watchfolder’s settings.
+To retrieve the details of a specific watchfolder, send a `GET` request to the FFmate API, including the watchfolder's `ID` in the path.
 
 ```sh
-curl -X PATCH http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
+curl -X GET http://localhost:3000/api/v1/watchfolders/{watchfolderId}
+```
+
+FFmate responds with a JSON object containing the full details of the specified watchfolder.
+
+💡 Tip: Want a quick way to check the watchfolder details? You can view watchfolder configurations directly in the [FFmate Web UI](/docs/web-ui.md) without using the API.
+
+## Updating a Watchfolder
+
+You can update an existing watchfolder's configuration by sending a `PUT` request to the FFmate API, including the watchfolder's `ID` in the path. The request body should contain the complete, updated definition of the watchfolder. You can find a list of all available properties in the [Watchfolder Properties](#watchfolder-properties) section above.
+
+```sh
+curl -X PUT http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
      -H "Content-Type: application/json" \
      -d '{
+       "name": "Camera Card Watch",
+       "description": "Processes high-res camera footage",
        "interval": 15,
+       "growthChecks": 5,
+       "preset": "uuid-of-updated-preset",
+       "path": "/volumes/media/camera_cards_archive",
        "filter": {
-         "include": ["mxf", "avi"]
+         "extensions": {
+           "include": ["mov", "mp4", "mxf"]
+         }
        }
      }'
 ```
+
+FFmate responds with the full JSON object representing the updated watchfolder. The watchfolder will restart with the new configuration shortly after the update. An `watchfolder.updated` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
 
 💡 Tip: Making changes to a watchfolder? You can update settings like filters and intervals directly in the [FFmate Web UI](/docs/web-ui.md).
 
 ## Deleting a Watchfolder 
 
-Send a `DELETE` request to the FFmate API to remove a watchfolder by its `ID`.
+Send a `DELETE` request to the FFmate API to remove a watchfolder by including the watchfolder's `ID` in the path.
 
 ```sh
 curl -X DELETE http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
      -H "accept: application/json"
 ```
+
+ FFmate responds with a 204 No Content status. The watchfolder will be removed from the system, and any monitoring for that folder will stop. An `watchfolder.deleted` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
 
 💡 Tip: No need to send a delete request manually—you can remove watchfolders instantly from the [FFmate Web UI](/docs/web-ui.md).

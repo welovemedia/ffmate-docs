@@ -28,9 +28,32 @@ curl -X POST http://localhost:3000/api/v1/presets \
      }'
 ```
 
-After you create a preset, FFmate responds with a JSON object that includes the `uuid` of the newly created preset.
+FFmate responds with a JSON object that contains the newly created preset including its `ID`. An `preset.created` event is also fired via [webhooks](/docs/webhooks#preset-events)
 
 💡 Tip: Prefer a visual approach? You can create new presets directly in the [FFmate Web UI](/docs/web-ui.md) without writing any API requests.
+
+## Updating a Preset
+
+You can update an existing preset by sending a `PUT` request to the FFmate API, including the preset's `ID` in the path. The request body should contain the updated properties for the preset. You can find a list of all available properties in the [Presets properties](#presets-properties) section below.
+
+```sh
+curl -X PUT http://localhost:3000/api/v1/presets/{presetId} \
+     -H "Content-Type: application/json" \
+     -d '{
+       "name": "MP4 High Quality (Updated)",
+       "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset slow -crf 18 -c:a aac -b:a 192k ${OUTPUT_FILE}",
+       "description": "Converts video to MP4 with H.264 video and AAC audio, higher quality setting.",
+       "outputFile": "${INPUT_FILE_BASENAME}_highquality.mp4",
+       "priority": 5,
+       "postProcessing": {
+         "scriptPath": "/usr/local/bin/notify_completion.sh --file ${OUTPUT_FILE} --status success"
+       }
+     }'
+```
+
+Fmate returns the complete JSON object of the updated preset. An `preset.updated` event is also fired via [webhooks](/docs/webhooks#preset-events).
+
+💡 Tip: Need to tweak an existing preset? You can update it directly in the [FFmate Web UI](/docs/web-ui.md).
 
 ## Presets properties
 
@@ -90,6 +113,8 @@ curl -X GET 'http://localhost:3000/api/v1/presets?page=0&perPage=10' \
      -H 'accept: application/json'
 ```
 
+FFmate returns a JSON array containing all configured presets. The `X-Total` response header provides the total number of presets available.
+
 **Query Parameters:**
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
@@ -97,20 +122,35 @@ curl -X GET 'http://localhost:3000/api/v1/presets?page=0&perPage=10' \
 
 💡 Tip: Want to browse existing presets? The [FFmate Web UI](/docs/web-ui.md) lets you view and search through all available presets with ease.
 
+## Getting a Single Preset
+
+To retrieve the details of a specific preset, send a `GET` request to the FFmate API, including the preset's `ID` in the path.
+
+```sh
+curl -X GET 'http://localhost:3000/api/v1/presets/a1b2c3d4-e5f6-7890-1234-567890abcdef' \
+     -H 'accept: application/json'
+```
+
+FFmate responds with a JSON object containing the full details of the specified preset.
+
+💡 Tip: Want a quick way to check the preset details? You can view preset configurations directly in the [FFmate Web UI](/docs/web-ui.md) without using the API.
+
 ## Deleting a Preset
 
 To delete an existing preset, send a `DELETE` request to the FFmate API, replacing `{presetId}` with the UUID of the preset you want to remove.
 
 ```sh
-curl -X DELETE 'http://localhost:3000/api/v1/presets/a1b2c3d4-e5f6-7890-1234-567890abcdef' \
+curl -X DELETE 'http://localhost:3000/api/v1/presets/{presetId}' \
      -H 'accept: application/json'
 ```
 
+ FFmate responds with a `204` No Content status. The preset will be removed from the system. An `preset.deleted` event is also fired via [webhooks](/docs/webhooks#preset-events)
+ 
 💡 Tip: Presets can be safely deleted from the [FFmate Web UI](/docs/web-ui.md), with helpful context to avoid accidental removals.
 
 ### How to Use Presets When Creating Tasks
 
-When you create a new task, you can simply reference the `uuid` of an existing preset.
+When you create a new task, you can simply reference the `ID` of an existing preset.
 
 **Example: Creating a Task using a Preset via API**
 
@@ -120,7 +160,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
   -d '{
     "name": "Archive Raw Footage",
     "inputFile": "/path/to/raw_footage_01.mxf",
-    "preset": "uuid-of-ProRes-HQ-for-Archive-preset",
+    "preset": "id-of-ProRes-HQ-for-Archive-preset",
     "metadata": {
       "project-id": "project_alpha_123",
       "shot_number": "005"
