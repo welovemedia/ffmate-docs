@@ -28,9 +28,9 @@ curl -X POST http://localhost:3000/api/v1/presets \
      }'
 ```
 
-FFmate responds with a JSON object that contains the newly created preset including its `ID`. An `preset.created` event is also fired via [webhooks](/docs/webhooks#preset-events)
+FFmate returns a JSON object that contains the newly created preset including its `ID`. An `preset.created` event is also fired via [webhooks](/docs/webhooks#preset-events)
 
-💡 Tip: Prefer a visual approach? You can create new presets directly in the [FFmate Web UI](/docs/web-ui.md) without writing any API requests.
+💡 Tip: Prefer a visual approach? You can create new presets directly in the [FFmate Web UI](/docs/web-ui.md) no API calls needed.
 
 ## Updating a Preset
 
@@ -131,13 +131,13 @@ curl -X GET 'http://localhost:3000/api/v1/presets/a1b2c3d4-e5f6-7890-1234-567890
      -H 'accept: application/json'
 ```
 
-FFmate responds with a JSON object containing the full details of the specified preset.
+FFmate returns a JSON object with the full details of the specified preset.
 
 💡 Tip: Want a quick way to check the preset details? You can view preset configurations directly in the [FFmate Web UI](/docs/web-ui.md) without using the API.
 
 ## Deleting a Preset
 
-To delete an existing preset, send a `DELETE` request to the FFmate API, replacing `{presetId}` with the UUID of the preset you want to remove.
+To delete an existing preset, send a `DELETE` request to the FFmate API, replacing `{presetId}` with the `ID` of the preset you want to remove.
 
 ```sh
 curl -X DELETE 'http://localhost:3000/api/v1/presets/{presetId}' \

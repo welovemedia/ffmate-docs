@@ -1,3 +1,7 @@
+---
+sitemap: false
+---
+
 add tray icon
 rework img alt tag
 add description to mermaid diagrams

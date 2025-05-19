@@ -7,15 +7,30 @@ description: "Your essential guide to getting started with FFmate. Learn to down
 
 Setting up FFmate is quick and straightforward. Follow these steps to get up and running in no time.
 
-## Download FFmate
+## Download & Install FFmate
 
-Get FFmate for your platform and start processing in minutes:
+FFmate is available for macOS and Linux, with multiple installation options:
 
-###  macOS  
+###  macOS via Homebrew
+Install FFmate easily using Homebrew:
+
+```bash
+brew tap welovemedia/homebrew-ffmate
+brew install ffmate
+```
+
+You can update FFmate installed via Homebrew with the following command:
+
+```bash
+brew update
+brew upgrade ffmate
+```
+
+###  macOS (Manual Download)
 - [macOS – Apple Silicon (arm64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_arm64.tar.gz)  
 - [macOS – Intel (x86_64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_x86_64.tar.gz)
 
-### 🐧 Linux  
+### 🐧 Linux (Manual Download)
 - [Linux – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Linux_arm64.tar.gz)  
 - [Linux – x86_64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Linux_x86_64.tar.gz)
 

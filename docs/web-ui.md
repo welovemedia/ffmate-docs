@@ -24,7 +24,7 @@ The FFmate Web UI is divided into four main sections, each designed to simplify 
 
 ## Dashboard
 
-The Dashboard provides a real-time overview of all FFmpeg tasks—letting you monitor progress, manage jobs, and review task details at a glance.
+The Dashboard provides a real-time overview of all `FFmpeg` tasks—letting you monitor progress, manage jobs, and review task details at a glance.
 
 ### Monitoring Tasks
 
@@ -34,7 +34,7 @@ View all active and completed tasks in real time, including their status and pro
 
 ### Filtering Task Statuses
 
-You can filter tasks by their current status to quickly focus on specific groups, such as running, failed, or completed jobs.
+You can filter tasks by their current status to quickly focus on specific groups, such as **running**, **failed**, or **completed** jobs.
 
 To filter the list, click the **cogwheel icon** in the status column header and select a status from the dropdown menu.
 
@@ -44,7 +44,7 @@ To filter the list, click the **cogwheel icon** in the status column header and 
 - **`DONE_ERROR`** – Task encountered an error.
 - **`DONE_CANCELED`** – Task was manually canceled.
 
-<ZoomImg src="src/ffmate-dashboard-task-filter-statuses.webp" alt="FFmate dashboard displaying a single active media processing task in RUNNING state with a live progress bar at 24.04%. The interface prominently highlights the status column filter icon, signaling support for filtering tasks by state such as queued, running, done_successful, done_error, done_canceled"/>
+<ZoomImg src="/img/ffmate-dashboard-task-filter-statuses.webp" alt="FFmate dashboard displaying a single active media processing task in RUNNING state with a live progress bar at 24.04%. The interface prominently highlights the status column filter icon, signaling support for filtering tasks by state such as queued, running, done_successful, done_error, done_canceled"/>
 
 ### Canceling Tasks
 
@@ -96,9 +96,15 @@ Click on any watchfolder to view its full configuration, including assigned pres
 
 <ZoomImg src="/img/ffmate-watchfolder-details.webp" alt="FFmate interface showing expanded details of a configured watchfolder, including UUID, status, last check timestamp, assigned preset, scan interval, growth check value, folder path, and file extension filters. The watchfolder is active with status OK and filters configured to include .mp4 and exclude .xml files"/>
 
+### Updating a Watchfolder
+
+Hover over a watchfolder in Watchfolders, click the **pencil** icon, adjust any field in the Edit Watchfolder form (path, preset, scan interval, growth check, filters), then click Save. The watchfolder will restart with the new configuration shortly after the update.
+
+<ZoomImg src="/img/ffmate-watchfolder-edit-watchfolder.webp" alt="FFmate Watchfolders list showing a single configured watchfolder named “My first watchfolder” (created 6 days ago) with status OK, a 5 sec scan interval (3 checks), monitored path “/Users/r.gala/.../cameracard”, filters enabled, and last check “just now”; the edit (pencil) icon is highlighted to indicate updating the watchfolder"/>
+
 ### Deleting Watchfolders
 
-Click the **delete** icon next to a watchfolder to remove it. FFmate will immediately stop monitoring the associated folder.
+Hover over a preset in Presets, click the **delete** icon next to a watchfolder to remove it. FFmate will immediately stop monitoring the associated folder.
 
 <ZoomImg src="/img/ffmate-watchfolder-delete-watchfolder.webp" alt="FFmate watchfolder management interface showing a configured watchfolder with status OK and an active delete icon highlighted on the right side of the row, indicating the option to remove the watchfolder from the system. The UI includes path, scan interval, preset, and last check timestamp"/>
 
@@ -128,9 +134,15 @@ Click on any preset to view its full configuration, including the FFmpeg command
 
 <ZoomImg src="/img/ffmate-presets-details.webp" alt="FFmate interface showing expanded details of a configured watchfolder, including UUID, status, last check timestamp, assigned preset, scan interval, growth check value, folder path, and file extension filters. The watchfolder is active with status OK and filters configured to include .mp4 and exclude .xml files"/>
 
+### Updating a Preset
+
+Hover over a preset in Presets, click the **pencil** icon, modify any fields in the Edit Preset form (name, FFmpeg command, output pattern, priority, scripts), then click Save.
+
+<ZoomImg src="/img/ffmate-presets-edit-preset.webp" alt="FFmate Presets list showing a single configured preset named “Convert to MOV” (created 6 days ago) with priority 0, FFmpeg command -y -i ${INPUT_FILE} ${OUTPUT_FILE}, output pattern ${INPUT_FILE_D..._BASENAME}.mov, pre- and post-processing enabled; the edit (pencil) icon is highlighted to indicate updating the preset"/>
+
 ### Removing a Preset
 
-Click the **delete** icon next to a preset to remove it.
+Hover over a preset in Presets, Click the **delete** icon next to a preset to remove it.
 
 <ZoomImg src="/img/ffmate-presets-delete-preset.webp" alt="FFmate interface showing expanded details of a configured watchfolder, including UUID, status, last check timestamp, assigned preset, scan interval, growth check value, folder path, and file extension filters. The watchfolder is active with status OK and filters configured to include .mp4 and exclude .xml files"/>
 
