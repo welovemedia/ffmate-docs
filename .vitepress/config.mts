@@ -108,7 +108,7 @@ export default withMermaid({
 
     footer: {
       message:
-        'Released under the <a href="https://www.mongodb.com/licensing/server-side-public-license" target="_blank" rel="noopener">SSPL License</a>',
+        'Released under the <a href="https://opensource.org/license/agpl-v3" target="_blank" rel="noopener">AGPL-3.0 License</a>',
       copyright: "Copyright © 2025-present we love media",
     },
   },
