@@ -149,3 +149,104 @@ This is the core process where your transcoding jobs are managed and processed f
     *   **Post-processing:** If a post-processing script is defined and `ffmpeg` completed successfully, the post-processing script is executed.
     *   **Completion:** The task status is updated to reflect the outcome: `DONE_SUCCESSFUL`, `DONE_ERROR`, or `DONE_CANCELED`. Error details are captured if applicable.
 *   **Notifications:** Throughout a task's lifecycle, status changes and progress updates are broadcast via `WebSockets` (used by the `Web UI`) and can trigger configured `Webhooks`.
+
+
+## Metrics
+
+FFmate exposes real-time Prometheus metrics via **GET `/metrics`**, emitting internal counters in standard exposition format the moment the events occur. By default, access all metrics at `http://localhost:3000/metrics`.  
+
+* **Batch Gauges**  
+  - `ffmate_batch_created` – total batches created  
+  - `ffmate_batch_finished` – batches whose all tasks have completed (successful, failed, or canceled)  
+
+#### Example
+
+  ```plain
+  # HELP ffmate_batch_created Number of created batches
+  # TYPE ffmate_batch_created gauge
+  ffmate_batch_created 3
+  ffmate_batch_finished 2
+```
+
+* **Task Gauges**
+
+  * `ffmate_task_created` – tasks added (individual or batch)
+  * `ffmate_task_deleted` – tasks removed
+  * `ffmate_task_updated` – task entry saved in the db (status, progress, errors, etc.)
+  * `ffmate_task_canceled` – tasks canceled by user
+  * `ffmate_task_restarted` – tasks restarted
+
+#### Example
+
+  ```plain
+  # HELP ffmate_task_created Number of created tasks
+  # TYPE ffmate_task_created gauge
+  ffmate_task_created 18
+  ffmate_task_deleted 4
+  ffmate_task_updated 155
+  ffmate_task_canceled 1
+  ffmate_task_restarted 1
+  ```
+
+* **Preset Gauges**
+
+  * `ffmate_preset_created` – presets created
+  * `ffmate_preset_updated` – presets updated
+  * `ffmate_preset_deleted` – presets deleted
+
+#### Example
+
+  ```plain
+  # HELP ffmate_preset_created Number of created presets
+  # TYPE ffmate_preset_created gauge
+  ffmate_preset_created 5
+  ffmate_preset_updated 2
+  ffmate_preset_deleted 1
+  ```
+
+* **Webhook Gauges**
+
+  * `ffmate_webhook_created` – webhooks created
+  * `ffmate_webhook_executed` – webhooks fired
+  * `ffmate_webhook_deleted` – webhooks deleted
+
+#### Example
+
+  ```plain
+  # HELP ffmate_webhook_created Number of created webhooks
+  # TYPE ffmate_webhook_created gauge
+  ffmate_webhook_created 4
+  ffmate_webhook_executed 12
+  ffmate_webhook_deleted 1
+  ```
+
+* **Watchfolder Gauges**
+
+  * `ffmate_watchfolder_created` – watchfolders created
+  * `ffmate_watchfolder_executed` – scan cycles run
+  * `ffmate_watchfolder_updated` – watchfolders updated
+  * `ffmate_watchfolder_deleted` – watchfolders deleted
+
+#### Example
+
+  ```plain
+  # HELP ffmate_watchfolder_created Number of created watchfolders
+  # TYPE ffmate_watchfolder_created gauge
+  ffmate_watchfolder_created 3
+  ffmate_watchfolder_executed 27
+  ffmate_watchfolder_updated 1
+  ffmate_watchfolder_deleted 0
+  ```
+
+* **REST API GaugeVec**
+
+  * `ffmate_rest_api{method, path}` – counts all incoming HTTP requests, labeled by HTTP method and matched route path
+
+#### Example
+
+  ```plain
+  # HELP ffmate_rest_api Number of requests against the REST API
+  # TYPE ffmate_rest_api gauge
+  ffmate_rest_api{method="GET",path="/v1/tasks"} 5
+  ffmate_rest_api{method="POST",path="/v1/tasks"} 10
+  ```
