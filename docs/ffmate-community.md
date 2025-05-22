@@ -10,7 +10,7 @@ We’d love to hear from you—whether you have a question, want to share feedba
 💬 **Join the FFmate Community on Discord**  
 
 Our Discord server is the best place to connect with the FFmate team and other users.  
-Get help, share ideas, and stay up to date with the latest features and updates 👉 [Join our Discord](https://discord.gg/ef6gQGr2)
+Get help, share ideas, and stay up to date with the latest features and updates 👉 [Join our Discord](https://discord.gg/NzfeHn37jT)
 
 🚀 **Feature Requests & Bug Reports**
 
