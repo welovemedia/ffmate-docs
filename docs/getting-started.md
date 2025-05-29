@@ -9,7 +9,7 @@ Setting up FFmate is quick and straightforward. Follow these steps to get up and
 
 ## Download & Install FFmate
 
-FFmate is available for macOS and Linux, with multiple installation options:
+FFmate is available for Windows, macOS, and Linux, with multiple installation options:
 
 ###  macOS via Homebrew
 Install FFmate easily using Homebrew:
@@ -19,12 +19,16 @@ brew tap welovemedia/homebrew-ffmate
 brew install ffmate
 ```
 
-You can update FFmate installed via Homebrew with the following command:
+To update FFmate installed via Homebrew, run the following command: 
 
 ```bash
 brew update
 brew upgrade ffmate
 ```
+
+### 🖥️ Windows (Manual Download)
+- [Windows – AMD64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-windows-amd64.zip)  
+- [Windows – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-windows-arm64.zip)
 
 ###  macOS (Manual Download)
 - [macOS – Apple Silicon (arm64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_arm64.tar.gz)  
@@ -37,13 +41,23 @@ brew upgrade ffmate
 ### 🐳 Docker  
 - [Run FFmate via Docker](https://github.com/welovemedia/ffmate/pkgs/container/ffmate)
 
-> [!IMPORTANT]
-> FFmate is currently available for **macOS** and **Linux**.
-> **Windows support is coming soon**—stay tuned!
-
 ## Running FFmate
 
-You can run FFmate either natively on macOS/Linux or inside a Docker container—whichever best fits your environment
+You can run FFmate either natively on Windows/macOS/Linux/ or inside a Docker container—whichever best fits your environment
+
+### Windows
+
+After downloading FFmate, open your terminal, navigate to the folder where you saved it, and start the server with:
+
+```cmd
+ffmate server
+```
+
+💡 Tip: For easy access to FFmate’s features, start it with a tray icon using the following command:
+
+```cmd
+ffmate server --tray
+```
 
 ### macOS & Linux
 
@@ -62,9 +76,13 @@ ffmate server --tray
 By default, FFmate runs on **[http://localhost:3000](http://localhost:3000)**. If port 3000 is already in use or you prefer a different one, you can easily change it. Learn how to change the port here 👉 [Learn more](/docs/flags/#server-command-flags).
 
 
+> [!NOTE]
+> FFmate requires `FFmpeg` to be installed on **Windows**, **macOS**, or **Linux**. Make sure `FFmpeg` is available in your system’s `PATH` before launching FFmate. If `FFmpeg` is installed in a custom location, use the `--ffmpeg` flag to specify its path. [Learn more](/docs/flags/#server-command-flags)
+
 ### Running FFmate with Docker
 
 FFmate is also available as a Docker image hosted on GitHub Container Registry.
+The Docker image comes bundled with `FFmpeg`, making it much easier to get started.
 
 You can pull and run FFmate using Docker with a single command:
 
@@ -230,3 +248,8 @@ After updating, you can confirm that FFmate is running the latest version:
 ```sh
 ffmate --version
 ```
+
+
+
+> [!NOTE]
+> For Docker users, FFmpeg comes pre-installed in the FFmate Docker image, so no additional setup is required.
