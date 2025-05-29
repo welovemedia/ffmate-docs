@@ -28,6 +28,12 @@ These flags can usually be used with any FFmate command (like `server`, `update`
 
 These flags are specific to the `FFmate server` command, which starts the main FFmate application (API, Web UI, queue processor, etc.).
 
+*   **`--ai <vendor:model:key>`**
+    *   **Purpose:** Enables AI-powered features in FFmate by specifying the AI provider, model, and access key.
+    *   **Value:** A string in the format `vendor:model:key`.
+    *   **Default:** Not set (AI features are disabled unless explicitly configured).
+    *   **Example:** `ffmate server --ai="openai:gpt-4:your-api-key"`
+
 *   **`-f, --ffmpeg <path>`** or **`--ffmpeg="<path>"`**
     *   **Purpose:** Specifies the path to the `ffmpeg` executable.
     *   **Value:** The full path to your `ffmpeg` binary.
