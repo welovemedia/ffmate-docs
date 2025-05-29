@@ -1,3 +1,9 @@
+---
+title: Wildcards in FFmate – Dynamic File Naming and Task Scripting
+description: Learn how to use wildcards in FFmate to generate dynamic file and folder names, automate output paths, insert timestamps, and adapt processing logic based on task sources like the API or watchfolders
+---
+
+
 # Wildcards
 
 FFmate supports wildcards to help you generate file and directory names dynamically—no manual renaming required.  
@@ -208,4 +214,41 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 
 ```sh
 /volumes/ffmate/processed/550e8400-e29b-41d4-a716-446655440000_video.mp4
+```
+
+## Task Source
+
+This wildcard returns the **origin of the task**, indicating whether it was created through the `API` or triggered automatically by a `watchfolder`.  
+It’s especially useful in pre-processing scripts, where different logic may be applied based on how the task was initiated.
+
+| Wildcard    | Description                                                | Example Output        |
+|-------------|------------------------------------------------------------|------------------------|
+| `${SOURCE}` | Returns the source that triggered the task (e.g. API or watchfolder) | `api`, `watchfolder`  |
+
+---
+
+### Example
+
+Use `${SOURCE}` in a Bash script to apply different behavior depending on the task’s origin.
+
+```bash
+#!/usr/bin/env bash
+
+# Pre-processing script example
+# Adjusts logic based on the source of the task
+
+case "$SOURCE" in
+  api)
+    echo "Task originated from API. Applying API-specific logic."
+    # Add API-specific pre-processing commands here
+    ;;
+  watchfolder)
+    echo "Task originated from Watchfolder. Applying Watchfolder-specific logic."
+    # Add Watchfolder-specific pre-processing commands here
+    ;;
+  *)
+    echo "Unknown task source. Applying default logic."
+    # Add fallback logic here
+    ;;
+esac
 ```
