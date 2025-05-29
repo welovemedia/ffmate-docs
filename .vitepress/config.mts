@@ -91,6 +91,12 @@ export default withMermaid({
           { text: "Community & Support", link: "/docs/ffmate-community.md" },
         ],
       },
+      {
+        text: "What's New",
+        items: [
+          { text: "Release Notes", link: "/docs/release-notes.md" },
+        ],
+      },
     ],
 
     search: {
