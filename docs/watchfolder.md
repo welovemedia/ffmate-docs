@@ -39,6 +39,7 @@ curl -X POST http://localhost:3000/api/v1/watchfolders \
        "growthChecks": 3,
        "preset": "cabfad2c-70d1-4df6-9267-f549a376301f",
        "path": "/volumes/media/camera_cards",
+       "suspended": false
        "filter": {
          "extensions": {
            "exclude": ["tmp", "log"]
@@ -59,6 +60,7 @@ After you create a preset, FFmate responds with a JSON object that includes the 
 - **`growthChecks`** – The number of checks FFmate performs to ensure a file is fully copied before processing.  
 - **`preset`** – The ID of a predefined transcoding **preset** that will be applied to detected files.  
 - **`path`** – The **absolute path** of the directory to monitor.  
+- **`suspended`** – A boolean flag that pauses watchfolder scanning. When set to `true`, FFmate temporarily stops detecting and processing files in the folder.
 - **`filter`** – Rules for file selection:  
   - **`include`** – Only process files with these extensions (e.g., `mp4`, `mov`).  
   - **`exclude`** – Ignore files with these extensions (e.g., `tmp`, `log`).  
@@ -124,6 +126,7 @@ curl -X PUT http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
        "growthChecks": 5,
        "preset": "uuid-of-updated-preset",
        "path": "/volumes/media/camera_cards_archive",
+       "suspended": false
        "filter": {
          "extensions": {
            "include": ["mov", "mp4", "mxf"]
@@ -135,6 +138,36 @@ curl -X PUT http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
 FFmate responds with the full JSON object representing the updated watchfolder. The watchfolder will restart with the new configuration shortly after the update. An `watchfolder.updated` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
 
 💡 Tip: Making changes to a watchfolder? You can update settings like filters and intervals directly in the [FFmate Web UI](/docs/web-ui.md).
+
+## Suspending a Watchfolder
+
+The `suspended` flag lets you temporarily stop FFmate from detecting and processing files in a watchfolder. This is especially useful in production environments when you need to pause file processing during ingest operations, workflow changes, system maintenance. It also enables external applications or schedulers to programmatically start or stop a watchfolder as needed.
+
+To suspend a watchfolder, send a `PUT` request to the FFmate API with the watchfolder’s `ID` in the path and the `suspended` flag set to `true`.  
+For example:
+
+```sh
+curl -X PUT http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
+     -H "Content-Type: application/json" \
+     -d '{
+       "name": "Camera Card Watch",
+       "description": "Processes high-res camera footage",
+       "interval": 15,
+       "growthChecks": 5,
+       "preset": "uuid-of-updated-preset",
+       "path": "/volumes/media/camera_cards_archive",
+       "suspended": true
+       "filter": {
+         "extensions": {
+           "include": ["mov", "mp4", "mxf"]
+         }
+       }
+     }'
+```
+
+FFmate responds with the full JSON object representing the updated watchfolder. When `suspended` is set to `true`, FFmate temporarily halts scanning and file processing in that folder. To resume scanning, send another `PUT` request with `suspended` set to `false`. Updating the `suspended` state counts as a watchfolder update, so it will also trigger a `watchfolder.updated` via [webhooks](/docs/webhooks#watchfolder-events).
+
+💡 Tip: You can also suspend and resume watchfolder scanning directly in the [FFmate Web UI](/docs/web-ui.md).
 
 ## Deleting a Watchfolder 
 
