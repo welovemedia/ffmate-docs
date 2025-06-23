@@ -105,6 +105,10 @@ export default withMermaid({
 
     socialLinks: [
       { icon: "github", link: "https://github.com/welovemedia/ffmate" },
+      { icon: "youtube", link: "https://www.youtube.com/@ffmate-k4k" },
+      { icon: "x", link: "https://x.com/ffmateio" },
+      { icon: "medium", link: "https://ffmate.medium.com/" },
+      { icon: "discord", link: "https://discord.gg/NzfeHn37jT" },
     ],
 
     editLink: {
@@ -121,5 +125,10 @@ export default withMermaid({
 
   vite: {
     plugins: [llmstxt({})],
-  },
+    build: {
+      rollupOptions: {
+        external: ['../todo', '../README.md']
+      }
+    }
+  }
 })
