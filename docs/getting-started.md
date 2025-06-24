@@ -1,11 +1,112 @@
 ---
 title: "Quick Start FFmate: Install, Run Server and Core Features"
-description: "Your essential guide to getting started with FFmate. Learn to download, install, run the server, submit your first task, set up watchfolders, webhooks, and update easily"
+description: "Your guide to getting started with FFmate. Learn to download, install, run the server, submit your first task, set up watchfolders, webhooks, and update easily"
 ---
 
 # 🚀 Getting Started
 
 Setting up FFmate is quick and straightforward. Follow these steps to get up and running in no time.
+
+## Installing FFmpeg
+
+FFmate relies on **FFmpeg** to handle all media processing behind the scenes. If you don’t have **FFmpeg** installed yet, no worries — just follow the steps below to get it set up on your system.
+
+###  macOS
+
+#### Installing FFmpeg via Homebrew
+
+The easiest way to install FFmpeg on macOS is using [Homebrew](https://brew.sh):
+
+```sh
+brew install ffmpeg
+```
+
+Homebrew installs FFmpeg and adds it to your system path automatically, so FFmate can find it and start processing tasks right away.
+
+Here’s a fully reworked version of that section — more polished, consistent with your tone, and easier to follow:
+
+
+#### Download and run the static build
+
+If Homebrew isn’t your thing, you can also install FFmpeg manually by downloading a static build.
+
+1. Go to [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html) and click the **Apple** icon.
+
+2. Choose a trusted static build provider like:
+   - [evermeet.cx](https://evermeet.cx/ffmpeg/)
+   - [Gyan.dev](https://www.gyan.dev/ffmpeg/builds/)
+
+3. Download the build and unzip it. You’ll find an `ffmpeg` binary inside.
+
+4. Move the binary to a directory in your system `PATH`, for example:
+
+   ```sh
+   sudo mv ~/Downloads/ffmpeg /usr/local/bin/
+   sudo chmod +x /usr/local/bin/ffmpeg
+   ```
+
+5. The first time you run it, macOS may block it because it’s from an "unidentified developer."
+   To allow it:
+
+   * Open **System Settings → Privacy & Security**
+   * Look for the FFmpeg block message and click **Allow Anyway**
+   * Then run the binary again from your terminal
+
+Once that's done, **FFmpeg** will be available system-wide, and FFmate will be able to use it automatically.
+
+### 🖥️ Windows
+
+#### Install via Windows Package Manager (winget)
+
+If you're on Windows 10 or 11, you can install **FFmpeg** via the built-in package manager:
+
+```powershell
+winget install FFmpeg
+```
+
+This installs **FFmpeg** and automatically adds it to your system PATH, so FFmate can detect it and start processing tasks right away
+
+#### Download and run the static build
+
+Want full control? Here’s how to install FFmpeg manually with a static build
+
+1. Go to [https://www.gyan.dev/ffmpeg/builds/](https://www.gyan.dev/ffmpeg/builds/) and download a static build (e.g., `ffmpeg-release-essentials.zip`).
+
+2. Extract the archive to a folder — for example: `C:\ffmpeg`.
+
+3. Add `C:\ffmpeg\bin` to your system `PATH`:
+   - Press `Win + S`, search for **Environment Variables**, and select **Edit the system environment variables**
+   - In the **System Properties** window, click **Environment Variables…**
+   - Under **System variables**, find and select the `Path` variable, then click **Edit**
+   - Click **New** and enter: `C:\ffmpeg\bin`
+   - Click **OK** to save and close all windows
+
+4. Open a new terminal (Command Prompt or PowerShell) and verify the installation:
+
+   ```cmd
+   ffmpeg -version
+   ```
+
+Once installed and added to your path, **FFmpeg** will be available system-wide — and FFmate will be ready to use it automatically.
+
+### 🐧 Linux
+
+On Ubuntu or Debian-based systems:
+
+```sh
+sudo apt update
+sudo apt install ffmpeg
+```
+
+### 🐳 Docker
+
+Running FFmate with Docker?
+FFmpeg is already included in the image, so there’s nothing else to install. Just run and go 🚀
+
+
+> 💡 If FFmpeg is installed in a non-standard location, you can tell FFmate where to find it using the `--ffmpeg` flag.
+> Learn more 👉 [Flags Reference](/docs/flags/#server-command-flags)
+
 
 ## Download & Install FFmate
 
@@ -15,7 +116,7 @@ FFmate is available for Windows, macOS, and Linux, with multiple installation op
 Install FFmate easily using Homebrew:
 
 ```bash
-brew tap welovemedia/homebrew-ffmate
+brew tap welovemedia/ffmate
 brew install ffmate
 ```
 
@@ -43,7 +144,7 @@ brew upgrade ffmate
 
 ## Running FFmate
 
-You can run FFmate either natively on Windows/macOS/Linux/ or inside a Docker container—whichever best fits your environment
+You can run FFmate either natively on Windows/macOS/Linux/ or Docker—whichever best fits your environment
 
 ### Windows
 
