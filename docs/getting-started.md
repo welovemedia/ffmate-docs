@@ -108,7 +108,7 @@ FFmpeg is already included in the image, so there’s nothing else to install. J
 > Learn more 👉 [Flags Reference](/docs/flags/#server-command-flags)
 
 
-## Download & Install FFmate
+## Downloading & Installing FFmate
 
 FFmate is available for Windows, macOS, and Linux, with multiple installation options:
 
