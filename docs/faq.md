@@ -26,7 +26,7 @@ Learn more → [Platform Support](/docs/getting-started#platform-support)
 The quickest path is Homebrew:
 
 ```bash
-brew tap welovemedia/homebrew-ffmate
+brew tap welovemedia/ffmate
 brew install ffmate
 ```
 Learn more → [Download & Install FFmate](/docs/getting-started#download--install-ffmate)
@@ -175,7 +175,7 @@ Learn more → [Global Flags](/docs/flags#global-flags)
 <details>
 <summary>Where can I view API docs for FFmate?</summary>
 
-Start FFmate and open `/swagger` in your browser (e.g., [http://localhost:3000/swagger](http://localhost:3000/swagger)) to access the OpenAPI UI.
+Start FFmate and open `/swagger` in your browser (e.g., [http://localhost:3000/swagger/index.html](http://localhost:3000/swagger/index.html)) to access the OpenAPI UI.
 
 Learn more → [Swagger](/docs/swagger)
 </details>
