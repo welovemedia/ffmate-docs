@@ -26,7 +26,7 @@ Learn more → [Platform Support](/docs/getting-started#platform-support)
 The quickest path is Homebrew:
 
 ```bash
-brew tap welovemedia/ffmate
+brew tap welovemedia/ffmate --no-quarantine
 brew install ffmate
 ```
 Learn more → [Download & Install FFmate](/docs/getting-started#download--install-ffmate)

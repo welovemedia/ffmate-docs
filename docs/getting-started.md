@@ -116,7 +116,7 @@ FFmate is available for Windows, macOS, and Linux, with multiple installation op
 Install FFmate easily using Homebrew:
 
 ```bash
-brew tap welovemedia/ffmate
+brew tap welovemedia/ffmate --no-quarantine
 brew install ffmate
 ```
 
