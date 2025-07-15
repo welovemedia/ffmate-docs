@@ -20,7 +20,16 @@ The FFmate Web UI is divided into four main sections, each designed to simplify 
 3.  **`Presets`** – Define and reuse FFmpeg command templates for consistent, repeatable transcoding tasks.
 4.  **`Logs`** – Access live system logs, including task execution, watchfolder activity, and background processing events.
 
-<ZoomImg src="/img/ffmate-nav.webp" alt="FFmate navigation bar featuring Dashboard, Watchfolders, Presets, and Logs sections, each marked with numeric indicators to guide users through the interface"/>
+<ZoomImg src="/img/ffmate-nav.webp" alt="FFmate Web UI displaying a persistent notification in the navigation bar warning that FFmpeg is not installed, with a link to the installation guide"/>
+
+FFmate includes a built-in mechanism to check whether`FFmpeg` is installed and accessible. It looks for FFmpeg in the system’s default `PATH` or in the custom location specified via the `--ffmpeg` flag. If FFmpeg is not found, the Web UI will display a persistent notification in the navigation bar. This alert includes a direct link to the [documentation](/docs/getting-started#Installing-ffmpeg) with step-by-step instructions on how to install FFmpeg on all supported operating systems.
+
+> [!NOTE]
+> FFmate requires **FFmpeg** to function. If **FFmpeg** is not accessible, FFmate will not be able to process any tasks.
+
+This check is performed only once, when FFmate starts. If `FFmpeg` is installed while FFmate is already running, the warning will remain visible, even if FFmpeg has become available in the meantime. To clear the warning and ensure full functionality, simply restart FFmate after installing `FFmpeg`.
+
+<ZoomImg src="/img/ffmate-dashboard-ffmpeg-not-found.webp" alt="FFmate navigation bar featuring Dashboard, Watchfolders, Presets, and Logs sections, each marked with numeric indicators to guide users through the interface"/>
 
 ## Dashboard
 

@@ -73,7 +73,7 @@ These are the properties you can set when creating a task in FFmate:
 
 - **`inputFile`** *[optional]* – The path to the input media file that will be processed.
 
-- **`outputFile`** *[optional]* – The path where the transcoded file should be saved.
+- **`outputFile`** *[optional]* – The path where the transcoded file should be saved. If the specified directory does not exist, FFmate will create it automatically to ensure the output can be written without errors.
 
 ::: tip Handling Input and Output Files
 

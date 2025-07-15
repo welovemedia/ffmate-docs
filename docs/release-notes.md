@@ -5,6 +5,29 @@ description: Explore the latest FFmate release notes including new features, API
 # FFmate Release Notes  
 An overview of new features, enhancements, and bug fixes for each version.
 
+## Version 1.1.0 (14-07-2025)
+
+### New Features
+
+-  **Automatic Output Folder Creation**  
+  FFmate now creates output directories automatically if they do not exist.
+
+- **FFmpeg Detection**  
+  FFmate checks for FFmpeg in the system’s default PATH or the location specified by the `--ffmpeg` flag, and logs a warning in both the web UI and logs if it’s not found.
+
+### Changes
+
+- **Docker Debug Mode Disabled by Default**  
+  The Docker image now ships with debugging turned off by default.
+
+- **Removed AI Endpoint and flag**  
+  The `/ai` endpoint and the `--ai` flag introduced in v1.0.8 have been removed in favor of a future database-driven configuration setting.
+
+### Bug Fixes
+
+- **Script Error Logging**  
+  FFmate now logs stderr output when a pre- or post-process script exits with a non-zero code.
+
 ## Version 1.0.8 (29-05-2025)
 
 ### New Features
