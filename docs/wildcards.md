@@ -189,6 +189,29 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 /volumes/ffmate/processed/linux/amd64/video.mp4
 ```
 
+## FFmpeg Path
+
+This wildcard provides the full, resolved path to the `FFmpeg` executable as configured in FFmate (see [command-line flags](/docs/flags.md#server-command-flags)). It is particularly useful for advanced workflows that require multiple `ffmpeg` calls within a single command, such as **two-pass encoding**.
+
+This allows you to reference the specific `FFmpeg` binary that FFmate is configured to use, which may be different from the one in your system's default `PATH`.
+
+| Wildcard    | Description                                  | Example Output      |
+|-------------|----------------------------------------------|---------------------|
+| `${FFMPEG}` | Returns the full path to the FFmpeg executable | `/usr/bin/ffmpeg`   |
+
+#### Example: Two-Pass VP9 Encoding
+
+```sh
+curl -X POST http://localhost:3000/api/v1/tasks \
+     -H "Content-Type: application/json" \
+     -d '{
+       "command": "-i ${INPUT_FILE} -c:v libvpx-vp9 -b:v 2M -pass 1 -an -f null - && ${FFMPEG} -i ${INPUT_FILE} -c:v libvpx-vp9 -b:v 2M -pass 2 -c:a libopus ${OUTPUT_FILE}",
+       "inputFile": "/volumes/ffmate/source/video.mp4",
+       "outputFile": "/volumes/ffmate/destination/video.webm"
+     }'
+```
+This command performs a two-pass VP9 encode. FFmate automatically prepends the configured `ffmpeg` path to the beginning of the `command` string for the first pass. When chaining commands with `&&`, you must explicitly use the `${FFMPEG}` wildcard for any subsequent `ffmpeg` calls to ensure the correct executable is used in each chained command.
+
 ## Unique Identifier
 
 This wildcard generate **random unique identifiers**.
