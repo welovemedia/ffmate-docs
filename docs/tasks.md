@@ -5,7 +5,10 @@ description: "Detailed FFmate task documentation: Understand the complete task l
 
 # Understanding Tasks in FFmate
 
-In FFmate, a **task** represents a single FFmpeg command execution such as transcoding a video, extracting audio, or applying filters. When you submit a task, FFmate uses FFmpeg under the hood to perform the media processing. Tasks can be submitted on their own or grouped into batches to handle multiple files efficiently in one go  
+In FFmate, a **task** represents an `FFmpeg` command execution such as transcoding a video, extracting audio, or applying filters. 
+
+When you submit a task, FFmate triggers `FFmpeg` under the hood to perform the media processing. Tasks can be submitted on their own or grouped into `batches` to handle multiple files efficiently in one go.
+
 Every task follows a structured **lifecycle**, progressing from submission to execution and ultimately reaching completion or failure.
 
 
@@ -13,13 +16,13 @@ Before diving into task execution, let's first go through the **lifecycle** of t
 
 | Status            | Description                                       |
 |-------------------|---------------------------------------------------|
-| `QUEUED`          | The task is waiting in the processing queue.      |
-| `PRE_PROCESSING`  | The task's pre-processing script is running.      |
-| `RUNNING`         | The main FFmpeg command is currently executing.   |
-| `POST_PROCESSING` | The task's post-processing script is running.     |
-| `DONE_SUCCESSFUL` | The task completed successfully.                  |
-| `DONE_ERROR`      | The task encountered an error and failed.         |
-| `DONE_CANCELED`   | The task was manually canceled before completion. |
+| `QUEUED`          | The task is waiting in the processing queue      |
+| `PRE_PROCESSING`  | The task's pre-processing script is running      |
+| `RUNNING`         | The main FFmpeg command is currently executing   |
+| `POST_PROCESSING` | The task's post-processing script is running     |
+| `DONE_SUCCESSFUL` | The task completed successfully                  |
+| `DONE_ERROR`      | The task encountered an error and failed         |
+| `DONE_CANCELED`   | The task was manually canceled before completion |
 
 ### Task Flow:
 The diagram below shows how a task progresses through its lifecycle in FFmate
@@ -67,13 +70,28 @@ FFmate responds with a JSON object that contains the newly created task includin
 
 These are the properties you can set when creating a task in FFmate:
 
--   **`name`** *[optional]* - A short, descriptive name to help identify and track the task in the web UI and API (e.g., "Convert wedding video to MP4")
+- **`name`** *[optional]* - A short, descriptive name to help identify and track the task in the web UI and API (e.g., "Convert wedding video to MP4")
 
-- **`command`** *[mandatory]* - Define the FFmpeg command to run. FFmate automatically invokes the FFmpeg binary, so you only need to provide the command-line arguments—no need to include `ffmpeg` at the start.
+- **`command`** — The FFmpeg arguments for your task. This field is **mandatory** unless you use a `preset`.  
+
+  ⚠️ **Important details about how `command` works:** 
+
+  - You don’t need to add `ffmpeg` at the start of the command. FFmate automatically prepends it. By default, FFmate uses the `ffmpeg` binary in your system’s `PATH`. If you want to use a different version, you can override the default with the `--ffmpeg <path>` [command-line flag](/docs/flags.md#server-command-flags).  
+
+  - FFmate also implicitly adds the `-stats_period 1` [option](https://ffmpeg.org/ffmpeg-all.html#Advanced-options) to every command, which limits FFmpeg’s progress output to one update per second.  
+    
+    You can override this by explicitly adding your own `-stats_period x` to the command.  
+    - This setting directly affects:  
+      - how often `task.updated` [webhook](/docs/webhooks#task-events) is sent, and  
+      - how often the job dashboard refreshes progress updates.  
+
+  - The `command` field also supports chaining multiple FFmpeg commands with `&&`. This is useful for advanced workflows such as **two-pass encoding**. See [FFmpeg Path](/docs/wildcards.md#ffmpeg-path) in the Wildcards section for more details.
+
+- **`inputFile`** *[optional]* — The path to the input media file that will be processed.  
 
 - **`inputFile`** *[optional]* – The path to the input media file that will be processed.
 
-- **`outputFile`** *[optional]* – The path where the transcoded file should be saved. If the specified directory does not exist, FFmate will create it automatically to ensure the output can be written without errors.
+- **`outputFile`** *[optional]* – The path where the transcoded file should be saved. If the specified directory does not exist, FFmate will **create it automatically**.
 
 ::: tip Handling Input and Output Files
 
@@ -82,23 +100,24 @@ These are the properties you can set when creating a task in FFmate:
 - If your command **directly specifies input and output paths**, you do **not** need to provide these properties separately.
 :::
 
-- **`priority`** *[mandatory]* – Sets the execution priority for the task.  
-  FFmate uses this value to determine processing order—**higher numbers mean higher priority**.  
+- **`priority`** *[optinal]* – Sets the task’s priority in the queue. FFmate uses this value to determine processing order. **Higher numbers mean higher priority**.  
+  
   For example, a task with priority `100` will be processed before one with priority `10`.  
   Tasks with the same priority are handled in the order they were created (FIFO).
 
 
--   **`preset`** *[optional]* - The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task.
+- **`preset`** - The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task. This field is **mandatory** unless you use a `command`.
 
 - **`preProcessing`** *[optional]* – Defines a [Pre-Processing Script](/docs/pre-post-prcessing.md) to run before the task starts. Useful for preparing files, validating input, or setting up the environment.
-    *   **`scriptPath`**: Command/path to the script.
-    *   **`sidecarPath`**: (Optional) Path for the task data JSON file.
+    *   **`scriptPath`**: The full path to the script or executable to run.
+    *   **`sidecarPath`**: The full path to the JSON file that contains all task data.
+
 
 - **`postProcessing`** *[optional]* – Defines a [Post-Processing Script](/docs/pre-post-prcessing.md) to run after the task completes. Useful for cleanup, moving output files, or triggering follow-up actions.
-    *   **`scriptPath`**: Command/path to the script.
-    *   **`sidecarPath`**: (Optional) Path for the task data JSON file.
+    *   **`scriptPath`**: The full path to the script or executable to run.
+    *   **`sidecarPath`**: The full path to the JSON file that contains all task data.
 
-- **`metadata`** *[optional]* – A JSON object for including custom key-value pairs with the task. Useful for adding context, referencing source files, or integrating with external systems.
+- **`metadata`** *[optional]* — Any JSON object you want to attach to the task. Common uses include adding context, referencing source files, or integrating with external systems.
 
 ::: details **Example:** {open}
 
@@ -115,9 +134,22 @@ A sample `metadata` object containing useful context about the source file, prov
 
 This is a powerful feature for:
 
-- **`Identifying the Source Asset:`** Store unique identifiers from your originating system (e.g., a CMS asset ID, a DAM UUID, a production tracking code). This allows you to easily correlate the `FFmate` task back to its source.  
+##### Example 1:
 
-- **`Workflow Integration:`** Include metadata like project IDs, Naming conventions, or destination apths to help downstream systems—such as asset managers, review platforms, or render farms—automate and coordinate their tasks.
+1. Your upstream system (CMS/PAM/DAM/MAM/workflow manager) creates a task in FFmate and includes its own identifiers in `metadata` (e.g., `assetId`, `jobId`).
+2. FFmate queues the task, then starts processing it.
+3. When the task finishes, FFmate sends a `task.finished` webhook to your endpoint.
+4. The original `metadata` you sent is returned in the webhook payload, so your system can correlate it back to the `assetId` / `jobId` that originated the task.
+
+##### Example 2:
+
+1. A file is dropped into a watchfolder.
+2. FFmate creates a task and adds **watchfolder file metadata** to the task’s `metadata` JSON object.
+3. In the task, use the **Task Metadata** wildcard `${METADATA_<json-path>}` to read those values, for example, to recreate the input folder structure in your `outputFile`.
+
+```json
+"outputFile": "/volumes/ffmate/processed/${METADATA_ffmate.watchfolder.relativeDir}/${INPUT_FILE_BASENAME}.mp4"
+```
 
 After submitting a task, FFmate will respond with a JSON object containing the `taskId`. This `taskId` can be used to monitor the task’s progress in the next section.
 

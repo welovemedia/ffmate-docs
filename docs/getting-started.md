@@ -23,8 +23,6 @@ brew install ffmpeg
 
 Homebrew installs FFmpeg and adds it to your system path automatically, so FFmate can find it and start processing tasks right away.
 
-Here’s a fully reworked version of that section — more polished, consistent with your tone, and easier to follow:
-
 
 #### Download and run the static build
 
@@ -45,7 +43,7 @@ If Homebrew isn’t your thing, you can also install FFmpeg manually by download
    sudo chmod +x /usr/local/bin/ffmpeg
    ```
 
-5. The first time you run it, macOS may block it because it’s from an "unidentified developer."
+5. The first time you run it, macOS may block it because it’s from an "unidentified developer"
    To allow it:
 
    * Open **System Settings → Privacy & Security**
@@ -116,7 +114,6 @@ FFmate is available for Windows, macOS, and Linux, with multiple installation op
 Install FFmate easily using Homebrew:
 
 ```bash
-brew tap welovemedia/ffmate --no-quarantine
 brew install ffmate
 ```
 
@@ -144,7 +141,7 @@ brew upgrade ffmate
 
 ## Running FFmate
 
-You can run FFmate either natively on Windows/macOS/Linux/ or Docker—whichever best fits your environment
+You can run FFmate in one of two ways: natively on Windows, macOS, or Linux, or via a Docker container. Whichever best fits your environment
 
 ### Windows
 
@@ -207,7 +204,7 @@ You can customize FFmate’s behavior using the following environment variables:
 | Variable              | Description                                                                 |
 |-----------------------|-----------------------------------------------------------------------------|
 | `PORT`                | The port FFmate will run on (default: `3000`)                              |
-| `DB`                  | Path to the internal SQLite database (default: `/app/db/sqlite.db`)        |
+| `DATABASE`                  | Path to the internal SQLite database (default: `/app/db/sqlite.db`)        |
 | `LOGLEVEL`            | Logging level (`info`, `warn`, `error`, `debug`)                           |
 | `MAX_CONCURRENT_TASKS`| Maximum number of FFmpeg tasks to run at the same time (default: `3`)      |
 | `DEBUGO`              | Enables verbose debug output (e.g., `ffmate:*`) |
