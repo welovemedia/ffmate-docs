@@ -72,7 +72,7 @@ These are the properties you can set when creating a task in FFmate:
 
 - **`name`** *[optional]* - A short, descriptive name to help identify and track the task in the web UI and API (e.g., "Convert wedding video to MP4")
 
-- **`command`** — The FFmpeg arguments for your task. This field is **mandatory** unless you use a `preset`.  
+- **`command`** — The custom command FFmate will use to run `FFmpeg`. This field is **mandatory** unless you use a `preset`.  
 
   ⚠️ **Important details about how `command` works:** 
 
@@ -85,9 +85,19 @@ These are the properties you can set when creating a task in FFmate:
       - how often `task.updated` [webhook](/docs/webhooks#task-events) is sent, and  
       - how often the job dashboard refreshes progress updates.  
 
-  - The `command` field also supports chaining multiple FFmpeg commands with `&&`. This is useful for advanced workflows such as **two-pass encoding**. See [FFmpeg Path](/docs/wildcards.md#ffmpeg-path) in the Wildcards section for more details.
+    - The `command` field also supports chaining multiple `FFmpeg` commands with `&&`. This is useful for advanced workflows such as **two-pass encoding**. When chaining commands, you must use the `${FFMPEG}` wildcard (see [FFmpeg Path](/docs/wildcards.md#ffmpeg-path) for more details). 
+  
+      You can also use [wildcards](/docs/wildcards.md) like `${INPUT_FILE}` and `${OUTPUT_FILE}` inside the command string. FFmate will automatically replace them with the actual file paths when the task runs.
 
-- **`inputFile`** *[optional]* — The path to the input media file that will be processed.  
+  ::: tip Not sure which `FFmpeg` commands to use?
+
+  - [OSTechNix – 20+ FFmpeg Commands For Beginners](https://ostechnix.com/20-ffmpeg-commands-beginners/)
+  - [Abyssale – Top 20 best commands for FFmpeg](https://www.abyssale.com/blog/top-20-best-commands-for-ffmpeg)
+  - [VideoProc – 31 Must-Haves FFmpeg Commands for Beginners](https://www.videoproc.com/resource/ffmpeg-commands.htm)
+  - [GorillaSun – A Simple Guide to FFMPEG](https://www.gorillasun.de/blog/a-simple-guide-to-ffmpeg/)
+  - [Bannerbear – Top 10 FFmpeg Command Options You Need to Know](https://www.bannerbear.com/blog/ffmpeg-101-top-10-command-options-you-need-to-know-with-examples/)
+  - <a href="https://chat.openai.com/?model=gpt-4&prompt=You%20are%20a%20senior%20media-encoding%20engineer%20and%20%60ffmpeg%60%20power-user.%0AFollow%20the%20outlined%20thinking%20steps%20**before**%20you%20answer.%0A%0A%5BTHINKING%20STEPS%5D%20%20%0A1.%20Draft%20the%20full%20%60ffmpeg%60%20command%3B%20include%3A%20%20%0A%C2%A0%C2%A0%E2%80%A2%20Explicit%20input%28s%29%20and%20output%28s%29%20%0A%C2%A0%C2%A0%E2%80%A2%20All%20necessary%20options%20in%20a%20logical%20order%20%0A%C2%A0%C2%A0%E2%80%A2%20Comments%20%28%23%29%20explaining%20non-obvious%20flags%0A2.%20Double-check%20every%20flag%20against%20typical%20pitfalls%20%28stream-copy%20vs.%20re-encode%2C%20color-matrix%2C%20time-bases%2C%20VFR%2C%20ProRes%20profile%2C%20CRF%20ranges%2C%20hardware%20encoders%29.%0A3.%20Provide%20a%20**single-line%20copy-pasteable%20command**%20plus%20a%20bullet%20list%20of%20key%20decisions.%0A%0A%5BOUTPUT%20FORMAT%5D%0A%60%60%60bash%0A%23%20Command%20%E2%94%80%20ready%20to%20copy%0Affmpeg%20-i%20INPUT%20%E2%80%A6%20-c%3Av%20%E2%80%A6%20-c%3Aa%20%E2%80%A6%20-vf%20%E2%80%A6%20-preset%20%E2%80%A6%20-crf%20%E2%80%A6%20OUTPUT%0A%0A%23%20Explanation%0A%E2%80%A2%20%E2%80%A6%0A%E2%80%A2%20%E2%80%A6%0A%60%60%60%0A%0A%5BUSER%20REQUEST%5D" target="_blank" rel="noopener noreferrer">Ask ChatGPT</a>
+  :::
 
 - **`inputFile`** *[optional]* – The path to the input media file that will be processed.
 
@@ -100,12 +110,8 @@ These are the properties you can set when creating a task in FFmate:
 - If your command **directly specifies input and output paths**, you do **not** need to provide these properties separately.
 :::
 
-- **`priority`** *[optinal]* – Sets the task’s priority in the queue. FFmate uses this value to determine processing order. **Higher numbers mean higher priority**.  
-  
-  For example, a task with priority `100` will be processed before one with priority `10`.  
-  Tasks with the same priority are handled in the order they were created (FIFO).
-
-
+- **`priority`** *[optinal]* – Sets the task's priority in the processing queue. Higher numbers mean higher priority — for example, a task with priority `100` will be processed before one with `10`. If multiple tasks share the same priority, they’ll generally run in the order they were created (FIFO for that priority level).  
+    
 - **`preset`** - The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task. This field is **mandatory** unless you use a `command`.
 
 - **`preProcessing`** *[optional]* – Defines a [Pre-Processing Script](/docs/pre-post-prcessing.md) to run before the task starts. Useful for preparing files, validating input, or setting up the environment.

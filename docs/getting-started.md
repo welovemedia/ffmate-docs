@@ -346,8 +346,3 @@ After updating, you can confirm that FFmate is running the latest version:
 ```sh
 ffmate --version
 ```
-
-
-
-> [!NOTE]
-> For Docker users, FFmpeg comes pre-installed in the FFmate Docker image, so no additional setup is required.

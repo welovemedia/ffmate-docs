@@ -5,10 +5,11 @@ description: "Integrate external systems with FFmate using webhooks. Get instant
 
 # Webhooks
 
-FFmate supports **webhooks**, allowing you to integrate **real-time event notifications** into your media processing workflows.  
+FFmate supports **webhooks**, allowing you to integrate **real-time event notifications** into your media processing workflows.
+
 By registering a webhook, external systems can automatically receive `POST` requests from FFmate when specific events occur—such as task creation, task status updates, batch processing events, or changes to presets.
 
-This enables powerful automation, seamless third-party integration, and real-time monitoring of FFmpeg-based transcoding jobs—without the need to constantly poll the API.
+This enables powerful automation, seamless third-party integration, and real-time monitoring of `FFmpeg-based` transcoding jobs—without the need to constantly poll the API.
 
 ## Creating a Webhook  
 
@@ -24,6 +25,56 @@ curl -X POST http://localhost:3000/api/v1/webhooks \
 ```
 
 After you create a webhook, FFmate responds with a JSON object containing the `id` of the newly created webhook. 
+
+## Available Webhook Events
+
+FFmate supports a range of webhook events, organized into categories based on what they track.
+
+### Task Events:
+
+| Event              | Description |
+|--------------------|-------------|
+| `task.created`    | Triggered when a new task is added |
+| `task.updated`    | Triggered when a task's status or details are updated |
+| `task.deleted`    | Triggered when a task is deleted |
+
+---
+
+### Batch Events:
+
+| Event              | Description |
+|--------------------|-------------|
+| `batch.created`   | Triggered when a new batch of tasks is created |
+| `batch.finished`  | Triggered when a batch of tasks is completed |
+
+---
+
+### Preset Events:
+
+| Event              | Description |
+|--------------------|-------------|
+| `preset.created`  | Triggered when a new preset is created |
+| `preset.updated`  | Triggered when an existing preset is modified |
+| `preset.deleted`  | Triggered when a preset is removed |
+
+---
+
+### Watchfolder Events:
+| Event                  | Description |
+|------------------------|-------------|
+| `watchfolder.created`  | Triggered when a new watchfolder is created |
+| `watchfolder.updated`  | Triggered when an existing watchfolder is modified |
+| `watchfolder.deleted`  | Triggered when a watchfolder is removed |
+
+---
+
+### Webhook Events :
+
+| Event              | Description |
+|--------------------|-------------|
+| `webhook.created` | Triggered when a new webhook is registered |
+| `webhook.deleted` | Triggered when a webhook is removed |
+
 
 ### Webhook Payload:
 
@@ -42,58 +93,9 @@ When the event is triggered, FFmate sends a `POST` request to your specified URL
 }
 ```
 
-## Available Webhook Events
-
-FFmate supports a range of webhook events, organized into categories based on what they track.
-
-### Task Events:
-
-| Event              | Description |
-|--------------------|-------------|
-| `task.created`    | Triggered when a new task is added. |
-| `task.updated`    | Triggered when a task's status or details are updated. |
-| `task.deleted`    | Triggered when a task is deleted. |
-
----
-
-### Batch Events:
-
-| Event              | Description |
-|--------------------|-------------|
-| `batch.created`   | Triggered when a new batch of tasks is created. |
-| `batch.finished`  | Triggered when a batch of tasks is completed. |
-
----
-
-### Preset Events:
-
-| Event              | Description |
-|--------------------|-------------|
-| `preset.created`  | Triggered when a new preset is created. |
-| `preset.updated`  | Triggered when an existing preset is modified. |
-| `preset.deleted`  | Triggered when a preset is removed. |
-
----
-
-### Watchfolder Events:
-| Event                  | Description |
-|------------------------|-------------|
-| `watchfolder.created`  | Triggered when a new watchfolder is created. |
-| `watchfolder.updated`  | Triggered when an existing watchfolder is modified. |
-| `watchfolder.deleted`  | Triggered when a watchfolder is removed. |
-
----
-
-### Webhook Events :
-
-| Event              | Description |
-|--------------------|-------------|
-| `webhook.created` | Triggered when a new webhook is registered. |
-| `webhook.deleted` | Triggered when a webhook is removed. |
-
-
 ## Listing all Webhooks
 
+To get a list of all available webhooks, send a `GET` request to the FFmate API
 
 ```sh
 curl -X GET 'http://localhost:3000/api/v1/webhooks?page=0&perPage=10' \
@@ -105,6 +107,33 @@ curl -X GET 'http://localhost:3000/api/v1/webhooks?page=0&perPage=10' \
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
 - **`perPage`** *[optional]* – Defines how many webhooks should be included in each page. Default: `100`.
 
+FFmate returns a JSON array with all configured webhooks. The `X-Total` response header provides the total number of webhooks available.
+
+
+## Getting a Single Webhook
+
+To retrieve the details of a specific webhook, send a `GET` request to the FFmate API using its unique ID.
+
+```sh
+curl -X GET http://localhost:3000/api/v1/webhooks/{webhookId} \
+     -H "accept: application/json"
+```
+FFmate returns a JSON object containing the details of the requested webhook.
+
+## Updating a Webhook
+
+To modify an existing webhook, such as changing its **target URL** or the **event** it subscribes to, send a `PUT` request o the FFmate API with the **webhook's ID** in the URL and the new configuration in the request body. The request body should **contain the same fields** as when creating a new webhook.
+
+```sh
+curl -X PUT http://localhost:3000/api/v1/webhooks/{webhookId} \
+     -H "Content-Type: application/json" \
+     -d '{
+       "event": "task.updated",
+       "url": "https://your-new-server.com/updated-handler"
+     }'
+```
+
+FFmate returns the updated webhook object in JSON format.
 
 ## Deleting a Webhook  
 
@@ -115,6 +144,7 @@ curl -X DELETE http://localhost:3000/api/v1/webhooks/{webhookId} \
      -H "accept: application/json"
 ```
 
+FFmate responds with a `204` No Content status. The webhook will be removed from the system.
 
 ## Setting Up Your Webhook Endpoint
 

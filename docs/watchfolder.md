@@ -5,13 +5,46 @@ description: "Configure FFmate watchfolders to auto-detect & transcode files. Gu
 
 # Watchfolders
 
-FFmate's **watchfolder** feature allows you to **automatically detect and process new files** in a specified directory. Once a watchfolder is configured, FFmate will **continuously scan** the folder for new or modified files and create **tasks** to process them based on a task preset. The watchfolder feature is useful for automatically transcoding footage from a camera SD card dropped into a network share or creating low-resolution versions of high-resolution files exported from an NLE for review.
+FFmate's **watchfolder** feature allows you to **automatically detect and process new files** in a specified directory. 
+
+Once a watchfolder is configured, FFmate will **continuously scan** the folder for new or modified files and create **tasks** to process them based on a task preset. 
+
+The watchfolder feature is useful for **automatically transcoding** footage from a camera SD card dropped into a network share or creating low-resolution versions of high-resolution files exported from an NLE for review.
 
 ## How Watchfolders Work
 
-1. **Monitor a Folder** – FFmate scans the specified directory at a set interval.  
-2. **Detect New Files** – When a new file is detected, FFmate ensures it’s **fully copied** before processing.   
-3. **Create Tasks** – FFmate creates a **new FFmate [task](/docs/tasks.md)** for each detected file.  
+1. **Monitor a Folder** – FFmate scans the specified directory at a **set interval** to watch for new files.  
+2. **Detect New Files** – When a new file appears, FFmate doesn’t process it immediately. Instead, it checks the file’s **size** over time.  
+   - If the size continues to change, the file is still being copied or written.  
+   - If the size remains the same for a number of consecutive checks (controlled by the `growthChecks` setting), FFmate considers the file as finished and creates a task for it.  
+
+    By waiting until the file stops growing, FFmate ensures that partially copied or incomplete files aren’t processed too early. This is especially important for large media files being uploaded over a network or transferred from external systems.
+
+3. **Create Tasks** – Each finished file results in a **new [task](/docs/tasks.md)** that FFmate processes automatically.  
+   Tasks created by a watchfolder always include a specific `metadata` object populated with file information about the item that triggered the task. This includes:  
+
+   - `path` — the absolute path to the watchfolder  
+   - `relativeDir` — the relative directory of the file inside the watchfolder  
+   - `relativePath` — the relative path to the file inside the watchfolder  
+   - `uuid` — the unique identifier of the watchfolder that generated the task
+
+   Example:  
+
+   ```json
+   "metadata": {
+     "ffmate": {
+       "watchfolder": {
+         "path": "/volumes/ffmate/wf",
+         "relativeDir": "parent/subfolder1",
+         "relativePath": "parent/subfolder1/18moo.mov",
+         "uuid": "06bbbe21-8003-41b3-94f4-62508486c482"
+       }
+     }
+   }
+  
+### Watchfolder Task Flow
+
+The diagram below shows how a file dropped into a watchfolder becomes a task in FFmate.
 
 ```mermaid
 flowchart LR
@@ -71,17 +104,6 @@ If a file’s extension matches anything in `exclude`, the file will be skipped�
 
 To keep things simple and predictable, it's best to use **either** `include` or `exclude`, not both at the same time.
 :::
-
-## How File Detection Works
-
-FFmate ensures that only **fully copied** files are processed by using a **growth check validation**:  
-
-1. A file is detected in the watchfolder.  
-2. FFmate checks its **size**.  
-3. If the size remains the same after multiple scans (determined by `growthChecks`), the file is processed.  
-4. If the file is **still growing**, FFmate waits and continues checking until it stops changing.  
-
-This prevents **incomplete** files from being prematurely processed.  
 
 ## Listing Watchfolders  
 
