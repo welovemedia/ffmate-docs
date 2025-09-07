@@ -13,12 +13,12 @@ An overview of new features, enhancements, and bug fixes for each version.
       Added a wildcard that resolves to the configured FFmpeg binary path. For details, see the [wildcards](/docs/wildcards.md#ffmpeg-path).
 
 -  **FFmpeg Command Chaining with `&&`**  
-  You can now chain multiple FFmpeg commands in a single task using `&&` (e.g., two-pass encoding). For details, see the [task](/docs/tasks.md#task-properties).
+  You can now chain multiple FFmpeg commands in a single task using `&&`. For details, see the [task properties](/docs/tasks.md#task-properties).
 
 -  **Task Metadata Wildcard**  
   Added `${METADATA_<json-path>}` to resolve values from the task’s `metadata` object across commands, inputs, outputs, and scripts. For details, see the [wildcards](/docs/wildcards.md#task-metadata).
 
--  **Watchfolder Metadata Injection**  
+-  **Watchfolder Metadata**  
   Tasks created by watchfolders now include file information under `metadata.ffmate.watchfolder` (fields include `path`, `relativeDir`, `relativePath`, and the watchfolder `uuid`). For details, see the [watchfolder](/docs/watchfolder.md#how-watchfolders-work).
 
 -  **Sidecar Re-Import in Pre-Processing**  
