@@ -18,7 +18,8 @@ The FFmate Web UI is divided into four main sections, each designed to simplify 
 1.  **`Dashboard`** – Monitor and manage all FFmpeg tasks in real time, including active, completed, and failed jobs.
 2.  **`Watchfolders`** – Configure folders to automatically trigger tasks when new media files are detected.
 3.  **`Presets`** – Define and reuse FFmpeg command templates for consistent, repeatable transcoding tasks.
-4.  **`Logs`** – Access live system logs, including task execution, watchfolder activity, and background processing events.
+4.  **`Webhooks`** – Send real-time notifications to external systems whenever events occur, such as task progress, completion, or failure.
+5.  **`Logs`** – Access live system logs, including task execution, watchfolder activity, and background processing events.
 
 <ZoomImg src="/img/ffmate-nav.webp" alt="FFmate Web UI displaying a persistent notification in the navigation bar warning that FFmpeg is not installed, with a link to the installation guide"/>
 
