@@ -5,6 +5,46 @@ description: Explore the latest FFmate release notes including new features, API
 # FFmate Release Notes  
 An overview of new features, enhancements, and bug fixes for each version.
 
+## Version 1.2.0 (08-09-2025)
+
+### New Features
+
+* **`${FFMPEG}` Wildcard**
+  Added a wildcard that resolves to the configured FFmpeg binary path. For details, see the [wildcards](/docs/wildcards.md#ffmpeg-path).
+
+* **Command Chaining with `&&`**
+  You can now chain multiple FFmpeg commands in a single task using `&&` (e.g., two-pass encoding). For details, see the [task](/docs/tasks.md#task-properties).
+
+* **Task Metadata Wildcard**
+  Added `${METADATA_<json-path>}` to resolve values from the task’s `metadata` object across commands, inputs, outputs, and scripts. For details, see the [wildcards](/docs/wildcards.md#task-metadata).
+
+* **Watchfolder Metadata Injection**
+  Tasks created by watchfolders now include file information under `metadata.ffmate.watchfolder` (fields include `path`, `relativeDir`, `relativePath`, and the watchfolder `uuid`). For details, see the [watchfolder](/docs/watchfolder.md#how-watchfolders-work).
+
+* **Sidecar Re-Import in Pre-Processing**
+  Added the option to re-import the task’s `sidecar` after the pre-processing script finishes. For details, see the [Pre-Post Processing](/docs//pre-post-prcessing.md#importing-a-tasks-sidecar).
+
+* **Webhooks API: Get & Update**
+  Added new REST endpoints to retrieve a single webhook and to update an existing webhook. For details, see the [webhooks](/docs/webhooks.md).
+
+* **Webhooks in the Web UI**
+  The web UI now supports creating, viewing, and updating webhooks. For details, see the [webui](/docs/web-ui.md).
+
+### Changes
+
+* **Progress Output Throttling**
+  FFmate now adds `-stats_period 1` to every FFmpeg command, limiting progress output to one update per second. For details, see the [task](/docs/tasks.md#task-properties).
+
+* **Docker Image Tools**
+  The Docker image now includes `bash` and `jq`.
+
+* **Environment Variable Rename**
+  In the Dockerfile, the `DB` environment variable has been replaced with `DATABASE`.
+
+* **Go Runtime Update**
+  Updated Go to version `1.25.0`.
+
+
 ## Version 1.1.0 (14-07-2025)
 
 ### New Features

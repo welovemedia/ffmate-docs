@@ -5,7 +5,7 @@ description: "Simplify complex FFmpeg tasks with FFmate presets. Define reusable
 
 # Presets
 
-Presets in FFmate are reusable templates that make it easier to define and run `FFmpeg` tasks. With a preset, you can preconfigure `FFmpeg` commands, output patterns, priorities, and even pre- or post-processing scripts, so every task runs the same way without extra setup.
+**Presets** in FFmate are reusable templates that make it easier to define and run `FFmpeg` tasks. With a preset, you can preconfigure `FFmpeg` commands, output patterns, priorities, and even pre- or post-processing scripts, so every task runs the same way without extra setup.
 
 FFmate ships with **20 built-in presets** covering the most common media tasks, including format conversion, frame rate adjustment, audio extraction, and platform-specific encodes for YouTube, TikTok, Instagram, Facebook, and Twitch. These ready-to-use presets save you from having to figure out the right `FFmpeg` command for everyday jobs.  
 

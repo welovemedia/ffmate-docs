@@ -5,7 +5,7 @@ description: "Integrate external systems with FFmate using webhooks. Get instant
 
 # Webhooks
 
-FFmate supports **webhooks**, allowing you to integrate **real-time event notifications** into your media processing workflows.
+**Webhooks** in FFmate allow you to integrate **real-time event notifications** into your media processing workflows.
 
 By registering a webhook, external systems can automatically receive `POST` requests from FFmate when specific events occur—such as task creation, task status updates, batch processing events, or changes to presets.
 

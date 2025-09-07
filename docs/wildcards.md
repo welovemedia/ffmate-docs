@@ -5,7 +5,7 @@ description: Learn how to use wildcards in FFmate to generate dynamic file and f
 
 # Wildcards
 
-Wildcards in FFmate act as placeholders that are **automatically replaced** with actual values when a FFmate [task](/docs/tasks.md#task-flow) runs.  
+**Wildcards** in FFmate act as placeholders that are **automatically replaced** with actual values when a FFmate [task](/docs/tasks.md#task-flow) runs.  
 
 You can use wildcards in:  
 

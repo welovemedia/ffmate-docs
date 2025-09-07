@@ -5,7 +5,7 @@ description: "Detailed FFmate task documentation: Understand the complete task l
 
 # Understanding Tasks in FFmate
 
-In FFmate, a **task** represents an `FFmpeg` command execution such as transcoding a video, extracting audio, or applying filters. 
+A **task** in FFmate represents an `FFmpeg` command execution such as transcoding a video, extracting audio, or applying filters. 
 
 When you submit a task, FFmate triggers `FFmpeg` under the hood to perform the media processing. Tasks can be submitted on their own or grouped into `batches` to handle multiple files efficiently in one go.
 

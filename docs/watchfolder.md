@@ -5,7 +5,7 @@ description: "Configure FFmate watchfolders to auto-detect & transcode files. Gu
 
 # Watchfolders
 
-FFmate's **watchfolder** feature allows you to **automatically detect and process new files** in a specified directory. 
+**Watchfolders** in FFmate allow you to automatically detect and process new files in a specified directory.
 
 Once a watchfolder is configured, FFmate will **continuously scan** the folder for new or modified files and create **tasks** to process them based on a task preset. 
 
@@ -187,7 +187,9 @@ curl -X PUT http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
      }'
 ```
 
-FFmate responds with the full JSON object representing the updated watchfolder. When `suspended` is set to `true`, FFmate temporarily halts scanning and file processing in that folder. To resume scanning, send another `PUT` request with `suspended` set to `false`. Updating the `suspended` state counts as a watchfolder update, so it will also trigger a `watchfolder.updated` via [webhooks](/docs/webhooks#watchfolder-events).
+FFmate responds with the full JSON object representing the updated watchfolder. When `suspended` is set to `true`, FFmate temporarily halts scanning and file processing in that folder. 
+
+To resume scanning, send another `PUT` request with `suspended` set to `false`. Updating the `suspended` state counts as a watchfolder update, so it will also trigger a `watchfolder.updated` via [webhooks](/docs/webhooks#watchfolder-events).
 
 💡 Tip: You can also suspend and resume watchfolder scanning directly in the [FFmate Web UI](/docs/web-ui.md).
 
@@ -200,6 +202,6 @@ curl -X DELETE http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
      -H "accept: application/json"
 ```
 
- FFmate responds with a 204 No Content status. The watchfolder will be removed from the system, and any monitoring for that folder will stop. An `watchfolder.deleted` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
+ FFmate responds with a `204` No Content status. The watchfolder will be **removed** from the system, and any monitoring for that folder will **stop**. An `watchfolder.deleted` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
 
 💡 Tip: No need to send a delete request manually—you can remove watchfolders instantly from the [FFmate Web UI](/docs/web-ui.md).

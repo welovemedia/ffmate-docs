@@ -5,7 +5,7 @@ description: "Learn to use FFmate's pre & post-processing for FFmpeg. Run custom
 
 # Pre and Post-Processing
 
-FFmate allows you to extend the functionality of your transcoding tasks by executing custom scripts *before* the `ffmpeg` command starts (pre-processing) and *after* it successfully completes (post-processing). This powerful feature enables you to automate a wide range of activities, from input validation and file preparation to notifications, archiving, and integration with other systems.
+**Pre- and post-processing** in FFmate allow you to extend transcoding tasks by running custom scripts *before* the `ffmpeg` command starts and *after* it successfully completes. This powerful feature enables you to automate a wide range of activities, from input validation and file preparation to notifications, archiving, and integration with other systems.
 
 You can define pre and post-processing steps either directly within a task creation request or as part of a [Preset](/docs/presets.md). If defined in both, the task-specific definition will take precedence.
 
