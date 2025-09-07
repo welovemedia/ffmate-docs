@@ -24,7 +24,9 @@ curl -X POST http://localhost:3000/api/v1/webhooks \
      }'
 ```
 
-After you create a webhook, FFmate responds with a JSON object containing the `id` of the newly created webhook. 
+After you create a webhook, FFmate responds with a JSON object containing the `id` of the newly created webhook.
+
+💡 Tip: Creating a new webhook? You can define and save webhooks directly in the [FFmate Web UI](/docs/web-ui.md#webhooks) without writing any API requests
 
 ## Available Webhook Events
 
@@ -109,6 +111,7 @@ curl -X GET 'http://localhost:3000/api/v1/webhooks?page=0&perPage=10' \
 
 FFmate returns a JSON array with all configured webhooks. The `X-Total` response header provides the total number of webhooks available.
 
+💡 Tip: Need an overview of all webhooks? You can browse and manage them easily in the [FFmate Web UI](/docs/web-ui.md#webhooks).
 
 ## Getting a Single Webhook
 
@@ -119,6 +122,8 @@ curl -X GET http://localhost:3000/api/v1/webhooks/{webhookId} \
      -H "accept: application/json"
 ```
 FFmate returns a JSON object containing the details of the requested webhook.
+
+💡 Tip: Want a quick way to check the webhook details? You can view webhook configurations directly in the [FFmate Web UI](/docs/web-ui.md#webhooks) without using the API.
 
 ## Updating a Webhook
 
@@ -135,6 +140,8 @@ curl -X PUT http://localhost:3000/api/v1/webhooks/{webhookId} \
 
 FFmate returns the updated webhook object in JSON format.
 
+💡 Tip: Making changes to a webhook? You can update settings like name and url directly in the [FFmate Web UI](/docs/web-ui.md#webhooks).
+
 ## Deleting a Webhook  
 
 To remove a webhook, send a `DELETE` request with its ID:
@@ -145,6 +152,8 @@ curl -X DELETE http://localhost:3000/api/v1/webhooks/{webhookId} \
 ```
 
 FFmate responds with a `204` No Content status. The webhook will be removed from the system.
+
+💡 Tip: No need to send a delete request manually—you can remove webhooks instantly from the [FFmate Web UI](/docs/web-ui.md#webhooks).
 
 ## Setting Up Your Webhook Endpoint
 

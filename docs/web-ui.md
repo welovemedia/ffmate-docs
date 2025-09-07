@@ -155,6 +155,39 @@ Hover over a preset in Presets, Click the **delete** icon next to a preset to re
 
 <ZoomImg src="/img/ffmate-presets-delete-preset.webp" alt="FFmate interface showing expanded details of a configured watchfolder, including UUID, status, last check timestamp, assigned preset, scan interval, growth check value, folder path, and file extension filters. The watchfolder is active with status OK and filters configured to include .mp4 and exclude .xml files"/>
 
+## Webhooks
+
+Webhooks let you integrate FFmate with other systems by sending real-time event notifications whenever something happens in your workflow — for example, when a task starts, finishes, or fails.
+
+### Creating a Watchfolder
+
+Click the **plus (+) button** in the bottom-right corner of the Webhooks page to create a new webhook.
+
+<ZoomImg src="/img/ffmate-webhook-add-new.webp" alt="FFmate webhook interface with an empty state and a green circular plus button highlighted in the bottom-right corner, indicating the ability to add a new webhook for real-time event notifications"/>
+
+Specify the **event** you want to subscribe to and the target **URL** where notifications should be delivered.
+
+<ZoomImg src="/img/ffmate-webhook-add-new-form-input.webp" alt="FFmate interface displaying the 'New Webhook' form, allowing users to configure automated event notifications by specifying the target URL, subscribed events,and a Create button to finalize the configuration"/>
+
+### Checking Configured Webhooks
+
+The Webhooks list displays all configured webhooks with their subscribed event and target URL.
+
+<ZoomImg src="/img/ffmate-webhook-list.webp" alt="FFmate webhook overview displaying a single configured webhook with subscribed to task created and pointing to a specified target URL. The interface shows the last notification timestamp, and a green plus button for adding additional webhooks"/>
+
+
+### Updating a Webhook
+
+Hover over a webhook in the list, click the **pencil** icon, adjust any field in the Edit Webhook form (event, url), then click Save. Changes take effect immediately, and new events will be delivered according to the updated configuration.
+
+<ZoomImg src="/img/ffmate-webhook-edit-webhook.webp" alt="FFmate Webhooks list showing a single configured webhook with subscribed event, and URL; the edit (pencil) icon is highlighted on the right side of the row, indicating the option to update the webhook configuration"/>
+
+### Deleting Watchfolders
+
+Hover over a webhook in the list and click the **delete** icon to remove it. FFmate will immediately stop sending notifications to that URL.
+
+<ZoomImg src="/img/ffmate-webhook-delete-webhook.webp" alt="FFmate Webhooks list showing a single configured webhook with subscribed event, and URL; the delete icon highlighted on the right side of the row, indicating the option to remove the webhook from the system"/>
+
 ## Accessing Real-Time Logs
 
 Click the **Logs** icon in the top-right navigation bar to open a real-time log window at the bottom of the screen.

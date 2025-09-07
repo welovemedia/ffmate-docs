@@ -28,7 +28,7 @@ An overview of new features, enhancements, and bug fixes for each version.
   Added new REST endpoints to retrieve a single webhook and to update an existing webhook. For details, see the [webhooks](/docs/webhooks.md).
 
 -  **Webhooks in the Web UI**  
-  The web UI now supports creating, viewing, and updating webhooks. For details, see the [webui](/docs/web-ui.md).
+  The web UI now supports creating, viewing, and updating webhooks. For details, see the [webui](/docs/web-ui.md#webhooks).
 
 ### Changes
 
