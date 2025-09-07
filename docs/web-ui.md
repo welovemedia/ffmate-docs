@@ -160,7 +160,7 @@ Hover over a preset in Presets, Click the **delete** icon next to a preset to re
 
 Webhooks let you integrate FFmate with other systems by sending real-time event notifications whenever something happens in your workflow — for example, when a task starts, finishes, or fails.
 
-### Creating a Watchfolder
+### Creating a Webhook
 
 Click the **plus (+) button** in the bottom-right corner of the Webhooks page to create a new webhook.
 
@@ -183,7 +183,7 @@ Hover over a webhook in the list, click the **pencil** icon, adjust any field in
 
 <ZoomImg src="/img/ffmate-webhook-edit-webhook.webp" alt="FFmate Webhooks list showing a single configured webhook with subscribed event, and URL; the edit (pencil) icon is highlighted on the right side of the row, indicating the option to update the webhook configuration"/>
 
-### Deleting Watchfolders
+### Deleting Webhooks
 
 Hover over a webhook in the list and click the **delete** icon to remove it. FFmate will immediately stop sending notifications to that URL.
 
