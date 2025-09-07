@@ -64,7 +64,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
      }'
 ```
 
-FFmate responds with a JSON object that contains the newly created task including its `ID`. An `task.created` event is also fired via [webhooks](/docs/webhooks#task-events)
+FFmate responds with a JSON object that contains the newly created task including its `ID`. This `taskId` can be used to monitor the task’s progress in the next section. An `task.created` event is also fired via [webhooks](/docs/webhooks#task-events)
 
 ### Task Properties
 
@@ -157,8 +157,6 @@ This is a powerful feature for:
 "outputFile": "/volumes/ffmate/processed/${METADATA_ffmate.watchfolder.relativeDir}/${INPUT_FILE_BASENAME}.mp4"
 ```
 
-After submitting a task, FFmate will respond with a JSON object containing the `taskId`. This `taskId` can be used to monitor the task’s progress in the next section.
-
 ## Monitoring a Task
 
 After submitting a task, you can check its current status by sending a `GET` request to the FFmate API:
@@ -173,7 +171,7 @@ Replace `{taskId}` with the actual task UUID returned in the response when the t
 
 FFmate responds with a JSON object containing the full details of the task.
 
-💡 Tip: You can also check the status of each task directly in the FFmate Web UI [FFmate Web UI](/docs/web-ui.md)
+💡 Tip: You can also check the status of each task directly in the FFmate Web UI [FFmate Web UI](/docs/web-ui.md#monitoring-tasks)
 
 ## Monitoring All Tasks
 
@@ -193,7 +191,7 @@ FFmate returns a JSON array containing all configured tasks. The `X-Total` respo
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
 - **`perPage`** *[optional]* – Defines how many tasks should be included in each page. Default: `100`.
 
-💡 Tip: You can also check the status of all tasks: queued, processing, completed, or failed directly in the [FFmate Web UI](/docs/web-ui.md)
+💡 Tip: You can also check the status of all tasks: queued, processing, completed, or failed directly in the [FFmate Web UI](/docs/web-ui.md#monitoring-tasks)
 
 
 ## Canceling a Task
@@ -213,7 +211,7 @@ FFmate responds with a JSON object containing the updated details of the task. T
 > [!NOTE]
 > If the task is already processing, FFmate will attempt to **stop** it, but cancellation may not always be immediate.
 
-💡 Tip: You can also cancel a running task directly from the [FFmate Web UI](/docs/web-ui.md) with a single click—no API call needed.
+💡 Tip: You can also cancel a running task directly from the [FFmate Web UI](/docs/web-ui.md#canceling-tasks) with a single click—no API call needed.
 
 ## Restarting a Task
 
@@ -235,7 +233,7 @@ FFmate responds with a JSON object containing the updated details of the task. T
 
 Once restarted, the task will move back into the **queued** state and follow the standard [task lifecycle](#task-flow).
 
-💡 Tip: Need to rerun a task? You can restart it directly in the [FFmate Web UI](/docs/web-ui.md)
+💡 Tip: Need to rerun a task? You can restart it directly in the [FFmate Web UI](/docs/web-ui.md#restarting-tasks)
 
 ## Deleting a Task
 
@@ -255,7 +253,7 @@ FFmate responds with a `204` No Content status. The task will be removed from th
 - If the task is still processing, FFmate will attempt to **stop** it before deletion.
 :::
 
-💡 Tip: Tasks can also be deleted from the [FFmate Web UI](/docs/web-ui.md)
+💡 Tip: Tasks can also be deleted from the [FFmate Web UI](/docs/web-ui.md#deleting-tasks)
 
 ## Submitting Multiple Tasks as a Batch
 

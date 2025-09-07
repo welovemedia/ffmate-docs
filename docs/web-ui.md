@@ -5,7 +5,7 @@ description: "Explore the FFmate Web UI: an intuitive interface to manage FFmpeg
 
 # FFmate Web UI
 
-The FFmate Web UI offers a clean, intuitive way to manage and monitor your FFmpeg jobs in real time.
+The FFmate Web UI offers a clean, intuitive way to manage and monitor your `FFmpeg` jobs in real time.
 
 You can easily track active tasks, configure watchfolders, create presets, and access detailed logs—all from your browser, without needing to use the API or command line.
 
@@ -15,20 +15,20 @@ Whether you're a developer, media technician, or workflow specialist, the Web UI
 
 The FFmate Web UI is divided into four main sections, each designed to simplify and streamline your media processing workflows:
 
-1.  **`Dashboard`** – Monitor and manage all FFmpeg tasks in real time, including active, completed, and failed jobs.
+1.  **`Dashboard`** – Monitor and manage all `FFmpeg` tasks in real time, including active, completed, and failed jobs.
 2.  **`Watchfolders`** – Configure folders to automatically trigger tasks when new media files are detected.
-3.  **`Presets`** – Define and reuse FFmpeg command templates for consistent, repeatable transcoding tasks.
+3.  **`Presets`** – Define and reuse `FFmpeg` command templates for consistent, repeatable transcoding tasks.
 4.  **`Webhooks`** – Send real-time notifications to external systems whenever events occur, such as task progress, completion, or failure.
 5.  **`Logs`** – Access live system logs, including task execution, watchfolder activity, and background processing events.
 
 <ZoomImg src="/img/ffmate-nav.webp" alt="FFmate Web UI displaying a persistent notification in the navigation bar warning that FFmpeg is not installed, with a link to the installation guide"/>
 
-FFmate includes a built-in mechanism to check whether`FFmpeg` is installed and accessible. It looks for FFmpeg in the system’s default `PATH` or in the custom location specified via the `--ffmpeg` flag. If FFmpeg is not found, the Web UI will display a persistent notification in the navigation bar. This alert includes a direct link to the [documentation](/docs/getting-started#Installing-ffmpeg) with step-by-step instructions on how to install FFmpeg on all supported operating systems.
+FFmate includes a built-in mechanism to check whether `FFmpeg` is installed and accessible. It looks for `FFmpeg` in the system’s default `PATH` or in the custom location specified via the `--ffmpeg` flag. If `FFmpeg` is not found, the Web UI will display a persistent notification in the navigation bar. This alert includes a direct link to the [documentation](/docs/getting-started#Installing-ffmpeg) with step-by-step instructions on how to install `FFmpeg` on all supported operating systems.
 
 > [!NOTE]
 > FFmate requires **FFmpeg** to function. If **FFmpeg** is not accessible, FFmate will not be able to process any tasks.
 
-This check is performed only once, when FFmate starts. If `FFmpeg` is installed while FFmate is already running, the warning will remain visible, even if FFmpeg has become available in the meantime. To clear the warning and ensure full functionality, simply restart FFmate after installing `FFmpeg`.
+This check is performed only once, when FFmate starts. If `FFmpeg` is installed while FFmate is already running, the warning will remain visible, even if `FFmpeg` has become available in the meantime. To clear the warning and ensure full functionality, simply restart FFmate after installing `FFmpeg`.
 
 <ZoomImg src="/img/ffmate-dashboard-ffmpeg-not-found.webp" alt="FFmate navigation bar featuring Dashboard, Watchfolders, Presets, and Logs sections, each marked with numeric indicators to guide users through the interface"/>
 
@@ -76,7 +76,7 @@ To remove a task from the list, hover over it and click the **delete** icon. Del
 
 ### Task Details
 
-Click on any task to see its full execution details, including progress, FFmpeg command, input/output paths, and pre/post-processing information.
+Click on any task to see its full execution details, including progress, `FFmpeg` command, input/output paths, and pre/post-processing information.
 
 <ZoomImg src="/img/ffmate-dashboard-task-details.webp" alt="FFmate task details view displaying real-time information for an active media processing job. The interface shows UUID, priority, status, and progress bar at 64.82%, along with resolved FFmpeg command, input and output file paths, and pre/post-processing sidecar file locations using dynamic DATE_YEAR placeholders"/>
 
@@ -120,7 +120,7 @@ Hover over a preset in Presets, click the **delete** icon next to a watchfolder 
 
 ## Presets
 
-Presets in FFmate are reusable templates that simplify task creation by letting you predefine FFmpeg commands, output naming patterns, priorities, and optional pre/post-processing scripts.
+Presets in FFmate are reusable templates that simplify task creation by letting you predefine `FFmpeg` commands, output naming patterns, priorities, and optional pre/post-processing scripts.
 
 ### Creating a Preset
 
@@ -140,13 +140,13 @@ View all configured presets along with their name, description, priority, and ou
 
 ### Checking Preset Details
 
-Click on any preset to view its full configuration, including the FFmpeg command, output pattern, priority, and any pre/post-processing settings.
+Click on any preset to view its full configuration, including the `FFmpeg` command, output pattern, priority, and any pre/post-processing settings.
 
 <ZoomImg src="/img/ffmate-presets-details.webp" alt="FFmate interface showing expanded details of a configured watchfolder, including UUID, status, last check timestamp, assigned preset, scan interval, growth check value, folder path, and file extension filters. The watchfolder is active with status OK and filters configured to include .mp4 and exclude .xml files"/>
 
 ### Updating a Preset
 
-Hover over a preset in Presets, click the **pencil** icon, modify any fields in the Edit Preset form (name, FFmpeg command, output pattern, priority, scripts), then click Save.
+Hover over a preset in Presets, click the **pencil** icon, modify any fields in the Edit Preset form (name, `FFmpeg` command, output pattern, priority, scripts), then click Save.
 
 <ZoomImg src="/img/ffmate-presets-edit-preset.webp" alt="FFmate Presets list showing a single configured preset named “Convert to MOV” (created 6 days ago) with priority 0, FFmpeg command -y -i ${INPUT_FILE} ${OUTPUT_FILE}, output pattern ${INPUT_FILE_D..._BASENAME}.mov, pre- and post-processing enabled; the edit (pencil) icon is highlighted to indicate updating the preset"/>
 
