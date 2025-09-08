@@ -13,7 +13,7 @@ You can define pre and post-processing steps either directly within a task creat
 
 For both pre-processing and post-processing, you can configure the following:
 
-- **`scriptPath`** *[mandatory]* – The command or script FFmate should run before the main `ffmpeg` command. It supports [wildcards](/docs/wildcards.md) to pass dynamic values like filenames, UUIDs, or dates as arguments to your script.
+- **`scriptPath`** *[optional]* – The command or script FFmate should run before the main `ffmpeg` command. It supports [wildcards](/docs/wildcards.md) to pass dynamic values like filenames, UUIDs, or dates as arguments to your script.
     
 *Example*: `python3 /opt/ffmate_scripts/prepare_audio.py --input ${INPUT_FILE} --normalize-level -3dBFS`
 

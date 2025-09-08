@@ -70,12 +70,14 @@ FFmate supports a range of webhook events, organized into categories based on wh
 
 ---
 
-### Webhook Events :
+### Webhook Events
 
-| Event              | Description |
-|--------------------|-------------|
-| `webhook.created` | Triggered when a new webhook is registered |
-| `webhook.deleted` | Triggered when a webhook is removed |
+| Event              | Description                                   |
+|--------------------|-----------------------------------------------|
+| `webhook.created`  | Triggered when a new webhook is registered    |
+| `webhook.updated`  | Triggered when an existing webhook is updated |
+| `webhook.deleted`  | Triggered when a webhook is removed           |
+
 
 
 ### Webhook Payload:

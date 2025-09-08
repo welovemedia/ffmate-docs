@@ -28,7 +28,7 @@ FFmate includes a built-in mechanism to check whether `FFmpeg` is installed and 
 > [!NOTE]
 > FFmate requires **FFmpeg** to function. If **FFmpeg** is not accessible, FFmate will not be able to process any tasks.
 
-This check is performed only once, when FFmate starts. If `FFmpeg` is installed while FFmate is already running, the warning will remain visible, even if `FFmpeg` has become available in the meantime. To clear the warning and ensure full functionality, simply restart FFmate after installing `FFmpeg`.
+FFmate checks for the `ffmpeg` executable every 10 seconds, either on the system `PATH` or at a custom location specified with the `--ffmpeg` flag. If FFmate cannot find the executable at startup or loses access to it during runtime, a warning message appears in both the logs and the web interface.
 
 <ZoomImg src="/img/ffmate-dashboard-ffmpeg-not-found.webp" alt="FFmate navigation bar featuring Dashboard, Watchfolders, Presets, and Logs sections, each marked with numeric indicators to guide users through the interface"/>
 
