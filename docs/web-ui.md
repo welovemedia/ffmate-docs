@@ -1,0 +1,200 @@
+---
+title: "FFmate Web UI Guide: Dashboard, Watchfolders, Presets & Logs Interface"
+description: "Explore the FFmate Web UI: an intuitive interface to manage FFmpeg jobs, monitor tasks, configure watchfolders, create presets, and view real-time logs"
+---
+
+# FFmate Web UI
+
+The FFmate Web UI offers a clean, intuitive way to manage and monitor your `FFmpeg` jobs in real time.
+
+You can easily track active tasks, configure watchfolders, create presets, and access detailed logs—all from your browser, without needing to use the API or command line.
+
+Whether you're a developer, media technician, or workflow specialist, the Web UI helps you stay in control of your transcoding operations from start to finish.
+
+## Navigation Overview
+
+The FFmate Web UI is divided into four main sections, each designed to simplify and streamline your media processing workflows:
+
+1.  **`Dashboard`** – Monitor and manage all `FFmpeg` tasks in real time, including active, completed, and failed jobs.
+2.  **`Watchfolders`** – Configure folders to automatically trigger tasks when new media files are detected.
+3.  **`Presets`** – Define and reuse `FFmpeg` command templates for consistent, repeatable transcoding tasks.
+4.  **`Webhooks`** – Send real-time notifications to external systems whenever events occur, such as task progress, completion, or failure.
+5.  **`Logs`** – Access live system logs, including task execution, watchfolder activity, and background processing events.
+
+<ZoomImg src="/img/ffmate-nav.webp" alt="FFmate Web UI displaying a persistent notification in the navigation bar warning that FFmpeg is not installed, with a link to the installation guide"/>
+
+FFmate includes a built-in mechanism to check whether `FFmpeg` is installed and accessible. It looks for `FFmpeg` in the system’s default `PATH` or in the custom location specified via the `--ffmpeg` flag. If `FFmpeg` is not found, the Web UI will display a persistent notification in the navigation bar. This alert includes a direct link to the [documentation](/docs/getting-started#Installing-ffmpeg) with step-by-step instructions on how to install `FFmpeg` on all supported operating systems.
+
+> [!NOTE]
+> FFmate requires **FFmpeg** to function. If **FFmpeg** is not accessible, FFmate will not be able to process any tasks.
+
+FFmate checks for the `ffmpeg` executable every 10 seconds, either on the system `PATH` or at a custom location specified with the `--ffmpeg` flag. If FFmate cannot find the executable at startup or loses access to it during runtime, a warning message appears in both the logs and the web interface.
+
+<ZoomImg src="/img/ffmate-dashboard-ffmpeg-not-found.webp" alt="FFmate navigation bar featuring Dashboard, Watchfolders, Presets, and Logs sections, each marked with numeric indicators to guide users through the interface"/>
+
+## Dashboard
+
+The Dashboard provides a real-time overview of all `FFmpeg` tasks—letting you monitor progress, manage jobs, and review task details at a glance.
+
+### Monitoring Tasks
+
+View all active and completed tasks in real time, including their status and progress.
+
+<ZoomImg src="/img/ffmate-dashboard-task-statuses.webp" alt="FFmate task dashboard displaying a list of media processing tasks with columns for name, priority, status, progress, input file path, and output file path. Several tasks are queued at 0%, while others are running with real-time progress bars and estimated time remaining"/>
+
+### Filtering Task Statuses
+
+You can filter tasks by their current status to quickly focus on specific groups, such as **running**, **failed**, or **completed** jobs.
+
+To filter the list, click the **cogwheel icon** in the status column header and select a status from the dropdown menu.
+
+- **`QUEUED`** – Task is waiting to be processed.
+- **`RUNNING`** – Task is currently being executed.
+- **`DONE_SUCCESSFUL`** – Task completed without errors.
+- **`DONE_ERROR`** – Task encountered an error.
+- **`DONE_CANCELED`** – Task was manually canceled.
+
+<ZoomImg src="/img/ffmate-dashboard-task-filter-statuses.webp" alt="FFmate dashboard displaying a single active media processing task in RUNNING state with a live progress bar at 24.04%. The interface prominently highlights the status column filter icon, signaling support for filtering tasks by state such as queued, running, done_successful, done_error, done_canceled"/>
+
+### Canceling Tasks
+
+To stop a running task, hover over it to reveal the **cancel** icon on the right. Once clicked, the task will be halted immediately and marked as `DONE_CANCELED`.
+
+<ZoomImg src="/img/ffmate-dashboard-cancel-task.webp" alt="FFmate dashboard showing multiple media processing tasks with progress indicators. One task is actively running at 54.76% completion. The interface highlights a circular cancel button on the right side of the row, indicating the ability to terminate individual tasks directly from the dashboard"/>
+
+### Restarting Tasks
+
+To re-run a completed or failed task, hover over it and click the **restart** icon. The task will be resubmitted with the same configuration and added back to the queue.
+
+<ZoomImg src="/img/ffmate-dashboard-task-restart.webp" alt="FFmate dashboard displaying a completed media processing task with a status of DONE_SUCCESSFUL and a progress bar showing 100%. The interface highlights a circular restart icon on the right side of the task row, indicating the option to rerun or reprocess completed tasks directly from the dashboard"/>
+
+### Deleting Tasks
+
+To remove a task from the list, hover over it and click the **delete** icon. Deleting a task will permanently remove both the task and its logs from the database.
+
+<ZoomImg src="/img/ffmate-dashboard-task-delete.webp" alt="FFmate dashboard displaying a successfully completed media processing task marked as DONE_SUCCESSFUL with a 100% progress bar. The interface highlights the trash bin icon on the right side of the row, indicating the option to delete completed tasks directly from the dashboard UI"/>
+
+### Task Details
+
+Click on any task to see its full execution details, including progress, `FFmpeg` command, input/output paths, and pre/post-processing information.
+
+<ZoomImg src="/img/ffmate-dashboard-task-details.webp" alt="FFmate task details view displaying real-time information for an active media processing job. The interface shows UUID, priority, status, and progress bar at 64.82%, along with resolved FFmpeg command, input and output file paths, and pre/post-processing sidecar file locations using dynamic DATE_YEAR placeholders"/>
+
+## Watchfolders
+
+Watchfolders let you automate task creation by continuously monitoring specific folders and triggering jobs when new media files are detected.
+
+### Creating a Watchfolder
+
+Click the **plus (+) button** in the bottom-right corner of the Watchfolders page to create a new watchfolder.
+
+<ZoomImg src="/img/ffmate-watchfolder-add-new.webp" alt="FFmate watchfolder interface with an empty state and a green circular plus button highlighted in the bottom-right corner, indicating the ability to add a new watchfolder for automated media ingestion and processing"/>
+
+Specify the folder path, preset, scan interval, growth check duration, and optional file extension filters.
+
+<ZoomImg src="/img/ffmate-watchfolder-add-new-form-input.webp" alt="FFmate interface displaying the 'New Watchfolder' form, allowing users to configure automated task creation by specifying folder path, preset, scan interval, growth check duration, and optional file extension filters. Form includes fields for name, description, and a Create button to finalize the setup"/>
+
+### Checking Configured Watchfolders
+
+The watchfolder list displays all configured watchfolders along with their current status, assigned preset, and monitored folder path.
+
+<ZoomImg src="/img/ffmate-watchfolder-list.webp" alt="FFmate watchfolder overview displaying a single configured watchfolder with status OK, a 5-second scan interval, active file filtering, and an assigned preset named 'rotate'. The interface shows the folder path, last check timestamp, and a green plus button for adding additional watchfolders"/>
+
+### Checking Watchfolder Details
+
+Click on any watchfolder to view its full configuration, including assigned preset, filter rules, scan settings, and monitored folder path.
+
+<ZoomImg src="/img/ffmate-watchfolder-details.webp" alt="FFmate interface showing expanded details of a configured watchfolder, including UUID, status, last check timestamp, assigned preset, scan interval, growth check value, folder path, and file extension filters. The watchfolder is active with status OK and filters configured to include .mp4 and exclude .xml files"/>
+
+### Updating a Watchfolder
+
+Hover over a watchfolder in Watchfolders, click the **pencil** icon, adjust any field in the Edit Watchfolder form (path, preset, scan interval, growth check, filters), then click Save. The watchfolder will restart with the new configuration shortly after the update.
+
+<ZoomImg src="/img/ffmate-watchfolder-edit-watchfolder.webp" alt="FFmate Watchfolders list showing a single configured watchfolder named “My first watchfolder” (created 6 days ago) with status OK, a 5 sec scan interval (3 checks), monitored path “/Users/r.gala/.../cameracard”, filters enabled, and last check “just now”; the edit (pencil) icon is highlighted to indicate updating the watchfolder"/>
+
+### Deleting Watchfolders
+
+Hover over a preset in Presets, click the **delete** icon next to a watchfolder to remove it. FFmate will immediately stop monitoring the associated folder.
+
+<ZoomImg src="/img/ffmate-watchfolder-delete-watchfolder.webp" alt="FFmate watchfolder management interface showing a configured watchfolder with status OK and an active delete icon highlighted on the right side of the row, indicating the option to remove the watchfolder from the system. The UI includes path, scan interval, preset, and last check timestamp"/>
+
+## Presets
+
+Presets in FFmate are reusable templates that simplify task creation by letting you predefine `FFmpeg` commands, output naming patterns, priorities, and optional pre/post-processing scripts.
+
+### Creating a Preset
+
+Click the **plus (+) button** in the bottom-right corner of the Presets page to create a new Preset.
+
+<ZoomImg src="/img/ffmate-presets-add-new.webp" alt="FFmate presets interface displaying an empty state with a green circular plus button highlighted in the bottom-right corner, indicating the option to create a new encoding preset for automated media processing workflow"/>
+
+You can create your own custom preset or choose from a set of predefined, ready-to-use presets provided by the FFmate team.
+
+<ZoomImg src="/img/ffmate-presets-add-new-form-input.webp" alt="FFmate preset creation interface displaying a form for defining a new encoding preset, with fields for name, description, FFmpeg command, output file, priority, and optional pre/post-processing script and sidecar paths. The left panel lists global presets like frame rate conversion, format changes, and audio extraction"/>
+
+### List of Active Presets
+
+View all configured presets along with their name, description, priority, and output file pattern.
+
+<ZoomImg src="/img/ffmate-presets-list.webp" alt="FFmate presets interface displaying a custom encoding preset titled 'Convert to MOV', with a priority of 0, defined FFmpeg command using input/output placeholders, dynamic output filename, and active pre- and post-processing scripts. The UI includes a green plus button to add additional presets"/>
+
+### Checking Preset Details
+
+Click on any preset to view its full configuration, including the `FFmpeg` command, output pattern, priority, and any pre/post-processing settings.
+
+<ZoomImg src="/img/ffmate-presets-details.webp" alt="FFmate interface showing expanded details of a configured watchfolder, including UUID, status, last check timestamp, assigned preset, scan interval, growth check value, folder path, and file extension filters. The watchfolder is active with status OK and filters configured to include .mp4 and exclude .xml files"/>
+
+### Updating a Preset
+
+Hover over a preset in Presets, click the **pencil** icon, modify any fields in the Edit Preset form (name, `FFmpeg` command, output pattern, priority, scripts), then click Save.
+
+<ZoomImg src="/img/ffmate-presets-edit-preset.webp" alt="FFmate Presets list showing a single configured preset named “Convert to MOV” (created 6 days ago) with priority 0, FFmpeg command -y -i ${INPUT_FILE} ${OUTPUT_FILE}, output pattern ${INPUT_FILE_D..._BASENAME}.mov, pre- and post-processing enabled; the edit (pencil) icon is highlighted to indicate updating the preset"/>
+
+### Removing a Preset
+
+Hover over a preset in Presets, Click the **delete** icon next to a preset to remove it.
+
+<ZoomImg src="/img/ffmate-presets-delete-preset.webp" alt="FFmate interface showing expanded details of a configured watchfolder, including UUID, status, last check timestamp, assigned preset, scan interval, growth check value, folder path, and file extension filters. The watchfolder is active with status OK and filters configured to include .mp4 and exclude .xml files"/>
+
+## Webhooks
+
+Webhooks let you integrate FFmate with other systems by sending real-time event notifications whenever something happens in your workflow — for example, when a task starts, finishes, or fails.
+
+### Creating a Webhook
+
+Click the **plus (+) button** in the bottom-right corner of the Webhooks page to create a new webhook.
+
+<ZoomImg src="/img/ffmate-webhook-add-new.webp" alt="FFmate webhook interface with an empty state and a green circular plus button highlighted in the bottom-right corner, indicating the ability to add a new webhook for real-time event notifications"/>
+
+Specify the **event** you want to subscribe to and the target **URL** where notifications should be delivered.
+
+<ZoomImg src="/img/ffmate-webhook-add-new-form-input.webp" alt="FFmate interface displaying the 'New Webhook' form, allowing users to configure automated event notifications by specifying the target URL, subscribed events,and a Create button to finalize the configuration"/>
+
+### Checking Configured Webhooks
+
+The Webhooks list displays all configured webhooks with their subscribed event and target URL.
+
+<ZoomImg src="/img/ffmate-webhook-list.webp" alt="FFmate webhook overview displaying a single configured webhook with subscribed to task created and pointing to a specified target URL. The interface shows the last notification timestamp, and a green plus button for adding additional webhooks"/>
+
+
+### Updating a Webhook
+
+Hover over a webhook in the list, click the **pencil** icon, adjust any field in the Edit Webhook form (event, url), then click Save. Changes take effect immediately, and new events will be delivered according to the updated configuration.
+
+<ZoomImg src="/img/ffmate-webhook-edit-webhook.webp" alt="FFmate Webhooks list showing a single configured webhook with subscribed event, and URL; the edit (pencil) icon is highlighted on the right side of the row, indicating the option to update the webhook configuration"/>
+
+### Deleting Webhooks
+
+Hover over a webhook in the list and click the **delete** icon to remove it. FFmate will immediately stop sending notifications to that URL.
+
+<ZoomImg src="/img/ffmate-webhook-delete-webhook.webp" alt="FFmate Webhooks list showing a single configured webhook with subscribed event, and URL; the delete icon highlighted on the right side of the row, indicating the option to remove the webhook from the system"/>
+
+## Accessing Real-Time Logs
+
+Click the **Logs** icon in the top-right navigation bar to open a real-time log window at the bottom of the screen.
+
+<ZoomImg src="/img/ffmate-logs.webp" alt="FFmate dashboard interface showing a completed media processing task with a highlighted 'Logs' button in the top-right corner, indicating access to detailed execution logs for monitoring and debugging purposes. Task status is marked as DONE_SUCCESSFUL with a 100% progress bar and defined input/output paths"/>
+
+This view shows live FFmate activity, including task execution, watchfolder events, and system messages.
+
+<ZoomImg src="/img/ffmate-logs-details.webp" alt="FFmate dashboard displaying an empty task list with the logs panel expanded, showing system-level logs related to preset and watchfolder creation, deletion, and directory scan errors. Entries include UUID references, timestamps, and repeated errors indicating missing directories during watchfolder polling"/>
