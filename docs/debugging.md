@@ -12,7 +12,7 @@ FFmate offers powerful, fine-grained debugging options that allow you to capture
 You can enable debug logging in two ways:
 
 1.  **Using the Command-Line Flag:**
-    *   The most common way is to use the global `-d` or `--debug` flag when running any `ffmate` command (especially `ffmate server`).
+    *   The most common way is to use the global `--debug` flag when running any `ffmate` command (especially `ffmate server`).
     *   **Syntax:** `ffmate <command> --debug="<namespaces>"`
     *   **Example:** `ffmate server --debug="*"`
 
@@ -100,8 +100,8 @@ All debug messages follow a consistent structure:
 HH:MM:SS.mmm <NAMESPACE> <MESSAGE>
 ```
 
-- **`HH:MM:SS.mmm`** – Timestamp showing hours, minutes, seconds, and milliseconds  
-- **`<NAMESPACE>`** – Identifies the component that generated the message  
+- **`HH:MM:SS.mmm`** – Timestamp showing hours, minutes, seconds, and milliseconds
+- **`<NAMESPACE>`** – Identifies the component that generated the message
 - **`<MESSAGE>`** – The actual debug log content
 
 **Example:**
