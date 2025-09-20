@@ -1,0 +1,28 @@
+{
+  "config": {
+    "MD013": false,
+    "MD012": {
+      "maximum": 3
+    },
+    "MD033": false,
+    "MD034": false,
+    "MD036": false,
+    "MD024": false,
+    "MD026": false,
+    "MD029": false,
+    "MD030": false,
+    "MD041": false,
+    "MD025": false,
+    "MD007": false,
+    "MD004": false,
+    "MD040": false,
+    "MD031": false,
+    "MD032": false,
+    "MD022": false,
+    "MD001": false,
+    "MD019": false,
+    "MD009": false,
+    "MD047": false,
+    "MD058": false
+  }
+}

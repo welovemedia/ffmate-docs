@@ -19,3 +19,13 @@ jobs:
         run: |
           go install github.com/client9/misspell/cmd/misspell@latest
           misspell -error docs
+
+  markdown-lint:
+    name: Markdown Linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v15
+        with:
+          globs: 'docs/**/*.md'
