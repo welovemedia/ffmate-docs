@@ -101,7 +101,6 @@ For more details on how debugging works in FFmate, see [Debugging](/docs/debuggi
 
 **Postgres** is one of the most powerful battle tested and use object-relational database in the world. There are various options to provision or deploy postgres and while this section is not meant to give an indeepth section, we want to highlight the various options you have to get a Postgres db up and running
 
-
 ### Deployment Options
 
 FFmate needs a **PostgreSQL** instance that all nodes can reach. You’ve got a few ways to get there, depending on your environment and comfort level.
