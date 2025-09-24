@@ -96,7 +96,7 @@ curl -X POST http://localhost:3000/api/v1/watchfolder \
      }'
 ```
 
-After you create a preset, FFmate responds with a JSON object that includes the `ID` of the newly created watchfolder.An `watchfolder.created` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
+After you create a preset, FFmate responds with a JSON object that includes the `ID` of the newly created watchfolder. A `watchfolder.created` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
 
 💡 Tip: Creating a new preset? You can define and save presets directly in the [FFmate Web UI](/docs/web-ui.md) without writing any API requests
 
@@ -172,7 +172,7 @@ curl -X PUT http://localhost:3000/api/v1/watchfolder/{watchfolderId} \
      }'
 ```
 
-FFmate responds with the full JSON object representing the updated watchfolder. The watchfolder will restart with the new configuration shortly after the update. An `watchfolder.updated` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
+FFmate responds with the full JSON object representing the updated watchfolder. The watchfolder will restart with the new configuration shortly after the update. A `watchfolder.updated` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
 
 💡 Tip: Making changes to a watchfolder? You can update settings like filters and intervals directly in the [FFmate Web UI](/docs/web-ui.md).
 
@@ -217,6 +217,6 @@ curl -X DELETE http://localhost:3000/api/v1/watchfolder/{watchfolderId} \
      -H "accept: application/json"
 ```
 
- FFmate responds with a `204` No Content status. The watchfolder will be **removed** from the system, and any monitoring for that folder will **stop**. An `watchfolder.deleted` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
+ FFmate responds with a `204` No Content status. The watchfolder will be **removed** from the system, and any monitoring for that folder will **stop**. A `watchfolder.deleted` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
 
 💡 Tip: No need to send a delete request manually—you can remove watchfolders instantly from the [FFmate Web UI](/docs/web-ui.md).
