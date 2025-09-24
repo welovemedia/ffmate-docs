@@ -20,42 +20,57 @@ The watchfolder feature is useful for **automatically transcoding** footage from
 
     By waiting until the file stops growing, FFmate ensures that partially copied or incomplete files aren’t processed too early. This is especially important for large media files being uploaded over a network or transferred from external systems.
 
-3. **Create Tasks** – Each finished file results in a **new [task](/docs/tasks.md)** that FFmate processes automatically.  
-   Tasks created by a watchfolder always include a specific `metadata` object populated with file information about the item that triggered the task. This includes:  
+3. **Create Tasks** – Each finished file results in a **new [task](/docs/tasks.md)** that FFmate processes automatically.
 
-   - `path` — the absolute path to the watchfolder  
-   - `relativeDir` — the relative directory of the file inside the watchfolder  
-   - `relativePath` — the relative path to the file inside the watchfolder  
-   - `uuid` — the unique identifier of the watchfolder that generated the task
+    For each processed file, FFmate creates an empty `.lock` file next to it (e.g., `movie.mp4` → `movie.mp4.lock`).
+    
+    This special file ensures the file isn’t picked up again, even after a restart. If the `.lock` file is removed while the original is still in the folder, the watchfolder will see it as new and process it again.
 
-   Example:  
+### Watchfolder metadata
 
-   ```json
-   "metadata": {
-     "ffmate": {
-       "watchfolder": {
-         "path": "/volumes/ffmate/wf",
-         "relativeDir": "parent/subfolder1",
-         "relativePath": "parent/subfolder1/18moo.mov",
-         "uuid": "06bbbe21-8003-41b3-94f4-62508486c482"
-       }
-     }
-   }
+Tasks created by a watchfolder always include a specific `metadata` object populated with file information about the item that triggered the task. This includes:  
+
+- `path` — the absolute path to the watchfolder  
+- `relativeDir` — the relative directory of the file inside the watchfolder  
+- `relativePath` — the relative path to the file inside the watchfolder  
+- `uuid` — the unique identifier of the watchfolder that generated the task
+
+Example:  
+
+```json
+"metadata": {
+  "ffmate": {
+    "watchfolder": {
+      "path": "/volumes/ffmate/wf",
+      "relativeDir": "parent/subfolder1",
+      "relativePath": "parent/subfolder1/18moo.mov",
+      "uuid": "06bbbe21-8003-41b3-94f4-62508486c482"
+    }
+  }
+}
+```
   
 ### Watchfolder Task Flow
 
-The diagram below shows how a file dropped into a watchfolder becomes a task in FFmate.
+The diagram below shows how a file dropped into a watchfolder becomes a [task](/docs/tasks.md) in FFmate.
 
 ```mermaid
 flowchart LR
+
+    %% Styles
     classDef monitor fill:#99d6ff,stroke:#2060a0,stroke-width:1.2px,color:#000;
     classDef detect  fill:#ffff99,stroke:#2060a0,stroke-width:1.2px,color:#000;
     classDef create  fill:#99ff99,stroke:#2d7a2d,stroke-width:1.2px,color:#000;
+    classDef lock    fill:#ffcc99,stroke:#a65c00,stroke-width:1.2px,color:#000;
 
-    A["Monitor Folder<br>Scan directory at set interval<br>&nbsp;"]:::monitor
-    B["Detect New Files<br>Wait until file copy completes<br>&nbsp;"]:::detect
-    C["Create Tasks<br>Create FFmate task for each file<br>&nbsp;"]:::create
-    A --> B --> C
+    %% Nodes
+A["Monitor Folder<br>Scan directory at set interval<br>&nbsp;"]:::monitor
+B["Detect New Files<br>Wait until file copy completes<br>&nbsp;"]:::detect
+C["Create Tasks<br>Create FFmate task for each file<br>&nbsp;"]:::create
+D["Write .lock File<br>Prevents file from being processed again<br>&nbsp;"]:::lock
+
+    %% Flow
+    A --> B --> C --> D
 ```
 
 ## Creating a Watchfolder  
