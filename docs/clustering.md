@@ -36,7 +36,7 @@ All it takes to create a cluster of FFmate instances are three simple steps:
 
 1. **Provision a PostgreSQL database** that all nodes can reach. 
 2. **Create a user and database** inside PostgreSQL for FFmate.  
-3. **Start each FFmate instance** with the same [--database](/docs/flags.md#server-command-flags) URI and a unique identifier:  
+3. **Start each FFmate instance** with the same [--database](/docs/flags.md#server-command-flags) URI and a **unique identifier**:  
 
 ```bash
 # Node A
