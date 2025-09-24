@@ -5,7 +5,7 @@ description: "Comprehensive guide to all FFmate command-line flags. Learn to con
 
 # Command-Line Interface (CLI)
 
-The FFmate command-line interface is your primary tool for starting and managing the application. It follows a standard `ffmate [command] [flags]` pattern and provides three distinct commands:
+FFmate’s command-line interface is the main way to start and manage the application. It follows a standard `ffmate [command] [flags]` pattern and provides three distinct commands:
 
 * `server:` This is the main command that runs FFmate.
 * `update:` This is a utility command used to check for and install new versions of the FFmate binary.
@@ -46,6 +46,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
 
         * Windows: `%APPDATA%\ffmate\db.sqlite`
         * macOS/Linux: `~/.ffmate/db.sqlite`
+        * Docker: `/app/db/sqlite.db`
 
         You can specify an alternative location by passing the full file path with `--database`.
 
@@ -83,10 +84,16 @@ The `server` command starts FFmate. All flags listed in this section are specifi
     *   **Default:** `3`
     *   **Example:** `ffmate server --max-concurrent-tasks="5"` (allows up to 5 tasks to run at once)
 
+*   **`--send-telemetry <true|false>`** or **`--send-telemetry=<true|false>`**
+    *   **Purpose:** Enables or disables the sending of anonymous usage telemetry data to `telemetry.FFmate.io`.
+    *   **Value:** `true` or `false`.
+    *   **Default:** `true` (telemetry is enabled).
+    *   **Example:** `ffmate server --send-telemetry=false`
 
 * **`--debug <namespaces>`** or **`-d <namespaces>`**
 
-  * **Purpose:** Controls what log messages FFmate prints. Instead of classic levels (INFO, DEBUG, ERROR), FFmate uses a **namespace system**. This gives you fine-grained control over which parts of the app show logs.
+  * **Purpose:** FFmate uses a **namespace system** instead of classic levels (INFO, DEBUG, ERROR). It’s built on our own lightweight Go library, [yosev/debugo](https://github.com/yosev/debugo), inspired by the popular [debug-js](https://github.com/debug-js/debug) package. This gives you fine-grained control over which parts of the app produce logs.  
+
   * **Default:** `info:?,warn:?,error:?`.
   * **Example:**
 
@@ -122,7 +129,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
     * `debug:http` – Logs every single API request that FFmate receives, including the HTTP method (GET, POST) and the path (e.g., /api/v1/tasks).
     * `debug:controller` – Logs the API endpoints (like /tasks, /presets) as they become active during startup. This is primarily for debugging the FFmate application itself. You generally won't need this unless you are modifying the source code.
     * `debug:websocket` –  Logs every time a client (like the Web UI) connects to or disconnects from the WebSocket server.
-    * `debug:client` – Logs the "heartbeat" of the FFmate instance. It logs the unique name the instance is using and a confirmation message every 15 seconds that it's alive and connected to the database.
+    * `debug:client` – Logs the "heartbeat" of the FFmate instance. It logs the unique name the instance is using and a confirmation message every 15 seconds that it's connected to the database.
     * `debug:ffmpeg` – Logs the real-time progress of an active FFmpeg job, showing details like frame number, FPS, bitrate, and speed.
     * `debug:task` –  Provides the most detailed, step-by-step view of the entire task processing system. It shows when the queue is checked for new jobs, when a task is picked up, and when its status changes. Turn this on when jobs seem to be "stuck" in the queue or are not being picked up as expected.
     * `debug:watchfolder` – Logs when a watchfolder is scanned, what files are found, and whether a file is ready to be processed.
@@ -154,49 +161,45 @@ The `server` command starts FFmate. All flags listed in this section are specifi
 
     *   **`*` – Match Everything**
         *   **Example:** `ffmate server --debug="*"`
-        *   **Result:** Shows every single log message from all namespaces (`info`, `debug:task`, `error:ffmpeg`, etc.). This is the best option for maximum verbosity when troubleshooting a complex issue.
+        *   **Result:** Shows every single log message from all namespaces. This is the best option for maximum verbosity.
 
-    *   **Prefix Match – Matches a parent and all of its children**
-        *   **Example:** `ffmate server --debug="debug"`
-        *   **Result:** Shows all logs from the base `debug` namespace and every child namespace like `debug:http`, `debug:task`, and `debug:controller`. This is useful when you want to see all low-level activity across the entire application.
+    *   **`name` (e.g., `debug`) – Match a Parent Namespace ONLY**
+        *   **Example:** `ffmate server --debug="warn"`
+        *   **Result:** Shows logs from the `warn` namespace itself, but will **not** show logs from its children, like `warn:task` or `warn:cluster`.
 
-    *   **`?` – Match a namespace *exactly*, without its children**
+    *   **`name:*` (e.g., `debug:*`) – Match Child Namespaces ONLY**
+        *   **Example:** `ffmate server --debug="debug:*"`
+        *   **Result:** Shows all logs from every child of `debug` (e.g., `debug:http`, `debug:task`) but will **not** show logs from the parent `debug` namespace itself.
+
+    *   **`name:?` (e.g., `debug:?`) – Match a Parent AND All Its Children**
         *   **Example:** `ffmate server --debug="info:?"`
-        *   **Result:** Shows only the general, high-level `info` messages. It will **not** show more specific informational logs like `info:task` or `info:ffmpeg`. This is a key part of the default setting (`info:?,warn:?,error:?`) to keep the primary log output clean and easy to read.
+        *   **Result:** Shows logs from the parent `info` namespace **and** all of its children (`info:task`, `info:ffmpeg`, etc.). This is the rule used in the default setting: `info:?,warn:?,error:?`.
 
-    *   **`-` – Exclude a namespace**
-        *   **Example:** `ffmate server --debug="*,-debug:*"`
-        *   **Result:** Shows everything (`info`, `warn`, `error`, and their children) *except* for logs from the `debug` namespace and its children. This is the perfect setting for monitoring a running instance for important events without the noise of low-level trace messages.
+    *   **`-` – Exclude Namespaces**
+        *   **Example:** `ffmate server --debug="*,-debug:?"`
+        *   **Result:** Shows everything (`info`, `warn`, `error`, and all their children) *except* for logs from the `debug` parent and all of its children.
 
-    *   **`,` – Combine multiple rules**
-        *   **Example:** `ffmate server --debug="error,*:task,debug:http"`
+    *   **`,` – Combine Multiple Rules**
+        *   **Example:** `ffmate server --debug="error:?,*:task,debug:http"`
         *   **Result:** Creates a highly specific filter that shows:
             1.  All logs from the `error` namespace and its children.
-            2.  *All* logs (info, debug, warn, error) from the `task` namespace and its children.
+            2.  *All* logs (info, debug, warn, error) from the `task` namespace's children only (e.g., `debug:task`).
             3.  All incoming HTTP requests from the `debug:http` namespace.
 
 
-    ### Common Examples
+        ### Common Examples
 
-    | Goal                               | Command                                        |
-    | ---------------------------------- | ---------------------------------------------- |
-    | Default (status, warnings, errors) | `ffmate server`                                |
-    | See everything                     | `ffmate server --debug="*"`                    |
-    | Info + errors                      | `ffmate server --debug="info,error"`           |
-    | Focus on tasks and watch folders   | `ffmate server --debug="*:task,*:watchfolder"` |
-    | Errors + API calls                 | `ffmate server --debug="error,debug:http"`     |
-    | Everything except debug            | `ffmate server --debug="*,-debug:*"`           |
-    | No logs                            | `ffmate server --debug=""`                     |
+        | Goal                                                | Command                                                |
+        | --------------------------------------------------- | ------------------------------------------------------ |
+        | **Default (status, warnings, errors)**              | `ffmate server` (or `--debug="info:?,warn:?,error:?"`)  |
+        | **See everything**                                  | `ffmate server --debug="*"`                            |
+        | **See all `info` + `error` logs**                   | `ffmate server --debug="info:?,error:?"`                |
+        | **Focus on tasks and watch folders**                | `ffmate server --debug="*:task,*:watchfolder"`         |
+        | **See all errors + API calls**                      | `ffmate server --debug="error:?,debug:http"`           |
+        | **Everything except debug noise**                   | `ffmate server --debug="*,-debug:?"`                   |
+        | **No logs**                                         | `ffmate server --debug=""`                             |
 
-
-
-*   **`--send-telemetry <true|false>`** or **`--send-telemetry=<true|false>`**
-    *   **Purpose:** Enables or disables the sending of anonymous usage telemetry data to `telemetry.FFmate.io`.
-    *   **Value:** `true` or `false`.
-    *   **Default:** `true` (telemetry is enabled).
-    *   **Example:** `ffmate server --send-telemetry=false`
-
-### Update Command  
+# Update Command  
 
 Checks for and applies new versions of the FFmate binary.  
 
@@ -219,7 +222,11 @@ ffmate update --dry
 ffmate update
 ```
 
-### Version Command  
+::: info  
+If you installed FFmate with **Homebrew**, use `brew upgrade ffmate` to update instead of the built-in `update` command.
+:::
+
+# Version Command  
 
 Prints the currently installed FFmate version and exits.  
 
