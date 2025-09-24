@@ -78,6 +78,12 @@ The `server` command starts FFmate. All flags listed in this section are specifi
         ffmate server --database="postgresql://ffuser:ffpass@localhost:5432/ffmatedb"
         ```
 
+*   **`--identifier <name>`** or **`--identifier="<name>"`**
+    *   **Purpose:** Assigns a unique name to an FFmate instance. This is essential in a cluster setup to distinguish between different processing nodes and in the Web UI it makes it clear which node is running each task.
+    *   **Value:** A string representing the unique name for the instance.
+    *   **Default:** The machine's hostname.
+    *   **Example:** `ffmate server --identifier=“node”-a`
+
 *   **`--max-concurrent-tasks <number>`** or **`--max-concurrent-tasks="<number>"`**
     *   **Purpose:** Sets the maximum number of `ffmpeg` tasks that FFmate will run simultaneously.
     *   **Value:** A positive integer.
@@ -89,6 +95,11 @@ The `server` command starts FFmate. All flags listed in this section are specifi
     *   **Value:** `true` or `false`.
     *   **Default:** `true` (telemetry is enabled).
     *   **Example:** `ffmate server --send-telemetry=false`
+
+*   **`--no-ui`**
+    *   **Purpose:** Prevents FFmate from automatically opening the Web UI in your default web browser when the server starts.
+    *   **Default:** `false` (The UI is opened by default when running on a desktop OS).
+    *   **Example:** `ffmate server --no-ui`
 
 * **`--debug <namespaces>`** or **`-d <namespaces>`**
 
