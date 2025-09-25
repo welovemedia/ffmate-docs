@@ -36,7 +36,7 @@ All it takes to create a cluster of FFmate instances are three simple steps:
 
 1. **Provision a PostgreSQL database** that all nodes can reach. 
 2. **Create a user and database** inside PostgreSQL for FFmate.  
-3. **Start each FFmate instance** with the same [--database](/docs/flags.md#server-command-flags) URI and a **unique identifier**:  
+3. **Start each FFmate instance** with the same [--database](/docs/flags.md#server-command-flags) URI and a unique [--identifier](/docs/flags.md#server-command-flags):  
 
 ```bash
 # Node A
@@ -58,7 +58,7 @@ If you don’t set `--identifier`, FFmate defaults to the machine hostname. That
 
 # How Clustering Works  
 
-When you run multiple FFmate instances against the same **PostgreSQL** database, they **automatically** form a cluster and split the work between them. The database makes sure each task is picked up by only one node, so jobs aren’t duplicated. Updates are shared with all nodes over WebSockets, so every UI shows the same state.
+When you run multiple FFmate instances against the same **PostgreSQL** database, they **automatically** form a cluster and split the work between them. There’s **no master node**, you submit [tasks](/docs/tasks.md#creating-a-task) and [task batches](/docs/tasks.md#submitting-multiple-tasks-as-a-batch) exactly as you would in a non-cluster setup. The database makes sure each task is picked up by **only one node**, so jobs **aren’t duplicated**. Updates are shared with all nodes over `WebSockets`, so every UI shows the same state.
 
 FFmate’s clustering is built on PostgreSQL’s `LISTEN/NOTIFY`: nodes publish with `pg_notify`; peers `LISTEN` and react. Simple and built-in—no separate broker needed.
 
@@ -124,11 +124,11 @@ Once PostgreSQL is running—whether `self-hosted` or `managed`—you only need 
 
 1. **Create a user** with permissions to `CONNECT, CREATE, SELECT, UPDATE, DELETE, and LISTEN/NOTIFY`.  
 
-    [CREATE USER docs](https://www.postgresql.org/docs/current/sql-createuser.html)  
+    [Create User docs](https://www.postgresql.org/docs/current/sql-createuser.html)  
 
 2. **Create a dedicated database** for FFmate.  
 
-    [CREATE DATABASE docs](https://www.postgresql.org/docs/current/sql-createdatabase.html)
+    [Create Database docs](https://www.postgresql.org/docs/current/sql-createdatabase.html)
 
 ::: warning
 Cluster performance depends on **network latency** between your nodes and the PostgreSQL server. Keep the database **close to your nodes whenever possible**.
