@@ -99,10 +99,15 @@ FFmate includes a modern [web-based user interface](/docs/web-ui.md)for managing
 
 ## Webhooks
 
-[Webhooks](/docs/webhooks.md) allow FFmate to automatically notify external systems about specific events by sending HTTP POST requests to configured URLs.
+[Webhooks](/docs/webhooks.md) let FFmate notify external systems about events by sending HTTP `POST` requests to configured URLs.  
 
-*   **Configuration:**
-    *   Users define webhooks via the `REST API` (`/api/v1/webhooks`) or [UI](/docs/web-ui.md#webhooks)  .
+FFmate supports two types of webhooks:  
+- [**Global**](/docs/webhooks.md#global-webhooks): define a single target endpoint per webhook event.  
+- [**Direct**](/docs/webhooks.md#direct-webhooks): attach webhooks to individual [tasks](/docs/tasks.md#task-properties) or [presets](/docs/presets.md#presets-properties) for more fine-grained notifications.
+
+* **Configuration:**
+  * Global webhooks can be created through the `REST API` (`/api/v1/webhooks`) or the [Web UI](/docs/web-ui.md#webhooks).  
+  * Direct webhooks are defined directly in a `task` or `preset`.  
     *   Each webhook configuration includes:
         *   **Event (`event`):** The specific FFmate event that will trigger this webhook (e.g., `task.created`, `task.updated`, `batch.finished`, `preset.deleted`).
         *   **URL (`url`):** The external HTTP(S) endpoint to which FFmate will send the notification.
@@ -190,6 +195,58 @@ Example
 ```bash
 curl http://localhost:3000/health
 ```
+
+### Client Endpoint
+
+This endpoint lists all `FFmate` instances (nodes) that are connected to the database and provides their current status and configuration details.
+
+*   **Endpoint:** `GET /api/v1/clients`
+
+#### Responses
+
+*   **200 OK** — Returns a JSON array of all known client instances, sorted with the most recently seen node first.
+
+    ```json
+    [
+      {
+        "identifier": "transcoder-node-alpha",
+        "session": "a1b2c3d4-...",
+        "os": "linux",
+        "arch": "amd64",
+        "version": "2.0.0",
+        "ffmpeg": "/usr/bin/ffmpeg",
+        "lastSeen": 1678886400000,
+        "self": true
+      },
+      {
+        "identifier": "transcoder-node-beta",
+        "session": "e5f6g7h8-...",
+        "os": "linux",
+        "arch": "amd64",
+        "version": "2.0.0",
+        "ffmpeg": "/usr/bin/ffmpeg",
+        "lastSeen": 1678886395000
+      }
+    ]
+    ```
+    *   **`identifier`**: The unique name of the node (from the [--identifier](/docs/flags.md#server-command-flags) flag).
+    *   **`lastSeen`**: The "heartbeat" timestamp (in Unix milliseconds) when the node last checked in.
+    *   **`version`**: The version of `ffmate` running on that node.
+
+#### When to Check It
+
+This endpoint is designed for **monitoring and managing your FFmate** [cluster](/docs/clustering.md). It's the primary way to get a real-time overview of all active nodes. 
+
+::: info
+Each node sends a "heartbeat" update to the database every 15 seconds. You can consider a node offline if its `lastSeen` timestamp is older than a reasonable threshold (e.g., 30-60 seconds).
+:::
+
+#### Example
+
+```bash
+curl -X GET http://localhost:3000/api/v1/clients
+```
+
 
 ### Metrics
 
