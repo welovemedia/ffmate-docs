@@ -72,13 +72,14 @@ export default withMermaid({
           { text: "Presets", link: "/docs/presets" },
           { text: "Watchfolder", link: "/docs/watchfolder" },
           { text: "Pre and Post processing", link: "/docs/pre-post-prcessing" },
-          { text: "Webhooks", link: "/docs/webhooks" },
+          { text: "Clustering", link: "/docs/clustering" },
+          { text: "Webhooks", link: "/docs/webhooks" },          
           { text: "Web UI", link: "/docs/web-ui" },
         ],
       },
       {
         text: "Advanced Features",
-        items: [
+        items: [          
           { text: "FFmate Internals", link: "/docs/ffmate-internals" },
           { text: "Debugging", link: "/docs/debugging" },
           { text: "Swagger", link: "/docs/swagger" },
