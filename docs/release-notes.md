@@ -7,111 +7,72 @@ description: Explore the latest FFmate release notes including new features, API
 
 An overview of new features, enhancements, and bug fixes for each version.
 
-## Version 2.0.0 (19-09-2025)
+## Version 2.0.0 (25-09-2025)
 
-FFmate 2.0 is here — a **complete rewrite** of the project, now powered by the excellent [Goyave](https://goyave.dev/) framework.
-This rewrite introduces a more structured, maintainable, and efficient codebase — making it easier for contributors to get involved and shape FFmate’s future.
-While we’ve aimed to stay mostly backward-compatible with 1.x, some adjustments to existing setups may be necessary.
+FFmate 2.0 is a **complete rewrite** of the project, powered by the amazing [Goyave](https://goyave.dev/) framework. This new version delivers a more structured, maintainable, and efficient codebase, paving the way for community members to get involved and shape FFmate’s future.  
+While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustments to existing setups may be necessary.
+
+### Breaking Changes
+
+- **Task Batch**  
+  The endpoint has changed from `/api/v1/tasks/batch` to `/api/v1/batch[/{uuid}]`. For details, see [Batch Task](/docs/tasks.md#submitting-multiple-tasks-as-a-batch).
+
+- **Task Batch Format**  
+  The batch object format has been updated: it is now an object containing a `tasks` array instead of being an array itself. This change allows for future enhancements to the Batch feature. For details, see [Batch Task](/docs/tasks.md#submitting-multiple-tasks-as-a-batch).
+
+- **Log Level**  
+  The command-line argument for log level has been removed in favor of [Debugo](https://github.com/yosev/debugo). For details, see [Debugging](/docs/debugging.md).
 
 ### Deprecated
 
-- The short version of command line arguments (e.g. `-p` for `--port`) is now marked as deprecated. Switch to the long version to ensure forward compatibility. This decision has been made due to the growing number of command line arguments, which makes it challenging to avoid conflicts with single-letter flags.
-
-### UI
-
-The UI design has been refreshed as a preparation step for a larger upcoming redesign.
-
-::: tip UI images outdated
-The images shown in this documentation are temporarily outdated and will be updated once the full UI redesign is complete.
-
-In the meantime, the existing images should still be relevant and applicable to the current, interim design.
-:::
-
-
-### Breaking changes
-
-- **Batch** endpoint has changed from `/api/v1/tasks/batch` to `/api/v1/batch[/{uuid}]`.
-- **Batch** object format has been updated: it is now an object containing a `tasks` array instead of an array itself. This allows for future enhancements to the Batch feature.
-- **LogLevel** command line argument has been removed in favor of [Debugo](https://github.com/yosev/debugo).
+- **Command-Line Arguments**  
+  The short version of command-line arguments (e.g., `-p` for `--port`) is now deprecated. Switch to the long version to ensure forward compatibility.  
+  This change was made due to the growing number of arguments, which makes it difficult to avoid conflicts with single-letter flags. For details, see [CLI](/docs/flags.md).
 
 ### New Features
 
-- **Cluster Mode**: FFmate can now run in cluster mode, with multiple instances sharing the same **Postgres** database.
-  This enables efficient distribution of `tasks` across nodes.
-  See the [cluster documentation](/docs/cluster.md) for details. (Single-instance setups with SQLite are still fully supported.)
-  - Nodes communicate with each other through a dedicated **Postgres** database.
-  - Uses Postgres PUB/SUB for real-time updates and notifications.
-  - Maximum payload size: **8 KB**.
-  - Messages are Brotli-compressed, reducing size by ~40%.
-  - Messages can be added through any cluster member.
-  - The web interface is available on every cluster member.
+- **Cluster Mode**  
+  FFmate can now run in cluster mode with multiple instances sharing the same **Postgres** database. For details, see [Clustering](/docs/clustering.md).
 
-- **Clients Endpoint**: Added an endpoint to list all connected clients.
-  See the [client documentation](/docs/client.md).
-  - Clients use the `--identifier` flag (defaults to hostname).
-  - Identifiers must be unique across a cluster.
-  - The current instance’s client will include `"self": true`.
+- **Clients Endpoint**  
+  Added an endpoint to list all FFmate instances connected to the cluster. For details, see [Listing Cluster Clients](/docs/ffmate-internals.md#client-endpoint).
 
-- **Identifier Argument**: New CLI argument to name an FFmate instance, especially useful in cluster mode.
-  See the [command-line documentation](/docs/command-line.md).
-  - Assigns a unique name to the client (falls back to hostname if not set).
+- **Identifier Argument**  
+  Added a new CLI argument to set the name for each FFmate instance, making it easier to recognize. For details, see [--identifier](/docs/flags.md#server-command-flags).
 
-- **UI Refresh**: The UI has been modernized as a first step toward a more polished and consistent experience, with additional improvements planned for future releases.
+- **Health Endpoint**  
+  Added a new `/health` endpoint that orchestration tools like Kubernetes can use to monitor the health of an FFmate instance. For details, see [Health Endpoint](/docs/ffmate-internals.md#health-endpoint).
 
-- **Logging Overhaul**: Logging now uses [Debugo](https://github.com/yosev/debugo) exclusively, enabling fine-grained log control.
-  - Debugo is now the sole logging system.
-  - Configure logging with the `--debug` flag.
-  - Default namespace: `info:?,warn:?,error:?`.
+- **Extended Metrics**  
+  Added new gauges for `webhooks` and `websocket`. For details, see [Metrics](/docs/ffmate-internals.md#metrics).
 
-- **Health Endpoint**: Added to support orchestration tools like Kubernetes.
-  See the [health documentation](/docs/health.md).
-  - Returns `{"status": "ok"}` (HTTP 200) if ready, or `{"status": "error"}` (HTTP 500) if not.
+- **Direct Webhooks**  
+  Added support for fine-grained webhooks in tasks and presets. For details, see [Global and Direct Webhooks](/docs/webhooks.md).
 
-- **Extended Metrics**: Additional gauges have been added for better observability.
-  - `webhook.executed.direct` — for direct webhooks.
-  - `webhook.updated` — for webhook updates.
-  - `websocket.broadcast` — for websocket broadcasts.
-  - `websocket.connect` — for new websocket connections.
-  - `websocket.disconnect` — for websocket disconnections.
+- **Webhook Logs & Retries**  
+  Webhook executions are now persistently stored in the database, and failed deliveries are retried automatically. For details, see [Webhook Logs](/docs/webhooks.md#webhook-logs) and [Webhook Retries](/docs/webhooks.md#setting-up-your-webhook-endpoint).
 
-- **Direct Webhooks**: You can now send individual direct webhooks with tasks and presets.
-  See the [webhooks documentation](/docs/webhooks.md).
-  - Presets can include direct webhooks of type: `PRESET_CREATE`, `PRESET_UPDATE`, `PRESET_DELETE`, `TASK_CREATE`, `TASK_UPDATE`, `TASK_DELETE`.
-  - `TASK_*` webhooks apply to every task created with that preset (e.g., from a watchfolder).
-  - Direct webhooks trigger **after** and **independently** of global webhooks.
+- **Watchfolder Lock**  
+  Watchfolders now create `.lock` files for processed items. These prevent files from being reprocessed after restarts. For details, see [Watchfolder Lock](/docs/watchfolder.md#how-watchfolders-work).
 
-- **Webhook Persistence & Retries**: Webhook executions are now stored in the database and visible in the frontend.
-  Failed executions are retried automatically three times with 3s, 5s, and 10s delays.
-
-- **Compression Support**: Added Brotli, Gzip, and Deflate compression for smaller HTTP responses.
-  - Automatically compresses responses for clients that support it (such as browsers).
-  - Compression method is chosen based on the `Accept-Encoding` header.
-
-- **Watchfolder Enhancements**: Watchfolders now support locking for safer concurrent processing and restart-safe execution.
-  See the [watchfolder documentation](/docs/watchfolder.md).
-  - A watchfolder will only run on one cluster member at a time.
-  - Files processed into tasks receive a persistent `.lock` file, preventing reprocessing after restarts.
-  - Deleting the `.lock` file allows the watchfolder to process the file again.
-
-- **Task Queue Improvements**: The task queue now fetches multiple files from the database until `maxConcurrentRequests` is reached, improving efficiency.
-
-- **Client-Linked Tasks**: Tasks are now associated with the client that created and executed them.
-  - Each task tracks the originating client.
-  - The client that executes the task overrides the creator link.
-
-- **Test Coverage**: Expanded and improved the test suite for more robust, reliable releases.
+- **UI Refresh**  
+  The UI has been modernized as a first step toward a more polished and consistent experience, with more improvements planned.  
+  Images in this [documentation](/docs/web-ui.md) are temporarily outdated and will be updated once the full UI redesign is complete.
 
 ### Improvements
 
-- **Config gathering** has been reworked to be more efficient and thread-safe.
+- **Test Coverage**  
+  Test coverage has been expanded to cover all major core components of the codebase.
 
 ### Bug Fixes
 
-- Race conditions have been resolved for watchfolders, tasks, and config handling.
+- **Race Conditions**  
+  Multiple race conditions have been resolved in watchfolders, tasks, and config handling.
 
 ### Changes
 
-- Once **FFmpeg** is detected, automatic **FFmpeg detection** is no longer repeated, saving ressources.
+- **FFmpeg Detection**  
+  In version 2.0, **FFmpeg** detection now runs once and is not repeated, saving resources.
 
 ## Version 1.2.0 (08-09-2025)
 
