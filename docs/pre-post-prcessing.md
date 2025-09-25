@@ -109,10 +109,6 @@ This lets you add custom logic to influence how FFmate processes a task. For exa
 > Only modify **existing properties** in the sidecar.  
 > Do **not** add or remove keys or change the JSON structure; doing so will cause the FFmate task to fail.
 
-
-
-Here’s an updated workflow that includes **sidecar import during pre-processing** (when `importSidecar` is true), plus a clean Mermaid diagram with valid syntax.
-
 ## Workflow
 
 This section outlines how FFmate runs a task, showing where pre- and post-processing scripts fit, how wildcards are resolved, where the sidecar import happens, and how errors are handled.
