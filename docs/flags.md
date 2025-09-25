@@ -110,7 +110,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
     ```bash
     ffmate server --debug="*:task,*:watchfolder"
     ```
-The full debugging guide can be found [here](/docs/debugging.md).
+The full debugging guide can be found in the [debugging documentation](/docs/debugging.md).
 
 # Update Command  
 
