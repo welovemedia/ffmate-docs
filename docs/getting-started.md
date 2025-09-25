@@ -9,7 +9,7 @@ Setting up FFmate is quick and straightforward. Follow these steps to get up and
 
 ## Installing FFmpeg
 
-FFmate relies on **FFmpeg** to handle all media processing behind the scenes. If you don’t have **FFmpeg** installed yet, no worries — just follow the steps below to get it set up on your system.
+FFmate relies on [FFmpeg](https://ffmpeg.org/) to handle all media processing behind the scenes. If you don’t have **FFmpeg** installed yet, no worries — just follow the steps below to get it set up on your system.
 
 ###  macOS
 
@@ -22,7 +22,6 @@ brew install ffmpeg
 ```
 
 Homebrew installs FFmpeg and adds it to your system path automatically, so FFmate can find it and start processing tasks right away.
-
 
 #### Download and run the static build
 
