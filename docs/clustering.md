@@ -60,7 +60,7 @@ If you don’t set `--identifier`, FFmate defaults to the machine hostname. That
 
 When you run multiple FFmate instances against the same **PostgreSQL** database, they **automatically** form a cluster and split the work between them. There’s **no master node**, you submit [tasks](/docs/tasks.md#creating-a-task) and [task batches](/docs/tasks.md#submitting-multiple-tasks-as-a-batch) exactly as you would in a non-cluster setup. The database makes sure each task is picked up by **only one node**, so jobs **aren’t duplicated**. Updates are shared with all nodes over `WebSockets`, so every UI shows the same state.
 
-FFmate’s clustering is built on PostgreSQL’s `LISTEN/NOTIFY`: nodes publish with `pg_notify`; peers `LISTEN` and react. Simple and built-in—no separate broker needed.
+FFmate’s clustering is built on PostgreSQL’s `LISTEN/NOTIFY`: nodes publish with `pg_notify`; peers `LISTEN` and react. Simple and built-in — no separate broker needed.
 
 ```mermaid
 sequenceDiagram
@@ -99,7 +99,7 @@ For more details on how debugging works in FFmate, see [Debugging](/docs/debuggi
 
 ## Setting up PostgreSQL
 
-**Postgres** is one of the most powerful battle tested and use object-relational database in the world. There are various options to provision or deploy postgres and while this section is not meant to give an indeepth section, we want to highlight the various options you have to get a Postgres db up and running
+**Postgres** is one of the most powerful battle tested and used object-relational database in the world. There are various options to provision or deploy postgres and while this section is not meant to give an indeepth section, we want to highlight the various options you have to get a Postgres db up and running
 
 ### Deployment Options
 
