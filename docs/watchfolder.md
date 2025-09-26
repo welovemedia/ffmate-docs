@@ -78,7 +78,7 @@ D["Write .lock File<br>Prevents file from being processed again<br>&nbsp;"]:::lo
 To create a watchfolder, send a `POST` request to the FFmate API:
 
 ```sh
-curl -X POST http://localhost:3000/api/v1/watchfolder \
+curl -X POST http://localhost:3000/api/v1/watchfolders \
      -H "Content-Type: application/json" \
      -d '{
        "name": "Camera Card Watch",
@@ -125,7 +125,7 @@ To keep things simple and predictable, it's best to use **either** `include` or 
 Send a `GET` request to the FFmate API to list all configured watchfolders.
 
 ```sh
-curl -X GET 'http://localhost:3000/api/v1/watchfolder?page=0&perPage=10'
+curl -X GET 'http://localhost:3000/api/v1/watchfolders?page=0&perPage=10'
 ```
 
 FFmate rreturns a JSON array containing all configured watchfolders. The `X-Total` response headers provides the total number of presets available.
@@ -142,7 +142,7 @@ FFmate rreturns a JSON array containing all configured watchfolders. The `X-Tota
 To retrieve the details of a specific watchfolder, send a `GET` request to the FFmate API, including the watchfolder's `ID` in the path.
 
 ```sh
-curl -X GET http://localhost:3000/api/v1/watchfolder/{watchfolderId}
+curl -X GET http://localhost:3000/api/v1/watchfolders/{watchfolderId}
 ```
 
 FFmate responds with a JSON object containing the full details of the specified watchfolder.
@@ -154,7 +154,7 @@ FFmate responds with a JSON object containing the full details of the specified 
 You can update an existing watchfolder's configuration by sending a `PUT` request to the FFmate API, including the watchfolder's `ID` in the path. The request body should contain the complete, updated definition of the watchfolder. You can find a list of all available properties in the [Watchfolder Properties](#watchfolder-properties) section above.
 
 ```sh
-curl -X PUT http://localhost:3000/api/v1/watchfolder/{watchfolderId} \
+curl -X PUT http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
      -H "Content-Type: application/json" \
      -d '{
        "name": "Camera Card Watch",
@@ -184,7 +184,7 @@ To suspend a watchfolder, send a `PUT` request to the FFmate API with the watchf
 For example:
 
 ```sh
-curl -X PUT http://localhost:3000/api/v1/watchfolder/{watchfolderId} \
+curl -X PUT http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
      -H "Content-Type: application/json" \
      -d '{
        "name": "Camera Card Watch",
@@ -213,7 +213,7 @@ To resume scanning, send another `PUT` request with `suspended` set to `false`. 
 Send a `DELETE` request to the FFmate API to remove a watchfolder by including the watchfolder's `ID` in the path.
 
 ```sh
-curl -X DELETE http://localhost:3000/api/v1/watchfolder/{watchfolderId} \
+curl -X DELETE http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
      -H "accept: application/json"
 ```
 
