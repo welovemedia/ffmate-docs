@@ -15,7 +15,7 @@ While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustme
 ### Breaking Changes
 
 - **Task Batch**  
-  The endpoint has changed from `/api/v1/tasks/batch` to `/api/v1/batch[/{uuid}]`. For details, see [Batch Task](/docs/tasks.md#submitting-multiple-tasks-as-a-batch).
+  The endpoint has changed from `/api/v1/tasks/batch` to `/api/v1/batches`. For details, see [Batch Task](/docs/tasks.md#submitting-multiple-tasks-as-a-batch).
 
 - **Task Batch Format**  
   The batch object format has been updated: it is now an object containing a `tasks` array instead of being an array itself. This change allows for future enhancements to the Batch feature. For details, see [Batch Task](/docs/tasks.md#submitting-multiple-tasks-as-a-batch).
