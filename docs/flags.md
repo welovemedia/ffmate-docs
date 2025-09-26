@@ -65,7 +65,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
     * **Connection URI:**
 
         ```
-        postgresql://user:password@host:port/dbname
+        postgresql://user:password@host:port/dbname?options
         ```
 
         ::: info
