@@ -7,7 +7,7 @@ description: Explore the latest FFmate release notes including new features, API
 
 An overview of new features, enhancements, and bug fixes for each version.
 
-## Version 2.0.1 (26-09-2025)
+## Version 2.0 (26-09-2025)
 
 FFmate 2.0 is a **complete rewrite** of the project, powered by the amazing [Goyave](https://goyave.dev/) framework. This new version delivers a more structured, maintainable, and efficient codebase, paving the way for community members to get involved and shape FFmate’s future.
 While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustments to existing setups may be necessary.
