@@ -9,7 +9,7 @@ Setting up FFmate is quick and straightforward. Follow these steps to get up and
 
 ## Installing FFmpeg
 
-FFmate relies on **FFmpeg** to handle all media processing behind the scenes. If you don’t have **FFmpeg** installed yet, no worries — just follow the steps below to get it set up on your system.
+FFmate relies on [FFmpeg](https://ffmpeg.org/) to handle all media processing behind the scenes. If you don’t have **FFmpeg** installed yet, no worries — just follow the steps below to get it set up on your system.
 
 ###  macOS
 
@@ -22,7 +22,6 @@ brew install ffmpeg
 ```
 
 Homebrew installs FFmpeg and adds it to your system path automatically, so FFmate can find it and start processing tasks right away.
-
 
 #### Download and run the static build
 
@@ -117,7 +116,7 @@ Install FFmate easily using Homebrew:
 brew install ffmate
 ```
 
-To update FFmate installed via Homebrew, run the following command: 
+To update FFmate installed via Homebrew, run the following command:
 
 ```bash
 brew update
@@ -125,18 +124,18 @@ brew upgrade ffmate
 ```
 
 ### 🖥️ Windows (Manual Download)
-- [Windows – AMD64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-windows-amd64.zip)  
+- [Windows – AMD64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-windows-amd64.zip)
 - [Windows – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-windows-arm64.zip)
 
 ###  macOS (Manual Download)
-- [macOS – Apple Silicon (arm64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_arm64.tar.gz)  
+- [macOS – Apple Silicon (arm64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_arm64.tar.gz)
 - [macOS – Intel (x86_64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_x86_64.tar.gz)
 
 ### 🐧 Linux (Manual Download)
-- [Linux – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Linux_arm64.tar.gz)  
+- [Linux – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Linux_arm64.tar.gz)
 - [Linux – x86_64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Linux_x86_64.tar.gz)
 
-### 🐳 Docker  
+### 🐳 Docker
 - [Run FFmate via Docker](https://github.com/welovemedia/ffmate/pkgs/container/ffmate)
 
 ## Running FFmate

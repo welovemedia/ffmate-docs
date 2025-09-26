@@ -5,7 +5,7 @@ description: "Explore FFmate's internal architecture. Understand how its REST AP
 
 # FFmate Internals
 
-This section provides a more in-depth look at some of `FFmate`'s key internal components and how they interact. Understanding these is key for advanced troubleshooting, fine-tuning configurations, and integrating ffmate into your workflows.
+This section breaks down FFmate’s core components and how they work together. It’s handy when you’re troubleshooting, tweaking settings, or plugging FFmate into your existing infrastructure
 
 ### High-Level Component Diagram
 
@@ -29,17 +29,23 @@ graph TD
     REST_API --> WatchfolderSvc
     REST_API --> WebhookSvc
 
-    %% ─── Core & DB side-by-side ───────────
+    %% ─── Core & DB choice ────────────────
     subgraph Core ["Core"]
         direction LR
         FFMate["FFmate"]:::core
-        DB[(SQLite DB)]:::db
+        DBChoice{Database }:::core
+        DB_SQLITE[(SQLite DB)]:::db
+        DB_PG[(PostgreSQL DB)]:::db
     end
+
     TaskSvc --> FFMate
     PresetSvc --> FFMate
     WatchfolderSvc --> FFMate
     WebhookSvc --> FFMate
-    FFMate --> DB
+
+    FFMate --> DBChoice
+    DBChoice -->|SQLite| DB_SQLITE
+    DBChoice -->|PostgreSQL| DB_PG
 
     %% ─── ffmpeg binary in dashed box ─────
     subgraph FFmpegBlock [" "]
@@ -63,23 +69,28 @@ graph TD
 The [REST API](/docs/swagger.md), is the primary way external clients (including the FFmate Web UI, scripts, or other services) interact with and control FFmate.
 
 *   **Functionality:** Provides endpoints for CRUD (Create, Read, Update, Delete) operations on:
-    *   Tasks (e.g., create single/batch, list, get status, cancel, restart, delete)
-    *   Presets
-    *   Watchfolders
-    *   Webhooks
 
-## SQLite Database
+    *   Tasks – The core job management endpoints (e.g., create single or batch jobs, list all jobs, get real-time status, cancel, restart, and delete).
+    *   Presets – Manage reusable transcoding templates (e.g., create, list, update, and delete presets).
+    *   Watchfolders – Create jobs from a local or remote directory (e.g., create, list, update, and delete watch folder configurations).
+    *   Webhooks – Configure and trigger real-time notifications for your own applications (e.g., create, list, update, delete, and view execution history).
+    *   Clients – Monitor the instances in your cluster (e.g., list all connected nodes and their status).
+    *   System & Status – Manage and monitor the FFmate (e.g., check instance health, get the application version, and adjust log verbosity at runtime).
 
-FFmate uses SQLite as its backend database to store all persistent data.
+## Database
+
+FFmate supports **SQLite** for standalone instances (default out of the box) and **PostgreSQL** for clustered setups
+
 *   **Data Stored:**
     *   Tasks: All details about transcoding jobs, including their status, progress, input/output files, commands, priority, pre/post-processing info, timestamps, and any errors.
     *   Presets: Definitions for reusable transcoding templates.
     *   Webhooks: Configurations for URLs to be notified on specific events.
     *   Watchfolders: Settings for monitored directories, including paths, intervals, associated presets, and filters.
+    *   Clients: A list of each FFmate node connected to the database, with its ID, version, OS, and a heartbeat timestamp of when it was last online.
 
 ## Web UI
 
-FFmate includes a modern [web-based user interface](/docs/web-ui.md)for managing and monitoring tasks, presets, watchfolders, and webhooks.
+FFmate includes a modern [web-based user interface](/docs/web-ui.md)for managing and monitoring tasks, presets, watchfolders, webhooks and clients.
 
 *   **Access:** When FFmate server starts, the web ui is served from the `/ui` path (e.g., `http://localhost:3000/ui`)
 *   **Backend Communication:** The Web UI communicates with the FFmate service via:
@@ -88,10 +99,15 @@ FFmate includes a modern [web-based user interface](/docs/web-ui.md)for managing
 
 ## Webhooks
 
-[Webhooks](/docs/webhooks.md) allow FFmate to automatically notify external systems about specific events by sending HTTP POST requests to configured URLs.
+[Webhooks](/docs/webhooks.md) let FFmate notify external systems about events by sending HTTP `POST` requests to configured URLs.  
 
-*   **Configuration:**
-    *   Users define webhooks via the `REST API` (`/api/v1/webhooks`).
+FFmate supports two types of webhooks:  
+- [**Global**](/docs/webhooks.md#global-webhooks): define a single target endpoint per webhook event.  
+- [**Direct**](/docs/webhooks.md#direct-webhooks): attach webhooks to individual [tasks](/docs/tasks.md#task-properties) or [presets](/docs/presets.md#presets-properties) for more fine-grained notifications.
+
+* **Configuration:**
+  * Global webhooks can be created through the `REST API` (`/api/v1/webhooks`) or the [Web UI](/docs/web-ui.md#webhooks).  
+  * Direct webhooks are defined directly in a `task` or `preset`.  
     *   Each webhook configuration includes:
         *   **Event (`event`):** The specific FFmate event that will trigger this webhook (e.g., `task.created`, `task.updated`, `batch.finished`, `preset.deleted`).
         *   **URL (`url`):** The external HTTP(S) endpoint to which FFmate will send the notification.
@@ -126,15 +142,16 @@ The [Watchfolder](/docs/watchfolder.md) feature allows FFmate to monitor directo
         - If a file matches an extension in `exclude`, it will be skipped—even if it also matches `include`.
     *   A new task is automatically created for each stable, filtered file.
     *   The `preset` is applied to the new task.
+    *   FFmate creates an empty `.lock` file next to it (e.g., `movie.mp4` → `movie.mp4.lock`). This permanent marker makes sure the file won’t be processed again by the watchfolder.
     *   FFmate keeps track of processed files to avoid creating duplicate tasks.
-*   **Dynamic Updates:** Changes to Watchfolder configurations (creation, updates, deletion) via the API or UI are dynamically loaded and applied without needing a FFmate restart.
+*   **Dynamic Updates:** Changes to Watchfolder settings (create, update, delete) in the API or UI are applied instantly, without the need for restarting FFmate.
 
 ## Task Queue
 
 This is the core process where your transcoding jobs are managed and processed from submission to completion.
 
 *   **Queueing:**
-    *   New tasks (submitted via `API`, `Web UI`, or `Watchfolders`) are added to a queue.
+    *   New tasks (submitted via `API`, or `Watchfolders`) are added to a queue.
     *   Tasks are processed based on their **Priority** (higher priority first) and then by creation time.
     *   Initially, tasks are in the `QUEUED` status.
 *   **Concurrency Control:**
@@ -150,103 +167,201 @@ This is the core process where your transcoding jobs are managed and processed f
     *   **Completion:** The task status is updated to reflect the outcome: `DONE_SUCCESSFUL`, `DONE_ERROR`, or `DONE_CANCELED`. Error details are captured if applicable.
 *   **Notifications:** Throughout a task's lifecycle, status changes and progress updates are broadcast via `WebSockets` (used by the `Web UI`) and can trigger configured `Webhooks`.
 
+### Health Endpoint
 
-## Metrics
+FFmate comes with a built-in **health endpoint** that shows if a node is up, initialized, and ready for requests.  
 
-FFmate exposes real-time Prometheus metrics via **GET `/metrics`**, emitting internal counters in standard exposition format the moment the events occur. By default, access all metrics at `http://localhost:3000/metrics`.  
+* **Endpoint:** `GET /health`
 
-* **Batch Gauges**  
-  - `ffmate_batch_created` – total batches created  
-  - `ffmate_batch_finished` – batches whose all tasks have completed (successful, failed, or canceled)  
+#### Responses
 
-#### Example
+* **200 OK** — The node is running and connected to the database.  
+  ```json
+  {"status":"ok"}
+  ```
 
-  ```plain
-  # HELP ffmate_batch_created Number of created batches
-  # TYPE ffmate_batch_created gauge
-  ffmate_batch_created 3
-  ffmate_batch_finished 2
+* **500 Internal Server Error** — The node isn’t ready yet (e.g., during startup) or failed to connect. 
+```json  
+  {"status":"error"}  
 ```
 
-* **Task Gauges**
+#### When to Check It
 
-  * `ffmate_task_created` – tasks added (individual or batch)
-  * `ffmate_task_deleted` – tasks removed
-  * `ffmate_task_updated` – task entry saved in the db (status, progress, errors, etc.)
-  * `ffmate_task_canceled` – tasks canceled by user
-  * `ffmate_task_restarted` – tasks restarted
+This endpoint is meant for **automated health checks**. Tools like **Kubernetes**, **Docker Swarm**, or any **load balancer** can ping it to decide if a node is ready to take traffic or still alive.
 
-#### Example
+::: info
+This is a per-node check. A 200 OK means the node is running and connected to the database.It doesn’t confirm the state of other nodes or the pub/sub system.
+:::
 
-  ```plain
-  # HELP ffmate_task_created Number of created tasks
-  # TYPE ffmate_task_created gauge
-  ffmate_task_created 18
-  ffmate_task_deleted 4
-  ffmate_task_updated 155
-  ffmate_task_canceled 1
-  ffmate_task_restarted 1
-  ```
+Example
 
-* **Preset Gauges**
+```bash
+curl http://localhost:3000/health
+```
 
-  * `ffmate_preset_created` – presets created
-  * `ffmate_preset_updated` – presets updated
-  * `ffmate_preset_deleted` – presets deleted
+### Client Endpoint
 
-#### Example
+This endpoint lists all `FFmate` instances (nodes) that are connected to the database and provides their current status and configuration details.
 
-  ```plain
-  # HELP ffmate_preset_created Number of created presets
-  # TYPE ffmate_preset_created gauge
-  ffmate_preset_created 5
-  ffmate_preset_updated 2
-  ffmate_preset_deleted 1
-  ```
+*   **Endpoint:** `GET /api/v1/clients`
 
-* **Webhook Gauges**
+#### Responses
 
-  * `ffmate_webhook_created` – webhooks created
-  * `ffmate_webhook_executed` – webhooks fired
-  * `ffmate_webhook_deleted` – webhooks deleted
+*   **200 OK** — Returns a JSON array of all known client instances, sorted with the most recently seen node first.
 
-#### Example
+    ```json
+    [
+      {
+        "identifier": "transcoder-node-alpha",
+        "session": "a1b2c3d4-...",
+        "os": "linux",
+        "arch": "amd64",
+        "version": "2.0.0",
+        "ffmpeg": "/usr/bin/ffmpeg",
+        "lastSeen": 1678886400000,
+        "self": true
+      },
+      {
+        "identifier": "transcoder-node-beta",
+        "session": "e5f6g7h8-...",
+        "os": "linux",
+        "arch": "amd64",
+        "version": "2.0.0",
+        "ffmpeg": "/usr/bin/ffmpeg",
+        "lastSeen": 1678886395000
+      }
+    ]
+    ```
+    *   **`identifier`**: The unique name of the node (from the [--identifier](/docs/flags.md#server-command-flags) flag).
+    *   **`lastSeen`**: The "heartbeat" timestamp (in Unix milliseconds) when the node last checked in.
+    *   **`version`**: The version of `ffmate` running on that node.
 
-  ```plain
-  # HELP ffmate_webhook_created Number of created webhooks
-  # TYPE ffmate_webhook_created gauge
-  ffmate_webhook_created 4
-  ffmate_webhook_executed 12
-  ffmate_webhook_deleted 1
-  ```
+#### When to Check It
 
-* **Watchfolder Gauges**
+This endpoint is designed for **monitoring and managing your FFmate** [cluster](/docs/clustering.md). It's the primary way to get a real-time overview of all active nodes. 
 
-  * `ffmate_watchfolder_created` – watchfolders created
-  * `ffmate_watchfolder_executed` – scan cycles run
-  * `ffmate_watchfolder_updated` – watchfolders updated
-  * `ffmate_watchfolder_deleted` – watchfolders deleted
-
-#### Example
-
-  ```plain
-  # HELP ffmate_watchfolder_created Number of created watchfolders
-  # TYPE ffmate_watchfolder_created gauge
-  ffmate_watchfolder_created 3
-  ffmate_watchfolder_executed 27
-  ffmate_watchfolder_updated 1
-  ffmate_watchfolder_deleted 0
-  ```
-
-* **REST API GaugeVec**
-
-  * `ffmate_rest_api{method, path}` – counts all incoming HTTP requests, labeled by HTTP method and matched route path
+::: info
+Each node sends a "heartbeat" update to the database every 15 seconds. You can consider a node offline if its `lastSeen` timestamp is older than a reasonable threshold (e.g., 30-60 seconds).
+:::
 
 #### Example
 
-  ```plain
-  # HELP ffmate_rest_api Number of requests against the REST API
-  # TYPE ffmate_rest_api gauge
-  ffmate_rest_api{method="GET",path="/v1/tasks"} 5
-  ffmate_rest_api{method="POST",path="/v1/tasks"} 10
-  ```
+```bash
+curl -X GET http://localhost:3000/api/v1/clients
+```
+
+
+### Metrics
+
+FFmate exposes a set of internal counters via the **`GET /metrics`** endpoint, formatted for a **Prometheus server**. These metrics are updated in real-time as events occur within the application and can be scraped to monitor FFmate's activity and health.
+
+By default, you can access them at `http://localhost:3000/metrics`
+
+*   **Batch Gauges**
+    *   `ffmate_batch_created` – Total number of batches created.
+    *   `ffmate_batch_finished` – Total number of batches where all associated tasks have completed (either successfully, with an error, or by being canceled).
+
+    #### Example
+    ```plain
+    # HELP ffmate_batch_created Number of created batches
+    # TYPE ffmate_batch_created gauge
+    ffmate_batch_created 3
+    # HELP ffmate_batch_finished Number of finished batches
+    # TYPE ffmate_batch_finished gauge
+    ffmate_batch_finished 2
+    ```
+
+*   **Task Gauges**
+    *   `ffmate_task_created` – Total number of tasks added to the queue.
+    *   `ffmate_task_deleted` – Total number of tasks that have been deleted.
+    *   `ffmate_task_updated` – Total number of times a task's data has been updated (e.g., status change, progress update).
+    *   `ffmate_task_canceled` – Total number of tasks that have been explicitly canceled by a user.
+    *   `ffmate_task_restarted` – Total number of tasks that have been restarted.
+
+    #### Example
+    ```plain
+    # HELP ffmate_task_created Number of created tasks
+    # TYPE ffmate_task_created gauge
+    ffmate_task_created 18
+    ffmate_task_deleted 4
+    ffmate_task_updated 155
+    ffmate_task_canceled 1
+    ffmate_task_restarted 1
+    ```
+
+*   **Preset Gauges**
+    *   `ffmate_preset_created` – Total number of presets created.
+    *   `ffmate_preset_updated` – Total number of presets that have been updated.
+    *   `ffmate_preset_deleted` – Total number of presets that have been deleted.
+
+    #### Example
+    ```plain
+    # HELP ffmate_preset_created Number of created presets
+    # TYPE ffmate_preset_created gauge
+    ffmate_preset_created 5
+    ffmate_preset_updated 2
+    ffmate_preset_deleted 1
+    ```
+
+*   **Webhook Gauges**
+    *   `ffmate_webhook_created` – Total number of global webhooks created.
+    *   `ffmate_webhook_updated` – Total number of global webhooks updated.
+    *   `ffmate_webhook_deleted` – Total number of global webhooks deleted.
+    *   `ffmate_webhook_executed` – Total number of times a global webhook has been fired.
+    *   `ffmate_webhook_executed_direct` – Total number of times a "direct" webhook (defined inside a task or preset) has been fired.
+
+    #### Example
+    ```plain
+    # HELP ffmate_webhook_created Number of created webhooks
+    # TYPE ffmate_webhook_created gauge
+    ffmate_webhook_created 4
+    ffmate_webhook_updated 1
+    ffmate_webhook_deleted 1
+    ffmate_webhook_executed 12
+    ffmate_webhook_executed_direct 25
+    ```
+
+*   **Watchfolder Gauges**
+    *   `ffmate_watchfolder_created` – Total number of watch folders created.
+    *   `ffmate_watchfolder_updated` – Total number of watch folders that have been updated.
+    *   `ffmate_watchfolder_deleted` – Total number of watch folders that have been deleted.
+    *   `ffmate_watchfolder_executed` – Total number of scan cycles that have been run across all watch folders.
+
+    #### Example
+    ```plain
+    # HELP ffmate_watchfolder_created Number of created watchfolders
+    # TYPE ffmate_watchfolder_created gauge
+    ffmate_watchfolder_created 3
+    ffmate_watchfolder_updated 1
+    ffmate_watchfolder_deleted 0
+    ffmate_watchfolder_executed 27
+    ```
+
+*   **Websocket Gauges**
+    *   `ffmate_websocket_connect` – Total number of successful WebSocket connections.
+    *   `ffmate_websocket_disconnect` – Total number of WebSocket disconnections.
+    *   `ffmate_websocket_broadcast` – Total number of messages broadcast to all connected WebSocket clients.
+
+    #### Example
+    ```plain
+    # HELP ffmate_websocket_connect Number of websocket connections
+    # TYPE ffmate_websocket_connect gauge
+    ffmate_websocket_connect 15
+    # HELP ffmate_websocket_disconnect Number of websocket disconnections
+    # TYPE ffmate_websocket_disconnect gauge
+    ffmate_websocket_disconnect 13
+    # HELP ffmate_websocket_broadcast Number of broadcasted messages
+    # TYPE ffmate_websocket_broadcast gauge
+    ffmate_websocket_broadcast 310
+    ```
+
+*   **REST API GaugeVec**
+    *   `ffmate_rest_api{method, path}` – Counts all incoming HTTP requests, labeled by the HTTP method and the API route path.
+
+    #### Example
+    ```plain
+    # HELP ffmate_rest_api Number of requests against the REST API
+    # TYPE ffmate_rest_api gauge
+    ffmate_rest_api{method="GET",path="/api/v1/tasks"} 5
+    ffmate_rest_api{method="POST",path="/api/v1/tasks"} 10
+    ```

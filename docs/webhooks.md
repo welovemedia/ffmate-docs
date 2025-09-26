@@ -5,13 +5,45 @@ description: "Integrate external systems with FFmate using webhooks. Get instant
 
 # Webhooks
 
-**Webhooks** in FFmate allow you to integrate **real-time event notifications** into your media processing workflows.
+**Webhooks** in FFmate let you plug real-time event notifications into your workflows—making it easier to trigger external processes, connect third-party tools, and monitor `FFmpeg` jobs without constantly polling the API.
 
-By registering a webhook, external systems can automatically receive `POST` requests from FFmate when specific events occur—such as task creation, task status updates, batch processing events, or changes to presets.
+When you add webhooks, FFmate can `notify` your external systems whenever events occur—whether it’s tasks, presets, watchfolders, or other changes.
 
-This enables powerful automation, seamless third-party integration, and real-time monitoring of `FFmpeg-based` transcoding jobs—without the need to constantly poll the API.
+FFmate supports two kinds of webhooks:
 
-## Creating a Webhook  
+### Global Webhooks
+Global webhooks let you define a **single target endpoint per webhook** [event](#task-events). They can be configured through the **/webhooks** [api](#creating-a-webhook) endpoint or the Web UI.
+
+### Direct Webhooks
+**Direct webhooks** are for cases where you need more fine-grained notifications with additional target endpoints. You can add them **directly to tasks** when submitting via the [api](/docs/tasks.md#creating-a-task), or to an FFmate [preset](/docs/presets.md#creating-a-preset) so every task using that `preset` includes the direct webhooks.
+
+Direct webhooks are only available for the following events:
+
+### Task Events
+
+| Event           | Description                                      |
+|-----------------|--------------------------------------------------|
+| `task.created`  | Triggered when a new task is added               |
+| `task.updated`  | Triggered when a task’s status or details change |
+| `task.deleted`  | Triggered when a task is deleted                 |
+
+### Preset Events
+
+| Event            | Description                                   |
+|------------------|-----------------------------------------------|
+| `preset.created` | Triggered when a new preset is created        |
+| `preset.updated` | Triggered when an existing preset is modified |
+| `preset.deleted` | Triggered when a preset is removed            |
+
+
+Global and direct webhooks can work together. For example: 
+ 
+- You might configure a global webhook for `task.created`, `task.updated`, and `task.deleted` that points to a central endpoint, e.g. `https://ffmate.io/webhooks/global`.  
+- For certain tasks submitted via the API, you can attach extra direct webhooks for those same events, e.g. `https://welovemedia.io/hooks/task-events`.  
+- Direct webhooks can be set when you create the task, or added later in the pre-processing step using the [sidecar re-import feature](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar).
+
+
+## Creating a Webhook
 
 To create a webhook, send a `POST` request to the FFmate API specifying the event you want to subscribe to and the URL where FFmate should deliver the notification.  
 
@@ -24,11 +56,11 @@ curl -X POST http://localhost:3000/api/v1/webhooks \
      }'
 ```
 
-After you create a webhook, FFmate responds with a JSON object containing the `id` of the newly created webhook.
+After you create a webhook, FFmate responds with a JSON object containing the `id` of the newly created webhook. A `webhook.created` event is also fired via [webhooks](#webhook-events)
 
 💡 Tip: Creating a new webhook? You can define and save webhooks directly in the [FFmate Web UI](/docs/web-ui.md#creating-a-webhook) without writing any API requests
 
-## Available Webhook Events
+## Global Webhook Events
 
 FFmate supports a range of webhook events, organized into categories based on what they track.
 
@@ -140,7 +172,7 @@ curl -X PUT http://localhost:3000/api/v1/webhooks/{webhookId} \
      }'
 ```
 
-FFmate returns the updated webhook object in JSON format.
+FFmate returns the updated webhook object in JSON format. A `webhook.updated` event is also fired via [webhooks](#webhook-events)
 
 💡 Tip: Making changes to a webhook? You can update settings like name and url directly in the [FFmate Web UI](/docs/web-ui.md#updating-a-webhook).
 
@@ -153,25 +185,40 @@ curl -X DELETE http://localhost:3000/api/v1/webhooks/{webhookId} \
      -H "accept: application/json"
 ```
 
-FFmate responds with a `204` No Content status. The webhook will be removed from the system.
+FFmate responds with a `204` No Content status. The webhook will be removed from the system. A `webhook.deleted` event is also fired via [webhooks](#webhook-events)
 
 💡 Tip: No need to send a delete request manually—you can remove webhooks instantly from the [FFmate Web UI](/docs/web-ui.md#deleting-webhooks).
 
 ## Setting Up Your Webhook Endpoint
 
-When FFmate sends a webhook, it expects your server to be ready to receive and respond to the event. Here's what your endpoint should do:
+When FFmate sends a webhook, it expects your server to be ready to receive and respond to the event.
+
+Here's what your endpoint should do:
 
 1. **Accept HTTP POST requests**
 
-FFmate sends events using a `POST` request with a JSON payload.  
-Your endpoint should be configured to accept and correctly parse these requests.
+   FFmate sends events as `POST` requests with a JSON payload. Your endpoint should accept and correctly parse these requests.
 
-2. **Return a 200 OK response**
+2. **Return a 2xx status code**
 
-To confirm that the event was received successfully, your server **must** return an HTTP `200 OK` status.  
-Any other status code may cause FFmate to assume the delivery failed.
+   FFmate waits for your server to reply before considering the webhook delivered. If your server responds with an HTTP status in the `2xx` range, FFmate treats the webhook as successfully delivered.
 
-3. **Log incoming requests**
+   If your server times out or sends back a non-2xx (like `500 Internal Server Error`), FFmate will try again. It retries sending the webhook up to **three times**, with increasing delays:
 
-FFmate **does not store webhook logs**.  
-If something goes wrong, your application should log incoming webhook events to support debugging or auditing.
+   * After **3** seconds.
+   * Then after **5** seconds.
+   * Finally after **10** seconds.
+
+## Webhook logs
+
+   FFmate automatically records every webhook delivery attempt in the database. For each attempt, it stores:  
+   
+   * the `event type` and `target URL`.
+   * the exact `request headers` and `body sent`.
+   * the HTTP status code, response headers, and response body returned by your server:
+
+   You can fetch this full history through the API or UI:
+
+   ```bash
+   curl http://localhost:3000/api/v1/webhooks/executions
+   ```

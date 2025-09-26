@@ -1,0 +1,37 @@
+# Markdownlint configuration for FFmate documentation
+# Tailored to match current documentation patterns
+
+# MD013: Line length - Allow longer lines for URLs and code
+MD013:
+  line_length: 120
+  code_blocks: false
+  tables: false
+  headings: false
+
+# MD012: Multiple consecutive blank lines - Allow some flexibility
+MD012:
+  maximum: 2
+
+# MD033: Inline HTML - Allow HTML for VitePress features
+MD033: false
+
+# MD034: Bare URLs - Allow bare URLs in documentation
+MD034: false
+
+# MD036: Emphasis instead of strong - Allow both styles
+MD036: false
+
+# MD024: Multiple headers with the same content - Allow in FAQ
+MD024: false
+
+# MD026: Trailing punctuation in headers - Allow flexibility
+MD026: false
+
+# MD029: Ordered list item prefix - Allow flexibility
+MD029: false
+
+# MD030: Spaces after list markers - Allow flexibility
+MD030: false
+
+# MD041: First line should be top level header - Skip for index.md
+MD041: false

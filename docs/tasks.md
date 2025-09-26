@@ -57,20 +57,40 @@ To create a task, send a `POST` request to the FFmate API:
 curl -X POST http://localhost:3000/api/v1/tasks \
      -H "Content-Type: application/json" \
      -d '{
-       "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset fast -crf 23 ${OUTPUT_FILE}",
-       "inputFile": "videos/input.mp4",
-       "outputFile": "videos/output.mp4",
-       "priority": 2
+       "name": "Final Render for Summer Ad Campaign",
+       "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset fast -crf 23 -vf \"drawtext=text='${METADATA_project_name}':x=10:y=10:fontsize=24:fontcolor=white\" -c:a aac -b:a 128k ${OUTPUT_FILE}",
+       "inputFile": "/media/source/client_project_final_v1.mov",
+       "outputFile": "/media/deliverables/${METADATA_client_id}/final_ad_spot.mp4",
+       "priority": 10,
+       "metadata": {
+         "project_name": "Summer Ad Campaign",
+         "client_id": "CUST-12345",
+         "editor": "jane.doe"
+       },
+       "preProcessing": {
+         "scriptPath": "/opt/ffmate/scripts/verify_source.sh --input ${INPUT_FILE} --sidecar ${SIDECAR_FILE}",
+         "sidecarPath": "/var/tmp/ffmate_sidecar_${UUID}.json",
+         "importSidecar": true
+       },
+       "postProcessing": {
+         "scriptPath": "/opt/ffmate/scripts/upload_to_s3.sh --file ${OUTPUT_FILE} --client ${METADATA_client_id}"
+       },
+       "webhooks": [
+         {
+           "event": "task.updated",
+           "url": "https://my-project-manager.com/api/hooks/ffmate-status"
+         }
+       ]
      }'
 ```
 
-FFmate responds with a JSON object that contains the newly created task including its `ID`. This `taskId` can be used to monitor the task’s progress in the next section. An `task.created` event is also fired via [webhooks](/docs/webhooks#task-events)
+FFmate responds with a JSON object that contains the newly created task including its `ID`. This `taskId` can be used to monitor the task’s progress in the next section. A `task.created` event is also fired via [Global webhooks](/docs/webhooks#task-events) and [Direct webhooks](/docs/webhooks#task-events).
 
 ### Task Properties
 
 These are the properties you can set when creating a task in FFmate:
 
-- **`name`** *[optional]* - A short, descriptive name to help identify and track the task in the web UI and API (e.g., "Convert wedding video to MP4")
+- **`name`** *[optional]* - A short, descriptive name to help identify and track the task in the web UI and API (e.g., "Final Render for Summer Ad Campaign")
 
 - **`command`** — The custom command FFmate will use to run `FFmpeg`. This field is **mandatory** unless you use a `preset`.  
 
@@ -82,7 +102,7 @@ These are the properties you can set when creating a task in FFmate:
     
     You can override this by explicitly adding your own `-stats_period x` to the command.  
     - This setting directly affects:  
-      - how often `task.updated` [webhook](/docs/webhooks#task-events) is sent, and  
+      - how often `task.updated` [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events) are sent, and  
       - how often the job dashboard refreshes progress updates.  
 
     - The `command` field also supports chaining multiple `FFmpeg` commands with `&&`. This is useful for advanced workflows such as **two-pass encoding**. When chaining commands, you must use the `${FFMPEG}` wildcard (see [FFmpeg Path](/docs/wildcards.md#ffmpeg-path) for more details). 
@@ -117,11 +137,13 @@ These are the properties you can set when creating a task in FFmate:
 - **`preProcessing`** *[optional]* – Defines a [Pre-Processing Script](/docs/pre-post-prcessing.md) to run before the task starts. Useful for preparing files, validating input, or setting up the environment.
     *   **`scriptPath`**: The full path to the script or executable to run.
     *   **`sidecarPath`**: The full path to the JSON file that contains all task data.
-
+    *   **`importSidecar`**: Defines if the task will [re-import the sidecar](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar) JSON after the pre-processing script finishes.
 
 - **`postProcessing`** *[optional]* – Defines a [Post-Processing Script](/docs/pre-post-prcessing.md) to run after the task completes. Useful for cleanup, moving output files, or triggering follow-up actions.
     *   **`scriptPath`**: The full path to the script or executable to run.
     *   **`sidecarPath`**: The full path to the JSON file that contains all task data.
+
+- **`Webhooks`** *[optional]* : Defined a direct webhook target tied only to this task. For example, it can notify a project management tool whenever the task's status changes.
 
 - **`metadata`** *[optional]* — Any JSON object you want to attach to the task. Common uses include adding context, referencing source files, or integrating with external systems.
 
@@ -206,7 +228,7 @@ curl -X 'PATCH' \
   -H 'accept: application/json'
 ```
 
-FFmate responds with a JSON object containing the updated details of the task. The task's status will be changed to `DONE_CANCELED`, and the progress will be set to 100. An `task.canceled` event is also fired via [webhooks](/docs/webhooks#task-events)
+FFmate responds with a JSON object containing the updated details of the task. The task's status will be changed to `DONE_CANCELED`, and the progress will be set to 100. A `task.canceled` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events).
 
 > [!NOTE]
 > If the task is already processing, FFmate will attempt to **stop** it, but cancellation may not always be immediate.
@@ -231,7 +253,7 @@ FFmate responds with a JSON object containing the updated details of the task. T
 > - Restarting a task will **re-run the exact same command** using the original input and output paths.  
 > - If the task was previously processing, it will start from the beginning.
 
-Once restarted, the task will move back into the **queued** state and follow the standard [task lifecycle](#task-flow).
+Once restarted, the task will move back into the **queued** state and follow the standard [task lifecycle](#task-flow). A `task.created` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events).
 
 💡 Tip: Need to rerun a task? You can restart it directly in the [FFmate Web UI](/docs/web-ui.md#restarting-tasks)
 
@@ -246,7 +268,7 @@ curl -X 'DELETE' \
   'http://localhost:3000/api/v1/tasks/{taskId}' \
   -H 'accept: application/json'
 ```
-FFmate responds with a `204` No Content status. The task will be removed from the system. An `task.deleted` event is also fired via [webhooks](/docs/webhooks#task-events)
+FFmate responds with a `204` No Content status. The task will be removed from the system. A `task.deleted` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events).
 
 ::: warning Important
 - Deleting a task **removes the database entry** from FFmate but **does not** delete the input or output files.  
@@ -260,79 +282,79 @@ FFmate responds with a `204` No Content status. The task will be removed from th
 FFmate allows you to submit multiple transcoding tasks in a single request, referred to as a `batch`. This is ideal when processing a set of files—whether they use the same settings or different ones—as it simplifies submission and keeps related tasks grouped together.
 
 Each batch is automatically assigned a unique `batch ID`, making it easy to monitor, manage, and reference the entire group of tasks as a single unit. While a batch groups multiple task submissions together, each task within it remains fully independent.
- 
-  Every task in the batch is submitted as a standalone task in FFmate. This means:
 
-  - Each task follows its own lifecycle (`Queued`, `Pre-Processing`, `Running`, `Post-Processing`, `Done`).
-  - Each is executed independently by `ffmpeg`, based on its own command or preset.
-  - Each task maintains its own progress, status, and error reporting.
-  - The task's success or failure does not affect others in the same batch.
+Every task in the batch is submitted as a standalone task in FFmate. This means:
+
+*   Each task follows its own lifecycle (`Queued`, `Running`, `Done`).
+*   Each is executed independently by `ffmpeg`, based on its own command or preset.
+*   Each task maintains its own progress, status, and error reporting.
+*   A task's success or failure does not affect others in the same batch.
   
-> [!NOTE]
-> FFmate processes batch tasks concurrently (up to the `max-concurrent-tasks` limit) or sequentially, based on priority and queue order. 
+::: info
+FFmate processes batch tasks concurrently (up to the `max-concurrent-tasks` limit) or sequentially, based on priority and queue order.
+:::
   
 ### How to Submit a Batch of Tasks
 
-You submit a batch of tasks using the REST API by sending a `POST` request to the `/api/v1/tasks/batch` endpoint. 
+You submit a batch by sending a `POST` request to the `/api/v1/batches` endpoint.
 
-The request body will be a JSON array, where each element in the array is a standard `Task` object (the same object you'd use for creating a single task via [/api/v1/tasks](#creating-a-task).
+The request body must be a **JSON object** with a single key, `tasks`, which contains an array of standard task objects (the same object you'd use for creating a single task via [/api/v1/tasks](#creating-a-task).
 
 To submit multiple tasks as a batch, send a `POST` request to the FFmate API:
 
-```sh
-curl -X POST http://localhost:3000/api/v1/tasks/batch \
+```bash
+curl -X POST http://localhost:3000/api/v1/batches \
      -H "Content-Type: application/json" \
-     -d '[
-       {
-         "name": "Convert Episode 1 to WebM",
-         "inputFile": "/mnt/source_videos/seriesA/episode_01.mov",
-         "preset": "uuid-of-webm-720p-preset",
-         "priority": 20
-       },
-       {
-         "name": "Convert Episode 2 to WebM",
-         "inputFile": "/mnt/source_videos/seriesA/episode_02.mov",
-         "preset": "uuid-of-webm-720p-preset",
-         "priority": 20
-       },
-       {
-         "name": "Extract Thumbnail for Promo Image",
-         "command": "ffmpeg -ss 00:01:30 -i ${INPUT_FILE} -frames:v 1 -q:v 2 ${OUTPUT_FILE}",
-         "inputFile": "/mnt/source_videos/seriesA/promo_material.mp4",
-         "outputFile": "/mnt/output_images/promo_thumbnail_${TIMESTAMP_SECONDS}.jpg",
-         "priority": 50
-       }
-     ]'
-
+     -d '{
+       "tasks": [
+         {
+           "name": "Convert Episode 1 to WebM",
+           "inputFile": "/mnt/source_videos/seriesA/episode_01.mov",
+           "preset": "uuid-of-webm-720p-preset",
+           "priority": 20
+         },
+         {
+           "name": "Convert Episode 2 to WebM",
+           "inputFile": "/mnt/source_videos/seriesA/episode_02.mov",
+           "preset": "uuid-of-webm-720p-preset",
+           "priority": 20
+         },
+         {
+           "name": "Extract Thumbnail for Promo Image",
+           "command": "-i ${INPUT_FILE} -frames:v 1 -q:v 2 ${OUTPUT_FILE}",
+           "inputFile": "/mnt/source_videos/seriesA/promo_material.mp4",
+           "outputFile": "/mnt/output_images/promo_thumb.jpg",
+           "priority": 50
+         }
+       ]
+     }'
 ```
 
-FFmate will respond with a JSON array containing the full `Task` objects for each task created in the batch. Each of these task objects will include the same `batch` ID. An `batch.created` event is also fired via [webhooks](/docs/webhooks#batch-events)
+The server will respond with a **JSON object** containing the unique `uuid` of the batch and a `tasks` array with the full details of each newly created task.
 
-```json{4,11,18}
-[
-  {
-    "uuid": "task-uuid-1",
-    "batch": "c4e8f12a-3b7d-4c9f-a1e8-5d0f2b3c4a9e", 
-    "name": "Convert Episode 1 to WebM",
-    "status": "QUEUED",
-    // ... other task details
-  },
-  {
-    "uuid": "task-uuid-2",
-    "batch": "c4e8f12a-3b7d-4c9f-a1e8-5d0f2b3c4a9e", 
-    "name": "Convert Episode 2 to WebM",
-    "status": "QUEUED",
-    // ... other task details
-  },
-  {
-    "uuid": "task-uuid-3",
-    "batch": "c4e8f12a-3b7d-4c9f-a1e8-5d0f2b3c4a9e", 
-    "name": "Extract Thumbnail for Promo Image",
-    "status": "QUEUED",
-    // ... other task details
-  }
-]
+  ```json{2}
+{
+  "uuid": "c4e8f12a-3b7d-4c9f-a1e8-5d0f2b3c4a9e",
+  "tasks": [
+    {
+      "uuid": "task-uuid-1",
+      "batch": "c4e8f12a-3b7d-4c9f-a1e8-5d0f2b3c4a9e",
+      "name": "Convert Episode 1 to WebM",
+      "status": "QUEUED",
+      // ... other task details
+    },
+    {
+      "uuid": "task-uuid-2",
+      "batch": "c4e8f12a-3b7d-4c9f-a1e8-5d0f2b3c4a9e",
+      "name": "Convert Episode 2 to WebM",
+      "status": "QUEUED",
+      // ... other task details
+    }
+  ]
+}
 ```
+
+A `batch.created` event is fired when a batch starts, and a `batch.finished` event is fired once the last task in the batch is complete. [See batch webhook events](/docs/webhooks#batch-events)
 
 ### Managing and Monitoring Batches
 
@@ -340,20 +362,20 @@ While FFmate treats each task in a batch individually for processing, the `batch
 
 **Listing Tasks by Batch ID**
 
-You can retrieve all tasks that belong to a specific batch by sending a `GET` request to the FFmate API, including the batch's `uuid` in the path:
+You can retrieve all tasks that belong to a specific batch by sending a `GET` request with the batch's `uuid`.
 
 ```sh
 curl -X 'GET' \
-  'http://localhost:3000/api/v1/tasks/batch/{batch_uuid}?page=0&perPage=10' \
+  'http://localhost:3000/api/v1/batches/{batch_uuid}?page=0&perPage=10' \
   -H 'accept: application/json'
 ```
 
-FFmate returns a JSON array of task objects. The `X-Total` response header provides the total number of tasks in the batch.
+FFmate returns a **JSON object** containing the batch `uuid` and a paginated `tasks` array. The `X-Total` response header provides the total number of tasks in the batch.
 
 **Query Parameters:**
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
-- **`perPage`** *[optional]* – Defines how many tasks should be included in each page. Default: `50`.
+- **`perPage`** *[optional]* – Defines how many tasks should be included in each page. Default: `100`.
 
 ::: tip 💡 Webhook Notifications for Batches
 

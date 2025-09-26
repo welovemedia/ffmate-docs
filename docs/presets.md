@@ -19,18 +19,29 @@ To create a preset, send a `POST` request to the FFmate API:
 curl -X POST http://localhost:3000/api/v1/presets \
      -H "Content-Type: application/json" \
      -d '{
-       "name": "MP4 Standard Quality",
-       "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset medium -crf 23 -c:a aac -b:a 128k ${OUTPUT_FILE}",
-       "description": "Converts video to MP4 with H.264 video and AAC audio, good balance of quality and size.",
-       "outputFile": "${INPUT_FILE_BASENAME}_standard.mp4",
-       "priority": 1,
+       "name": "Analyze and Transcode MP4",
+       "description": "Runs an analysis script to determine the best CRF value, which is then used in the transcode command.",
+       "command": "-y -stats_period 5 -i ${INPUT_FILE} -c:v libx264 -preset medium -crf ${METADATA_crf_value} -c:a aac -b:a 128k ${OUTPUT_FILE}",
+       "outputFile": "${INPUT_FILE_BASENAME}_analyzed.mp4",
+       "priority": 5,
+       "preProcessing": {
+         "scriptPath": "/opt/ffmate/scripts/analyze_bitrate.sh --input ${INPUT_FILE} --sidecar ${SIDECAR_FILE}",
+         "sidecarPath": "/var/tmp/${INPUT_FILE_BASENAME}.json",
+         "importSidecar": true
+       },
        "postProcessing": {
-         "scriptPath": "/usr/local/bin/notify_completion.sh --file ${OUTPUT_FILE} --status success"
-       }
+         "scriptPath": "/opt/ffmate/scripts/cleanup.sh --file ${OUTPUT_FILE} --status success"
+       },
+       "webhooks": [
+         {
+           "event": "task.updated",
+           "url": "https://workflow-engine.example.com/api/ffmate/job-status-update"
+         }
+       ]
      }'
 ```
 
-FFmate returns a JSON object that contains the newly created preset including its `ID`. An `preset.created` event is also fired via [webhooks](/docs/webhooks#preset-events)
+FFmate returns a JSON object that contains the newly created preset including its `ID`. A `preset.created` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
 
 💡 Tip: Prefer a visual approach? You can create new presets directly in the [FFmate Web UI](/docs/web-ui.md) no API calls needed.
 
@@ -52,7 +63,7 @@ When you create a preset, you define parameters that are automatically applied t
     
     You can override this by explicitly adding your own `-stats_period x` to the command.  
     - This setting directly affects:  
-      - how often `task.updated` [webhook](/docs/webhooks#task-events) is sent, and  
+      - how often `task.updated` [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events) are sent, and  
       - how often the job dashboard refreshes progress updates.  
 
   - The `command` field also supports chaining multiple `FFmpeg` commands with `&&`. This is useful for advanced workflows such as **two-pass encoding**. When chaining commands, you must use the `${FFMPEG}` wildcard (see [FFmpeg Path](/docs/wildcards.md#ffmpeg-path) for more details). 
@@ -79,10 +90,13 @@ When you create a preset, you define parameters that are automatically applied t
 - **`pre-processing`** *[optional]* – Defines a [Pre-Processing Script](/docs/pre-post-prcessing.md) to run before the task starts. Useful for preparing files, validating input, or setting up the environment. If the task includes its own `preProcessing` config, FFmate will use that instead of the preset’s.
     *   **`scriptPath`**: The full path to the script or executable to run.
     *   **`sidecarPath`**: The full path to the JSON file that contains all task data.
+    *   **`importSidecar`**: Defines if the task will [re-import the sidecar](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar) JSON after the pre-processing script finishes.
      
 - **`postProcessing`** *[optional]* – Defines a [Post-Processing Script](/docs/pre-post-prcessing.md) to run after the task completes. Useful for cleanup, moving output files, or triggering follow-up actions.  If the task includes its own `postProcessing` config, FFmate will use that instead of the preset’s.
     *   **`scriptPath`**: The full path to the script or executable to run.
     *   **`sidecarPath`**: The full path to the JSON file that contains all task data. 
+
+- **`Webhooks`** *[optional]* : Defined a direct webhook target tied only to this preset. For example, it can notify a project management tool whenever the task's status changes.
 
 ### How to Use Presets in Tasks
 
@@ -154,7 +168,7 @@ curl -X PUT http://localhost:3000/api/v1/presets/{presetId} \
      }'
 ```
 
-Fmate returns the complete JSON object of the updated preset. An `preset.updated` event is also fired via [webhooks](/docs/webhooks#preset-events).
+FFmate returns the complete JSON object of the updated preset. A `preset.updated` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
 
 💡 Tip: Need to tweak an existing preset? You can update it directly in the [FFmate Web UI](/docs/web-ui.md#presets).
 
@@ -167,6 +181,6 @@ curl -X DELETE 'http://localhost:3000/api/v1/presets/{presetId}' \
      -H 'accept: application/json'
 ```
 
- FFmate responds with a `204` No Content status. The preset will be removed from the system. An `preset.deleted` event is also fired via [webhooks](/docs/webhooks#preset-events)
+ FFmate responds with a `204` No Content status. The preset will be removed from the system. A `preset.deleted` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
  
 💡 Tip: Presets can be safely deleted from the [FFmate Web UI](/docs/web-ui.md), with helpful context to avoid accidental removals.
