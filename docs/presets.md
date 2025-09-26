@@ -168,7 +168,7 @@ curl -X PUT http://localhost:3000/api/v1/presets/{presetId} \
      }'
 ```
 
-Fmate returns the complete JSON object of the updated preset. A `preset.updated` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
+FFmate returns the complete JSON object of the updated preset. A `preset.updated` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
 
 💡 Tip: Need to tweak an existing preset? You can update it directly in the [FFmate Web UI](/docs/web-ui.md#presets).
 
