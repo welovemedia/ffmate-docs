@@ -180,7 +180,10 @@ FFmate comes with a built-in **health endpoint** that shows if a node is up, ini
   {"status":"ok"}
   ```
 
-* **500 Internal Server Error** — The node isn’t ready yet (e.g., during startup) or failed to connect.{"status":"error"}
+* **500 Internal Server Error** — The node isn’t ready yet (e.g., during startup) or failed to connect. 
+```json  
+  {"status":"error"}  
+```
 
 #### When to Check It
 
