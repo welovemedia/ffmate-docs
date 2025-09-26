@@ -268,7 +268,7 @@ curl -X 'DELETE' \
   'http://localhost:3000/api/v1/tasks/{taskId}' \
   -H 'accept: application/json'
 ```
-FFmate responds with a `204` No Content status. The task will be removed from the system. A `task.deleted` event is also fired via A `task.created` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events).
+FFmate responds with a `204` No Content status. The task will be removed from the system. A `task.deleted` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events).
 
 ::: warning Important
 - Deleting a task **removes the database entry** from FFmate but **does not** delete the input or output files.  
@@ -296,14 +296,14 @@ FFmate processes batch tasks concurrently (up to the `max-concurrent-tasks` limi
   
 ### How to Submit a Batch of Tasks
 
-You submit a batch by sending a `POST` request to the `/api/v1/batch` endpoint.
+You submit a batch by sending a `POST` request to the `/api/v1/batches` endpoint.
 
 The request body must be a **JSON object** with a single key, `tasks`, which contains an array of standard task objects (the same object you'd use for creating a single task via [/api/v1/tasks](#creating-a-task).
 
 To submit multiple tasks as a batch, send a `POST` request to the FFmate API:
 
 ```bash
-curl -X POST http://localhost:3000/api/v1/batch \
+curl -X POST http://localhost:3000/api/v1/batches \
      -H "Content-Type: application/json" \
      -d '{
        "tasks": [
@@ -366,7 +366,7 @@ You can retrieve all tasks that belong to a specific batch by sending a `GET` re
 
 ```sh
 curl -X 'GET' \
-  'http://localhost:3000/api/v1/batch/{batch_uuid}?page=0&perPage=10' \
+  'http://localhost:3000/api/v1/batches/{batch_uuid}?page=0&perPage=10' \
   -H 'accept: application/json'
 ```
 
