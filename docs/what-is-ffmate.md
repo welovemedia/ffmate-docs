@@ -17,6 +17,7 @@ Whether you’re a developer building a media pipeline, a workflow engineer mana
 ## 🚀 Key Features
 
 - **Queueing System** – Submit and manage multiple concurrent `FFmpeg` jobs efficiently.
+- **Cluster Support** – Run multiple FFmate instances together, sharing the same database for scaling and redundancy.  
 - **Dynamic Filename Wildcards** – Enable smart and customizable output file naming.
 - **Webhook Notifications** – Receive real-time updates for seamless integration with external workflows.
 - **Watchfolder** – Automatically detect and process new files as they appear.
