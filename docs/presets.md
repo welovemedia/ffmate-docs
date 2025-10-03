@@ -123,8 +123,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 To get a list of all available presets, send a `GET` request to the FFmate API
 
 ```sh
-curl -X GET 'http://localhost:3000/api/v1/presets?page=0&perPage=10' \
-     -H 'accept: application/json'
+curl -X GET 'http://localhost:3000/api/v1/presets?page=0&perPage=10'
 ```
 
 FFmate returns a JSON array containing all configured presets. The `X-Total` response header provides the total number of presets available.
@@ -141,8 +140,7 @@ FFmate returns a JSON array containing all configured presets. The `X-Total` res
 To retrieve the details of a specific preset, send a `GET` request to the FFmate API, including the preset's `ID` in the path.
 
 ```sh
-curl -X GET 'http://localhost:3000/api/v1/presets/a1b2c3d4-e5f6-7890-1234-567890abcdef' \
-     -H 'accept: application/json'
+curl -X GET 'http://localhost:3000/api/v1/presets/a1b2c3d4-e5f6-7890-1234-567890abcdef'
 ```
 
 FFmate returns a JSON object with the full details of the specified preset.
@@ -177,8 +175,7 @@ FFmate returns the complete JSON object of the updated preset. A `preset.updated
 To delete an existing preset, send a `DELETE` request to the FFmate API, replacing `{presetId}` with the `ID` of the preset you want to remove.
 
 ```sh
-curl -X DELETE 'http://localhost:3000/api/v1/presets/{presetId}' \
-     -H 'accept: application/json'
+curl -X DELETE 'http://localhost:3000/api/v1/presets/{presetId}'
 ```
 
  FFmate responds with a `204` No Content status. The preset will be removed from the system. A `preset.deleted` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).

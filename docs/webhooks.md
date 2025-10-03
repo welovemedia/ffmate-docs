@@ -134,8 +134,7 @@ When the event is triggered, FFmate sends a `POST` request to your specified URL
 To get a list of all available webhooks, send a `GET` request to the FFmate API
 
 ```sh
-curl -X GET 'http://localhost:3000/api/v1/webhooks?page=0&perPage=10' \
-     -H 'accept: application/json'
+curl -X GET 'http://localhost:3000/api/v1/webhooks?page=0&perPage=10'
 ```
 
 **Query Parameters:**
@@ -152,8 +151,7 @@ FFmate returns a JSON array with all configured webhooks. The `X-Total` response
 To retrieve the details of a specific webhook, send a `GET` request to the FFmate API using its unique ID.
 
 ```sh
-curl -X GET http://localhost:3000/api/v1/webhooks/{webhookId} \
-     -H "accept: application/json"
+curl -X GET http://localhost:3000/api/v1/webhooks/{webhookId}
 ```
 FFmate returns a JSON object containing the details of the requested webhook.
 
@@ -181,8 +179,7 @@ FFmate returns the updated webhook object in JSON format. A `webhook.updated` ev
 To remove a webhook, send a `DELETE` request with its ID:
 
 ```sh
-curl -X DELETE http://localhost:3000/api/v1/webhooks/{webhookId} \
-     -H "accept: application/json"
+curl -X DELETE http://localhost:3000/api/v1/webhooks/{webhookId}
 ```
 
 FFmate responds with a `204` No Content status. The webhook will be removed from the system. A `webhook.deleted` event is also fired via [webhooks](#webhook-events)
@@ -219,6 +216,6 @@ Here's what your endpoint should do:
 
    You can fetch this full history through the API or UI:
 
-   ```bash
-   curl http://localhost:3000/api/v1/webhooks/executions
+   ```sh
+   curl -X GET http://localhost:3000/api/v1/webhooks/executions
    ```

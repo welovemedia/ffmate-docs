@@ -196,7 +196,7 @@ This is a per-node check. A 200 OK means the node is running and connected to th
 Example
 
 ```bash
-curl http://localhost:3000/health
+curl -X GET http://localhost:3000/health
 ```
 
 ### Client Endpoint
