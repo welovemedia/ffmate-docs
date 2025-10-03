@@ -213,8 +213,7 @@ To resume scanning, send another `PUT` request with `suspended` set to `false`. 
 Send a `DELETE` request to the FFmate API to remove a watchfolder by including the watchfolder's `ID` in the path.
 
 ```sh
-curl -X DELETE http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
-     -H "accept: application/json"
+curl -X DELETE http://localhost:3000/api/v1/watchfolders/{watchfolderId}
 ```
 
  FFmate responds with a `204` No Content status. The watchfolder will be **removed** from the system, and any monitoring for that folder will **stop**. A `watchfolder.deleted` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)

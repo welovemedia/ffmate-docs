@@ -269,7 +269,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 Check the status of your task by making a `GET` request:
 
 ```sh
-curl http://localhost:3000/api/v1/tasks/{taskId}
+curl -X GET http://localhost:3000/api/v1/tasks/{taskId}
 ```
 
 Replace `{taskId}` with the actual ID returned when submitting the task.
