@@ -126,13 +126,26 @@ The value for `--debug` is a comma-separated string of rules that you can combin
 FFmate provides API endpoints to change the debug namespaces *while the server is running*, which is extremely useful for enabling detailed logging on a live system without a restart:
 
 *   **`PATCH /api/v1/debug/{namespaces}`**
-    *   **Purpose:** Sets the active debug namespaces. The {namespaces} part of the URL should be your comma-separated filter string.
-    *   **Example:** To see only task and webhook logs: `curl -X PATCH curl -X PATCH http://localhost:3000/api/v1/debug/*:task,*:webhook`
+    *   **Purpose:** Sets the active debug namespaces. The [{namespaces}](#understanding-namespaces) part of the URL should be your comma-separated filter string.
+    *   **Example:** To see only task and webhook logs:
 
+        ```sh
+        curl -X 'PATCH' \
+        'http://localhost:3000/api/v1/debug/*:task,*:webhook0' \
+        -H 'accept: application/json'
+        ```
+        FFmate responds with a `204` No Content status.
 
 *   **`DELETE /api/v1/debug`**
     *   **Purpose:** Turns off all logging by resetting the namespace filter to an empty string.
-    *   **Example:** `curl -X DELETE curl -X DELETE http://localhost:3000/api/v1/debug`
+    *   **Example:** 
+
+        ```sh
+        curl -X 'DELETE' \
+        'http://localhost:3000/api/v1/debug' \
+        -H 'accept: application/json'
+        ```
+        FFmate responds with a `204` No Content status.
 
 ## Debug Message Format
 
