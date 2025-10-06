@@ -128,12 +128,12 @@ brew upgrade ffmate
 - [Windows – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-windows-arm64.zip)
 
 ###  macOS (Manual Download)
-- [macOS – Apple Silicon (arm64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_arm64.tar.gz)
-- [macOS – Intel (x86_64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_x86_64.tar.gz)
+- [macOS – Apple Silicon (arm64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-darwin-arm64.gz)
+- [macOS – Intel (x86_64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-darwin-amd64.gz)
 
 ### 🐧 Linux (Manual Download)
-- [Linux – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Linux_arm64.tar.gz)
-- [Linux – x86_64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Linux_x86_64.tar.gz)
+- [Linux – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-linux-arm64.gz)
+- [Linux – x86_64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-linux-amd64.gz)
 
 ### 🐳 Docker
 - [Run FFmate via Docker](https://github.com/welovemedia/ffmate/pkgs/container/ffmate)
