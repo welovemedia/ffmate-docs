@@ -4,4 +4,45 @@
     --vp-c-brand-2: #ff4051;
     --vp-c-brand-3: #ff4051;
     --vp-c-brand-soft: var(--vp-c-gray-2);
-  }
+}
+
+ol {
+  list-style: none;
+  counter-reset: item;
+  padding-left: 0;
+}
+
+ol > li {
+  counter-increment: item;
+  position: relative;
+  padding-left: 2.5em;
+}
+
+ol > li::marker {
+  content: none; /* Hide default marker */
+}
+
+ol > li::before {
+  content: counter(item);
+  position: absolute;
+  left: 0;
+  top: 0em;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 1.5em;
+  height: 1.5em;
+  background-color: #ff4350;
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+}
+
+.circle-numbers ul,
+.circle-numbers pre {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
