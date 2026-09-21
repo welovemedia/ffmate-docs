@@ -1,2 +1,4 @@
 User-agent: *
 Disallow:
+
+Sitemap: https://docs.ffmate.io/sitemap.xml
