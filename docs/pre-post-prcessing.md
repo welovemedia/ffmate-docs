@@ -23,7 +23,7 @@ FFmate will attempt to run the `scriptPath` as a system command. Make sure the *
 ::: danger Anyone with API access can run commands
 `scriptPath` can be any command, not only the path to a script, for example `bash -c "…"`. Anyone who can create a task, preset or watchfolder can therefore run commands on the computer FFmate runs on. With the default settings (listening on `0.0.0.0`, no authentication), that is anyone on your network.
 
-Restrict who can reach FFmate with [`--host 127.0.0.1`](/docs/flags.md#server-command-flags) or [`--basic-auth`](/docs/flags.md#server-command-flags) (v2.0.19+) and a firewall, and run FFmate as a user without admin or `root` rights.
+Restrict who can reach FFmate with [`--host 127.0.0.1`](/docs/flags.md#server-command-flags) or [`--basic-auth`](/docs/flags.md#server-command-flags) and a firewall, and run FFmate as a user without admin or `root` rights.
 :::
 
 ::: info No shell

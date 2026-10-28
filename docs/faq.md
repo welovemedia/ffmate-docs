@@ -88,8 +88,8 @@ Learn more → [Server Command Flags](/docs/flags#server-command-flags)
 
 Only with protection. By default, FFmate listens on all network interfaces (`0.0.0.0`) and has no password. Anyone who can reach its port can create tasks and presets, and their [pre- and post-processing scripts](/docs/pre-post-prcessing) can run any command on the computer FFmate runs on.
 
-* To keep FFmate on the local machine, start it with `--host 127.0.0.1` <Badge type="tip" text="v2.0.19+" />.
-* To share it on a network, start it with `--basic-auth` <Badge type="tip" text="v2.0.19+" /> and limit access with a firewall.
+* To keep FFmate on the local machine, start it with `--host 127.0.0.1`.
+* To share it on a network, start it with `--basic-auth` and limit access with a firewall.
 * Run FFmate as a user without admin or `root` rights.
 
 Learn more → [Server Command Flags](/docs/flags#server-command-flags)
@@ -98,7 +98,7 @@ Learn more → [Server Command Flags](/docs/flags#server-command-flags)
 <details>
 <summary>How do I protect FFmate with a username and password?</summary>
 
-<Badge type="tip" text="v2.0.19+" /> Start the server with `--basic-auth`, e.g. `ffmate server --basic-auth="admin:secret"`. Every request then needs the username and password: the API, the Web UI, the Swagger UI, `/health` and `/metrics`. The browser asks for them when opening the Web UI.
+Start the server with `--basic-auth`, e.g. `ffmate server --basic-auth="admin:secret"`. Every request then needs the username and password: the API, the Web UI, the Swagger UI, `/health` and `/metrics`. The browser asks for them when opening the Web UI.
 
 Learn more → [Server Command Flags](/docs/flags#server-command-flags)
 </details>
@@ -143,7 +143,7 @@ The most common reasons:
 
 * FFmate can't find FFmpeg. Check the startup log, and set the path with `--ffmpeg` if needed.
 * All slots are busy. FFmate only runs as many tasks at once as [`--max-concurrent-tasks`](/docs/flags#server-command-flags) allows.
-* <Badge type="tip" text="v2.0.19+" /> The task has [labels](/docs/tasks#task-properties), but no FFmate instance has a matching label.
+* The task has [labels](/docs/tasks#task-properties), but no FFmate instance has a matching label.
 
 Learn more → [Tasks](/docs/tasks)
 </details>
@@ -168,7 +168,7 @@ Learn more → [Restarting a Task](/docs/tasks#restarting-a-task)
 <details>
 <summary>Can FFmate retry failed tasks automatically?</summary>
 
-<Badge type="tip" text="v2.0.19+" /> Yes. Set `retries` on the task or its preset, e.g. `"retries": 2`. If the task fails, FFmate puts it back into `QUEUED` after 3 seconds, up to that many times. Canceled tasks are not retried.
+Yes. Set `retries` on the task or its preset, e.g. `"retries": 2`. If the task fails, FFmate puts it back into `QUEUED` after 3 seconds, up to that many times. Canceled tasks are not retried.
 
 Learn more → [Task Properties](/docs/tasks#task-properties)
 </details>
@@ -176,7 +176,7 @@ Learn more → [Task Properties](/docs/tasks#task-properties)
 <details>
 <summary>What happens to running tasks when FFmate stops or crashes?</summary>
 
-<Badge type="tip" text="v2.0.19+" /> When FFmate starts again, it sets the tasks it was running to `DONE_ERROR` with the error `client disconnected during execution`. In a [cluster](/docs/clustering), the other FFmate instances do this after about 60 seconds. Restart those tasks to run them again.
+When FFmate starts again, it sets the tasks it was running to `DONE_ERROR` with the error `client disconnected during execution`. In a [cluster](/docs/clustering), the other FFmate instances do this after about 60 seconds. Restart those tasks to run them again.
 
 Learn more → [Clustering](/docs/clustering)
 </details>
@@ -212,7 +212,7 @@ Learn more → [Pre and Post Processing](/docs/pre-post-prcessing)
 <details>
 <summary>How do I send tasks to specific machines, e.g. ones with a GPU?</summary>
 
-<Badge type="tip" text="v2.0.19+" /> Give those FFmate instances a label with `--labels`, e.g. `ffmate server --labels="gpu"`, and add the same label to the tasks or presets: `"labels": ["gpu"]`. Tasks with labels only run on FFmate instances with a matching label. Tasks without labels run on any FFmate instance.
+Give those FFmate instances a label with `--labels`, e.g. `ffmate server --labels="gpu"`, and add the same label to the tasks or presets: `"labels": ["gpu"]`. Tasks with labels only run on FFmate instances with a matching label. Tasks without labels run on any FFmate instance.
 
 Learn more → [Server Command Flags](/docs/flags#server-command-flags)
 </details>
@@ -282,7 +282,7 @@ Check these:
 * The file's extension doesn't pass the watchfolder's `filter`.
 * The file is still growing, or the `growthChecks` scans haven't finished yet.
 * The watchfolder is `suspended`.
-* <Badge type="tip" text="v2.0.19+" /> The watchfolder has `labels`, and no FFmate instance has a matching label.
+* The watchfolder has `labels`, and no FFmate instance has a matching label.
 
 Learn more → [Watchfolders](/docs/watchfolder)
 </details>

@@ -109,7 +109,7 @@ After you create a watchfolder, FFmate responds with a JSON object that includes
 - **`preset`** – The `uuid` of the [preset](/docs/presets.md) FFmate uses for every task this watchfolder creates.  
 - **`path`** – The **absolute path** of the directory to monitor.  
 - **`suspended`** *[optional]* – A boolean flag that pauses watchfolder scanning. When set to `true`, FFmate temporarily stops detecting and processing files in the folder.
-- **`labels`** *[optional]* <Badge type="tip" text="v2.0.19+" /> – Up to 5 labels (1–32 characters each) that decide which FFmate instance scans this watchfolder. Only an FFmate instance with at least one matching label scans it; a watchfolder without labels is scanned by any FFmate instance. `*` works as a wildcard, e.g. `gpu-*`. The tasks it creates don't inherit these labels; they get the labels of the preset. See [`--labels`](/docs/flags.md#server-command-flags).
+- **`labels`** *[optional]* – Up to 5 labels (1–32 characters each) that decide which FFmate instance scans this watchfolder. Only an FFmate instance with at least one matching label scans it; a watchfolder without labels is scanned by any FFmate instance. `*` works as a wildcard, e.g. `gpu-*`. The tasks it creates don't inherit these labels; they get the labels of the preset. See [`--labels`](/docs/flags.md#server-command-flags).
 - **`filter`** *[optional]* – Rules for file selection, set inside `filter.extensions`. Write extensions without the dot.  
   - **`include`** – Only process files with these extensions (e.g., `mp4`, `mov`).  
   - **`exclude`** – Ignore files with these extensions (e.g., `tmp`, `log`).  
