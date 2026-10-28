@@ -119,7 +119,7 @@ export default withMermaid({
 
     footer: {
       message:
-        'Released under the <a href="https://opensource.org/license/agpl-v3" target="_blank" rel="noopener">AGPL-3.0 License</a>',
+        'Released under the <a href="https://opensource.org/license/agpl-v3" target="_blank" rel="noopener">AGPL-3.0 License</a> · Sponsored by <a href="https://moovit.de" target="_blank" rel="noopener">MoovIT GmbH</a>',
       copyright: "Copyright © 2025-present we love media",
     },
   },
