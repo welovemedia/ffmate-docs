@@ -68,7 +68,7 @@ When you create a preset, you define parameters that are automatically applied t
 
   - [Wildcards](/docs/wildcards.md) like `${INPUT_FILE}` and `${OUTPUT_FILE}` can be used inside the command string. FFmate replaces them with the actual file paths when the task runs.
 
-  - Chaining several `FFmpeg` commands with `&&` (for example for **two-pass encoding**) currently doesn't work. See [tasks](/docs/tasks.md#task-properties) for details.
+  - The `command` field also supports chaining several `FFmpeg` commands with `&&`, for example for **two-pass encoding**. Start every command after an `&&` with the `${FFMPEG}` wildcard (see [FFmpeg Path](/docs/wildcards.md#ffmpeg-path)).
 
   - If a [task](/docs/tasks.md) references a preset, the `command` defined in the preset will **always** be used—any command provided directly in the [task](/docs/tasks.md) will be ignored.
 

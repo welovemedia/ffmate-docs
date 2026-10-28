@@ -108,9 +108,7 @@ These are the properties that can be set when creating a task in FFmate:
 
     - [Wildcards](/docs/wildcards.md) like `${INPUT_FILE}` and `${OUTPUT_FILE}` can be used inside the command string. FFmate replaces them with the actual file paths when the task runs.
 
-    ::: warning Chaining commands with `&&` doesn't work
-    The `command` field is meant to support chaining several `FFmpeg` commands with `&&`, for example for **two-pass encoding**. In v2.0.18 and v2.0.19, every command after the first `&&` fails with `exec: no command`, even with the `${FFMPEG}` wildcard, and the task ends as `DONE_ERROR`. Until this is fixed, run each pass as its own task, or run the second pass from a [post-processing script](/docs/pre-post-prcessing.md).
-    :::
+    - The `command` field also supports chaining several `FFmpeg` commands with `&&`, for example for **two-pass encoding**. Start every command after an `&&` with the `${FFMPEG}` wildcard (see [FFmpeg Path](/docs/wildcards.md#ffmpeg-path)).
 
   ::: tip Not sure which `FFmpeg` commands to use?
 
@@ -227,7 +225,7 @@ FFmate returns a JSON array containing all configured tasks. The `X-Total` respo
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
 - **`perPage`** *[optional]* – Defines how many tasks should be included in each page. Default: `100`.
-- **`status`** *[optional]* <Badge type="tip" text="v2.0.19+" /> – Only returns tasks with this status, e.g. `?status=DONE_ERROR`. Use one of the statuses from the [table above](#understanding-tasks-in-ffmate). An unknown status returns an empty list.
+- **`status`** *[optional]* <Badge type="tip" text="v2.0.19+" /> – Only returns tasks with this status, e.g. `?status=DONE_ERROR`. Use one of the statuses from the [table above](#understanding-tasks-in-ffmate).
 
 💡 Tip: You can also check the status of all tasks: queued, processing, completed, or failed directly in the [FFmate Web UI](/docs/web-ui.md#monitoring-tasks)
 
@@ -244,7 +242,7 @@ curl -X PATCH 'http://localhost:3000/api/v1/tasks/{taskId}/cancel'
 
 FFmate responds with a JSON object containing the updated details of the task. The task's status will be changed to `DONE_CANCELED`, and the progress will be set to 100. A `task.updated` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events), with `status` set to `DONE_CANCELED`. There is no separate cancel event. If this was the last unfinished task of a batch, `batch.finished` is fired too.
 
-From v2.0.19 onwards, canceling stops a running `FFmpeg` command, and the `task.updated` event with `DONE_CANCELED` is sent twice. A [pre- or post-processing script](/docs/pre-post-prcessing.md) that is already running is not stopped and runs to the end.
+If the task is already processing, FFmate stops it, including a running `FFmpeg` command or [pre- or post-processing script](/docs/pre-post-prcessing.md).
 
 💡 Tip: You can also cancel a running task directly from the [FFmate Web UI](/docs/web-ui.md#canceling-tasks) with a single click—no API call needed.
 
@@ -281,7 +279,7 @@ FFmate responds with a `204` No Content status. The task will be removed from th
 
 ::: warning Important
 - Deleting a task **removes the database entry** from FFmate but **does not** delete the input or output files.  
-- Deleting does **not** stop a task that is processing. Only delete tasks that are queued or finished. To remove a running task, [cancel](#canceling-a-task) it first and wait until it has stopped.
+- If the task is still processing, FFmate stops it before deleting it.
 :::
 
 💡 Tip: Tasks can also be deleted from the [FFmate Web UI](/docs/web-ui.md#deleting-tasks)
