@@ -16,14 +16,20 @@ Whether you’re a developer building a media pipeline, a workflow engineer mana
 
 ## 🚀 Key Features
 
-- **Queueing System** – Submit and manage multiple concurrent `FFmpeg` jobs efficiently.
+- **REST API** – Create and control tasks, presets, watchfolders and webhooks from any tool or script. See [Swagger](/docs/swagger.md).
+- **Queueing System** – Submit and manage multiple concurrent `FFmpeg` jobs efficiently, with priorities.
 - **Cluster Support** – Run multiple FFmate instances together, sharing the same database for scaling and redundancy.
-- **Dynamic Filename Wildcards** – Enable smart and customizable output file naming.
+- **Labels** <Badge type="tip" text="v2.0.19+" /> – Send tasks to specific FFmate instances, for example the ones with a GPU.
+- **Automatic Retries** <Badge type="tip" text="v2.0.19+" /> – Run failed tasks again automatically.
+- **Wildcards** – Insert file names, dates, metadata and more into commands, file paths and scripts.
 - **Webhook Notifications** – Receive real-time updates for seamless integration with external workflows.
 - **Watchfolder** – Automatically detect and process new files as they appear.
 - **Pre & Post Processing Actions** – Execute custom commands or scripts before and after transcoding.
 - **Preconfigured Presets** – Simplify common media conversion tasks with ready-to-use settings.
 - **Web UI** – Monitor and configure transcoding workflows with an intuitive interface.
+- **Monitoring** – Check each FFmate instance with a health endpoint and Prometheus metrics. See [FFmate Internals](/docs/ffmate-internals.md).
+- **Password Protection** <Badge type="tip" text="v2.0.19+" /> – Protect the API and Web UI with a username and password.
+- **Runs Everywhere** – Windows, macOS, Linux and Docker.
 
 Want to see it in action? Skip to the [Getting started](/docs/getting-started.md)
 
@@ -49,7 +55,7 @@ No polling required—just plug in your endpoint and go.
 ### ☁️ Scalable FFmpeg Job Management  
 
 Run FFmate as a centralized, API-first backend for `FFmpeg` job orchestration.  
-You can scale the number of **simultaneous jobs** based on available resources—without needing to manage multiple agents.  
+You can scale the number of **simultaneous jobs** per FFmate instance based on available resources. When one machine isn't enough, add more FFmate instances as a [cluster](/docs/clustering.md); they share one queue, so there are no separate agents to manage.  
 With full control over job priority, queuing, and task lifecycle, FFmate is ideal for high-volume transcoding environments where reliability and automation matter.
 
 Use it to power:
