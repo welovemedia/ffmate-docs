@@ -44,7 +44,7 @@ FFmate saves the script's error output and exit code in the task's `error` field
 
 - **`sidecarPath`** *[optional]* – Specifies the path where FFmate should write a JSON "sidecar" file containing detailed information about the current task. This path supports [wildcards](/docs/wildcards.md). Your script can then read this file to get full context and make decisions accordingly. If FFmate can't write the sidecar, the script doesn't run and the task fails.
 
-- **`importSidecar`** *[optional, pre-processing only]* – If `true`, FFmate reads the sidecar back in after the pre-processing script finishes. Default: `false`. See [Importing a Task’s Sidecar](#importing-a-task-s-sidecar).
+- **`importSidecar`** *[optional, pre-processing only]* – If `true`, FFmate reads the sidecar back in after the pre-processing script finishes. Default: `false`. See [Importing a Task’s Sidecar](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar).
 
   - **What’s in the sidecar file?**  
     The sidecar JSON contains a snapshot of the task at the time the script runs. Empty properties are left out.
