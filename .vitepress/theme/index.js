@@ -4,7 +4,9 @@ import "./custom.css"
 
 export default {
   ...DefaultTheme,
-  enhanceApp({ app }) {
-    app.component("ZoomImg", ZoomImg)
+  enhanceApp(ctx) {
+    // keep the default theme's global components, such as <Badge>
+    DefaultTheme.enhanceApp?.(ctx)
+    ctx.app.component("ZoomImg", ZoomImg)
   },
 }
