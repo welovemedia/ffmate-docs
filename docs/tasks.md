@@ -33,6 +33,7 @@ graph TD;
     processing -->|Finishes successfully| completed;
     processing -->|Fails| failed;
     queued -->|Canceled| canceled;
+    processing -->|Canceled| canceled;
 
     classDef queued fill:#fdf6b2,stroke:#facc15,stroke-width:2px,color:#000;
     classDef processing fill:#bfdbfe,stroke:#3b82f6,stroke-width:2px,color:#000;
@@ -68,7 +69,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
          "editor": "jane.doe"
        },
        "preProcessing": {
-         "scriptPath": "/opt/ffmate/scripts/verify_source.sh --input ${INPUT_FILE} --sidecar ${SIDECAR_FILE}",
+         "scriptPath": "/opt/ffmate/scripts/verify_source.sh --input ${INPUT_FILE} --sidecar /var/tmp/ffmate_sidecar_${UUID}.json",
          "sidecarPath": "/var/tmp/ffmate_sidecar_${UUID}.json",
          "importSidecar": true
        },
@@ -84,15 +85,15 @@ curl -X POST http://localhost:3000/api/v1/tasks \
      }'
 ```
 
-FFmate responds with a JSON object that contains the newly created task including its `ID`. This `taskId` can be used to monitor the task’s progress in the next section. A `task.created` event is also fired via [Global webhooks](/docs/webhooks#task-events) and [Direct webhooks](/docs/webhooks#task-events).
+FFmate responds with a JSON object that contains the newly created task, including its `uuid`. This `uuid` is used to monitor the task’s progress in the next section. A `task.created` event is also fired via [Global webhooks](/docs/webhooks#task-events) and [Direct webhooks](/docs/webhooks#task-events).
 
 ### Task Properties
 
-These are the properties you can set when creating a task in FFmate:
+These are the properties that can be set when creating a task in FFmate:
 
-- **`name`** *[optional]* - A short, descriptive name to help identify and track the task in the web UI and API (e.g., "Final Render for Summer Ad Campaign")
+- **`name`** *[mandatory]* - A short, descriptive name to help identify and track the task in the web UI and API (e.g., "Final Render for Summer Ad Campaign"). Requests without a `name` are rejected with `422`.
 
-- **`command`** — The custom command FFmate will use to run `FFmpeg`. This field is **mandatory** unless you use a `preset`.  
+- **`command`** — The custom command FFmate will use to run `FFmpeg`. This field is **mandatory** unless a `preset` is set. When a `preset` is set, the preset's command is always used and the task's `command` is ignored.  
 
   ⚠️ **Important details about how `command` works:** 
 
@@ -105,9 +106,11 @@ These are the properties you can set when creating a task in FFmate:
       - how often `task.updated` [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events) are sent, and  
       - how often the job dashboard refreshes progress updates.  
 
-    - The `command` field also supports chaining multiple `FFmpeg` commands with `&&`. This is useful for advanced workflows such as **two-pass encoding**. When chaining commands, you must use the `${FFMPEG}` wildcard (see [FFmpeg Path](/docs/wildcards.md#ffmpeg-path) for more details). 
-  
-      You can also use [wildcards](/docs/wildcards.md) like `${INPUT_FILE}` and `${OUTPUT_FILE}` inside the command string. FFmate will automatically replace them with the actual file paths when the task runs.
+    - [Wildcards](/docs/wildcards.md) like `${INPUT_FILE}` and `${OUTPUT_FILE}` can be used inside the command string. FFmate replaces them with the actual file paths when the task runs.
+
+    ::: warning Chaining commands with `&&` doesn't work
+    The `command` field is meant to support chaining several `FFmpeg` commands with `&&`, for example for **two-pass encoding**. In v2.0.18 and v2.0.19, every command after the first `&&` fails with `exec: no command`, even with the `${FFMPEG}` wildcard, and the task ends as `DONE_ERROR`. Until this is fixed, run each pass as its own task, or run the second pass from a [post-processing script](/docs/pre-post-prcessing.md).
+    :::
 
   ::: tip Not sure which `FFmpeg` commands to use?
 
@@ -130,9 +133,13 @@ These are the properties you can set when creating a task in FFmate:
 - If your command **directly specifies input and output paths**, you do **not** need to provide these properties separately.
 :::
 
-- **`priority`** *[optinal]* – Sets the task's priority in the processing queue. Higher numbers mean higher priority — for example, a task with priority `100` will be processed before one with `10`. If multiple tasks share the same priority, they’ll generally run in the order they were created (FIFO for that priority level).  
+- **`priority`** *[optional]* – Sets the task's priority in the processing queue. Higher numbers mean higher priority — for example, a task with priority `100` will be processed before one with `10`. Tasks with the same priority run in the order they were created.  
     
-- **`preset`** - The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task. This field is **mandatory** unless you use a `command`.
+- **`preset`** - The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task. This field is **mandatory** unless a `command` is set. See [Using a Preset](#using-a-preset) for which settings the task takes from the preset.
+
+- **`labels`** *[optional]* <Badge type="tip" text="v2.0.19+" /> – Up to 5 labels (1–32 characters each) that decide which FFmate instance processes the task. Only an FFmate instance with at least one matching label picks it up; a task without labels runs on any FFmate instance. `*` works as a wildcard, e.g. `gpu-*`. See [`--labels`](/docs/flags.md#server-command-flags).
+
+- **`retries`** *[optional]* <Badge type="tip" text="v2.0.19+" /> – How many times FFmate retries the task if it fails (`DONE_ERROR`). Each retry starts 3 seconds after the failure and puts the task back into `QUEUED`. The response field `retried` shows how many retries have run so far. Canceled tasks are not retried. Default: `0`.
 
 - **`preProcessing`** *[optional]* – Defines a [Pre-Processing Script](/docs/pre-post-prcessing.md) to run before the task starts. Useful for preparing files, validating input, or setting up the environment.
     *   **`scriptPath`**: The full path to the script or executable to run.
@@ -143,7 +150,7 @@ These are the properties you can set when creating a task in FFmate:
     *   **`scriptPath`**: The full path to the script or executable to run.
     *   **`sidecarPath`**: The full path to the JSON file that contains all task data.
 
-- **`Webhooks`** *[optional]* : Defined a direct webhook target tied only to this task. For example, it can notify a project management tool whenever the task's status changes.
+- **`webhooks`** *[optional]* – Direct webhook targets tied only to this task, for example to notify a project management tool whenever the task's status changes. Each entry needs an `event` and a `url`. Only `task.created`, `task.updated` and `task.deleted` are sent for direct task webhooks.
 
 - **`metadata`** *[optional]* — Any JSON object you want to attach to the task. Common uses include adding context, referencing source files, or integrating with external systems.
 
@@ -166,7 +173,7 @@ This is a powerful feature for:
 
 1. Your upstream system (CMS/PAM/DAM/MAM/workflow manager) creates a task in FFmate and includes its own identifiers in `metadata` (e.g., `assetId`, `jobId`).
 2. FFmate queues the task, then starts processing it.
-3. When the task finishes, FFmate sends a `task.finished` webhook to your endpoint.
+3. When the task finishes, FFmate sends a `task.updated` webhook whose `status` is `DONE_SUCCESSFUL`, `DONE_ERROR` or `DONE_CANCELED`.
 4. The original `metadata` you sent is returned in the webhook payload, so your system can correlate it back to the `assetId` / `jobId` that originated the task.
 
 ##### Example 2:
@@ -178,6 +185,18 @@ This is a powerful feature for:
 ```json
 "outputFile": "/volumes/ffmate/processed/${METADATA_ffmate.watchfolder.relativeDir}/${INPUT_FILE_BASENAME}.mp4"
 ```
+
+### Using a Preset
+
+When a task sets a `preset`, FFmate fills in the task from the preset as follows:
+
+| Setting | Result |
+|---|---|
+| `command` | Always taken from the preset. The task's own `command` is ignored. |
+| `inputFile`, `name`, `metadata` | Always taken from the task. |
+| `outputFile`, `priority`, `preProcessing`, `postProcessing` | Taken from the preset only if the task doesn't set them. |
+| `labels`, `retries` <Badge type="tip" text="v2.0.19+" /> | The task inherits them from the preset only if it doesn't set them. |
+| `webhooks` | Preset and task webhooks are combined. Only `task.*` events are kept. |
 
 ## Monitoring a Task
 
@@ -208,6 +227,7 @@ FFmate returns a JSON array containing all configured tasks. The `X-Total` respo
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
 - **`perPage`** *[optional]* – Defines how many tasks should be included in each page. Default: `100`.
+- **`status`** *[optional]* <Badge type="tip" text="v2.0.19+" /> – Only returns tasks with this status, e.g. `?status=DONE_ERROR`. Use one of the statuses from the [table above](#understanding-tasks-in-ffmate). An unknown status returns an empty list.
 
 💡 Tip: You can also check the status of all tasks: queued, processing, completed, or failed directly in the [FFmate Web UI](/docs/web-ui.md#monitoring-tasks)
 
@@ -222,10 +242,9 @@ To cancel a task, send a `PATCH` request to the FFmate API by including the task
 curl -X PATCH 'http://localhost:3000/api/v1/tasks/{taskId}/cancel'
 ```
 
-FFmate responds with a JSON object containing the updated details of the task. The task's status will be changed to `DONE_CANCELED`, and the progress will be set to 100. A `task.canceled` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events).
+FFmate responds with a JSON object containing the updated details of the task. The task's status will be changed to `DONE_CANCELED`, and the progress will be set to 100. A `task.updated` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events), with `status` set to `DONE_CANCELED`. There is no separate cancel event. If this was the last unfinished task of a batch, `batch.finished` is fired too.
 
-> [!NOTE]
-> If the task is already processing, FFmate will attempt to **stop** it, but cancellation may not always be immediate.
+From v2.0.19 onwards, canceling stops a running `FFmpeg` command, and the `task.updated` event with `DONE_CANCELED` is sent twice. A [pre- or post-processing script](/docs/pre-post-prcessing.md) that is already running is not stopped and runs to the end.
 
 💡 Tip: You can also cancel a running task directly from the [FFmate Web UI](/docs/web-ui.md#canceling-tasks) with a single click—no API call needed.
 
@@ -239,13 +258,13 @@ To restart a task, send a `PATCH` request to the FFmate API by including the tas
 curl -X PATCH 'http://localhost:3000/api/v1/tasks/{taskId}/restart'
 ```
 
-FFmate responds with a JSON object containing the updated details of the task. The task's `status` will be reset to `QUEUED`, `progress` to `0`, `error` cleared, and `startedAt`/`finishedAt` timestamps reset. The task will then be re-added to the processing queue according to its priority.
+FFmate responds with a JSON object containing the updated details of the task. The task's `status` will be reset to `QUEUED`, `progress` to `0`, `error` cleared, and `startedAt`/`finishedAt` timestamps reset. From v2.0.19, `retried` is also reset to `0`. The task will then be re-added to the processing queue according to its priority.
 
 > [!Note]
 > - Restarting a task will **re-run the exact same command** using the original input and output paths.  
 > - If the task was previously processing, it will start from the beginning.
 
-Once restarted, the task will move back into the **queued** state and follow the standard [task lifecycle](#task-flow). A `task.created` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events).
+Once restarted, the task will move back into the **queued** state and follow the standard [task lifecycle](#task-flow). A `task.updated` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events), with `status` set to `QUEUED`.
 
 💡 Tip: Need to rerun a task? You can restart it directly in the [FFmate Web UI](/docs/web-ui.md#restarting-tasks)
 
@@ -262,7 +281,7 @@ FFmate responds with a `204` No Content status. The task will be removed from th
 
 ::: warning Important
 - Deleting a task **removes the database entry** from FFmate but **does not** delete the input or output files.  
-- If the task is still processing, FFmate will attempt to **stop** it before deletion.
+- Deleting does **not** stop a task that is processing. Only delete tasks that are queued or finished. To remove a running task, [cancel](#canceling-a-task) it first and wait until it has stopped.
 :::
 
 💡 Tip: Tasks can also be deleted from the [FFmate Web UI](/docs/web-ui.md#deleting-tasks)
@@ -344,7 +363,7 @@ The server will respond with a **JSON object** containing the unique `uuid` of t
 }
 ```
 
-A `batch.created` event is fired when a batch starts, and a `batch.finished` event is fired once the last task in the batch is complete. [See batch webhook events](/docs/webhooks#batch-events)
+A `batch.created` event is fired when the batch is submitted, and a `batch.finished` event is fired once the last task in the batch is complete. [See batch webhook events](/docs/webhooks#batch-events)
 
 ### Managing and Monitoring Batches
 
@@ -373,7 +392,7 @@ FFmate returns a **JSON object** containing the batch `uuid` and a paginated `ta
 
 - **`batch.finished`** – Triggered when all tasks in the batch have finished processing (either successfully, with errors, or canceled).  
 
-  The payload includes a summary of each task's final status, making this ideal for triggering follow-up actions once the entire batch is complete.
+  The payload is the task that finished **last**, not a summary of the batch. To get the final status of every task, call [`GET /api/v1/batches/{batch_uuid}`](#managing-and-monitoring-batches) with the `batch` value from that task.
 
 :::
 
