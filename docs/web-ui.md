@@ -78,7 +78,7 @@ To remove a task, hover over it and click the **delete** icon. The icon appears 
 
 ### Task Details
 
-Click on any task to see its full execution details, including progress, errors, `FFmpeg` command, input/output paths, pre/post-processing information, webhooks and the FFmate instance that ran it. <Badge type="tip" text="v2.0.19+" /> The details also show the task's labels and how many retries have run.
+Click on any task to see its full execution details, including progress, errors, `FFmpeg` command, input/output paths, pre/post-processing information, webhooks and the FFmate instance that ran it. The details also show the task's labels and how many retries have run.
 
 <ZoomImg src="/img/ffmate-dashboard-task-details.webp" alt="FFmate task details opened below a finished task, showing UUID, priority, status, progress, the command, input and output files with their resolved values, pre- and post-processing scripts and sidecar paths, and the client that ran the task"/>
 
@@ -92,7 +92,7 @@ Click the **plus (+) button** in the bottom-right corner of the Watchfolders pag
 
 <ZoomImg src="/img/ffmate-watchfolder-add-new.webp" alt="Empty FFmate Watchfolder page with the plus button highlighted in the bottom-right corner"/>
 
-Specify the name, folder path, preset, scan interval, number of growth checks, and optional file extension filters. Turn off **Enabled** to create the watchfolder in a suspended state. <Badge type="tip" text="v2.0.19+" /> You can also add labels.
+Specify the name, folder path, preset, scan interval, number of growth checks, and optional file extension filters. Turn off **Enabled** to create the watchfolder in a suspended state. You can also add labels.
 
 <ZoomImg src="/img/ffmate-watchfolder-add-new-form-input.webp" alt="FFmate New watchfolder form filled in with name, description, path, preset, interval, growth check, include and exclude extensions, and the Enabled switch turned on"/>
 
@@ -132,7 +132,7 @@ Click the **plus (+) button** in the bottom-right corner of the Presets page to 
 
 You can create your own custom preset or choose from a set of predefined, ready-to-use presets provided by the FFmate team. The list of ready-to-use presets is loaded from the internet, so it's empty without an internet connection.
 
-The form covers the name, description, `FFmpeg` command, output file, priority, and pre- and post-processing settings, including **Import sidecar**. <Badge type="tip" text="v2.0.19+" /> It also has fields for retries and labels.
+The form covers the name, description, `FFmpeg` command, output file, priority, and pre- and post-processing settings, including **Import sidecar**. It also has fields for retries and labels.
 
 <ZoomImg src="/img/ffmate-presets-add-new-form-input.webp" alt="FFmate New preset form filled in with name, description, command, output file, priority and a post-processing script. The global presets to start from are listed on the left"/>
 
@@ -205,7 +205,7 @@ The **Clients** page lists every FFmate instance connected to the database, with
 
 <ZoomImg src="/img/ffmate-clients.webp" alt="FFmate Clients page listing one FFmate instance with its identifier, version, operating system, architecture, online dot and last seen time"/>
 
-<Badge type="tip" text="v2.0.19+" /> Click an FFmate instance to see its details: FFmpeg path, operating system, architecture and labels.
+Click an FFmate instance to see its details: FFmpeg path, operating system, architecture and labels.
 
 ## Accessing Real-Time Logs
 

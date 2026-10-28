@@ -211,7 +211,7 @@ This will start FFmate and expose the web interface at http://localhost:3000
 docker run -it --rm -p 127.0.0.1:3000:3000 ghcr.io/welovemedia/ffmate:latest
 ```
 
-**Or enable basic auth (v2.0.19+).** The image has no environment variable for it, so override the start command:
+**Or enable basic auth.** The image has no environment variable for it, so override the start command:
 
 ```sh
 docker run -it --rm \

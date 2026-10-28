@@ -88,7 +88,7 @@ sequenceDiagram
 
 Each FFmate instance picks up queued tasks on its own, up to its own [`--max-concurrent-tasks`](/docs/flags.md#server-command-flags) limit. An FFmate instance with a higher limit takes on more tasks at the same time.
 
-<Badge type="tip" text="v2.0.19+" /> Use [`--labels`](/docs/flags.md#server-command-flags) to send tasks to specific FFmate instances. An FFmate instance only picks up tasks without labels and tasks with at least one label that matches its own. For example, start the FFmate instances on computers with GPUs with `--labels="gpu"` and give GPU tasks the label `gpu`.
+Use [`--labels`](/docs/flags.md#server-command-flags) to send tasks to specific FFmate instances. An FFmate instance only picks up tasks without labels and tasks with at least one label that matches its own. For example, start the FFmate instances on computers with GPUs with `--labels="gpu"` and give GPU tasks the label `gpu`.
 
 ## Watchfolders in a Cluster
 
@@ -96,7 +96,7 @@ FFmate clustering uses PostgreSQL transactions to make sure watchfolders don’t
 
 - At each watchfolder **interval**, every FFmate instance **queries** the database for the watchfolder. The first one to claim it scans the folder. The others see that it's already claimed and skip it until the next interval.
 - At the next interval the **cycle repeats**, and a different FFmate instance may claim the watchfolder. This guarantees that only one FFmate instance processes a watchfolder at a time, even if many are watching.
-- <Badge type="tip" text="v2.0.19+" /> A watchfolder with [`labels`](/docs/watchfolder.md#watchfolder-properties) is only scanned by FFmate instances with a matching label.
+- A watchfolder with [`labels`](/docs/watchfolder.md#watchfolder-properties) is only scanned by FFmate instances with a matching label.
 
 ## Heartbeats
 
@@ -106,7 +106,7 @@ Every FFmate instance sends a small “`I’m alive`” signal to the cluster ab
 
 Clustering improves scalability and resilience, but it **isn’t a full high-availability setup**. There’s no built-in automatic failover or requeue.
 
-<Badge type="tip" text="v2.0.19+" /> If an FFmate instance goes down mid-transcode, the others notice that its heartbeats have stopped. After about **60 seconds**, they set its running tasks to `DONE_ERROR` with the error `client disconnected during execution`. If the FFmate instance starts again before that, it does the same for its own tasks on startup.
+If an FFmate instance goes down mid-transcode, the others notice that its heartbeats have stopped. After about **60 seconds**, they set its running tasks to `DONE_ERROR` with the error `client disconnected during execution`. If the FFmate instance starts again before that, it does the same for its own tasks on startup.
 
 To run such a task again, **restart** it in the Web UI or via the API. That moves it back to `QUEUED` for another FFmate instance to pick up.
 

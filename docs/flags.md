@@ -27,7 +27,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
     *   **Default:** `ffmpeg` (assumes `ffmpeg` is in your system's `PATH`).
     *   **Example:** `ffmate server --ffmpeg="/usr/local/bin/ffmpeg"`
 
-*   **`--host <address>`** or **`--host="<address>"`** <Badge type="tip" text="v2.0.19+" />
+*   **`--host <address>`** or **`--host="<address>"`**
     *   **Purpose:** Sets the network interface FFmate listens on.
     *   **Value:** An IP address or hostname. Use `127.0.0.1` to only accept connections from the same machine.
     *   **Default:** `0.0.0.0` (all network interfaces — FFmate is reachable from other machines).
@@ -44,7 +44,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
     On versions before v2.0.19, which always listen on `0.0.0.0`, use a firewall to restrict access to the port.
     :::
 
-*   **`--basic-auth <username:password>`** or **`--basic-auth="<username:password>"`** <Badge type="tip" text="v2.0.19+" />
+*   **`--basic-auth <username:password>`** or **`--basic-auth="<username:password>"`**
     *   **Purpose:** Protects the API, Web UI, WebSocket, Swagger, `/health` and `/metrics` with HTTP basic authentication.
     *   **Value:** `username:password`. Everything after the first `:` is the password. FFmate exits on startup if the value has no `:`.
     *   **Default:** Disabled (no authentication).
@@ -106,7 +106,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
         # Single option (all 2.x versions)
         postgresql://ffuser:ffpass@db.internal/ffmatedb?sslmode=require
 
-        # Several options (v2.0.19+)
+        # Several options
         postgresql://ffuser:ffpass@db.internal:6432/ffmatedb?sslmode=require&connect_timeout=10
         ```
 
@@ -130,7 +130,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
     *   **Default:** The machine's hostname.
     *   **Example:** `ffmate server --identifier=“node”-a`
 
-*   **`--labels <label,label,...>`** or **`--labels="<label,label,...>"`** <Badge type="tip" text="v2.0.19+" />
+*   **`--labels <label,label,...>`** or **`--labels="<label,label,...>"`**
     *   **Purpose:** Controls which tasks and watchfolders the FFmate instance processes. For example, in a [cluster](/docs/clustering.md), GPU encoding tasks can be limited to the FFmate instance whose machine has a graphics card.
 
         A label is a short tag such as `gpu`, `4k` or `office-berlin`. This flag sets the labels of the **FFmate instance**. [Tasks](/docs/tasks.md), [presets](/docs/presets.md) and [watchfolders](/docs/watchfolder.md) get labels through their `labels` field. An FFmate instance only processes tasks and watchfolders whose labels match its own.
@@ -191,7 +191,7 @@ Checks for and applies new versions of the FFmate binary.
 * **Flags:**  
   * `--dry` — checks for updates without installing them.  
     * **Result:** Prints either `no newer version found` or `found newer version: X.Y.Z`. The binary itself is not modified.  
-  * `--dev` <Badge type="tip" text="v2.0.19+" /> — uses the **development** update channel instead of the stable one. Dev builds (for example `2.0.19-dev-19`) contain features that haven't been released yet and may be unstable. Don't use them in production.
+  * `--dev` — uses the **development** update channel instead of the stable one. Dev builds (for example `2.0.19-dev-19`) contain features that haven't been released yet and may be unstable. Don't use them in production.
     * Combine it with `--dry` to only check: `ffmate update --dev --dry`.  
 
 * **Default behavior:**  

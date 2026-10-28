@@ -87,9 +87,9 @@ When you create a preset, you define parameters that are automatically applied t
 
 - **`priority`** *[optional]* – Sets the task's priority in the processing queue. Higher numbers mean higher priority — for example, a task with priority `100` will be processed before one with `10`. If multiple tasks share the same priority, they’ll generally run in the order they were created (FIFO for that priority level). If a task defines its own `priority`, that will override the preset’s value. If neither is set, `0` is used.
 
-- **`labels`** *[optional]* <Badge type="tip" text="v2.0.19+" /> – Up to 5 labels (1–32 characters each) that decide which FFmate instance processes tasks created from this preset. A task without its own labels inherits these. See [`--labels`](/docs/flags.md#server-command-flags).
+- **`labels`** *[optional]* – Up to 5 labels (1–32 characters each) that decide which FFmate instance processes tasks created from this preset. A task without its own labels inherits these. See [`--labels`](/docs/flags.md#server-command-flags).
 
-- **`retries`** *[optional]* <Badge type="tip" text="v2.0.19+" /> – How many times a failed task created from this preset is retried. A task without its own `retries` inherits this value. See [task properties](/docs/tasks.md#task-properties). Default: `0`.
+- **`retries`** *[optional]* – How many times a failed task created from this preset is retried. A task without its own `retries` inherits this value. See [task properties](/docs/tasks.md#task-properties). Default: `0`.
 
 - **`preProcessing`** *[optional]* – Defines a [Pre-Processing Script](/docs/pre-post-prcessing.md) to run before the task starts. Useful for preparing files, validating input, or setting up the environment. If the task includes its own `preProcessing` config, FFmate will use that instead of the preset’s.
     *   **`scriptPath`**: The full path to the script or executable to run.

@@ -135,9 +135,9 @@ These are the properties that can be set when creating a task in FFmate:
     
 - **`preset`** - The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task. This field is **mandatory** unless a `command` is set. See [Using a Preset](#using-a-preset) for which settings the task takes from the preset.
 
-- **`labels`** *[optional]* <Badge type="tip" text="v2.0.19+" /> – Up to 5 labels (1–32 characters each) that decide which FFmate instance processes the task. Only an FFmate instance with at least one matching label picks it up; a task without labels runs on any FFmate instance. `*` works as a wildcard, e.g. `gpu-*`. See [`--labels`](/docs/flags.md#server-command-flags).
+- **`labels`** *[optional]* – Up to 5 labels (1–32 characters each) that decide which FFmate instance processes the task. Only an FFmate instance with at least one matching label picks it up; a task without labels runs on any FFmate instance. `*` works as a wildcard, e.g. `gpu-*`. See [`--labels`](/docs/flags.md#server-command-flags).
 
-- **`retries`** *[optional]* <Badge type="tip" text="v2.0.19+" /> – How many times FFmate retries the task if it fails (`DONE_ERROR`). Each retry starts 3 seconds after the failure and puts the task back into `QUEUED`. The response field `retried` shows how many retries have run so far. Canceled tasks are not retried. Default: `0`.
+- **`retries`** *[optional]* – How many times FFmate retries the task if it fails (`DONE_ERROR`). Each retry starts 3 seconds after the failure and puts the task back into `QUEUED`. The response field `retried` shows how many retries have run so far. Canceled tasks are not retried. Default: `0`.
 
 - **`preProcessing`** *[optional]* – Defines a [Pre-Processing Script](/docs/pre-post-prcessing.md) to run before the task starts. Useful for preparing files, validating input, or setting up the environment.
     *   **`scriptPath`**: The full path to the script or executable to run.
@@ -193,7 +193,7 @@ When a task sets a `preset`, FFmate fills in the task from the preset as follows
 | `command` | Always taken from the preset. The task's own `command` is ignored. |
 | `inputFile`, `name`, `metadata` | Always taken from the task. |
 | `outputFile`, `priority`, `preProcessing`, `postProcessing` | Taken from the preset only if the task doesn't set them. |
-| `labels`, `retries` <Badge type="tip" text="v2.0.19+" /> | The task inherits them from the preset only if it doesn't set them. |
+| `labels`, `retries` | The task inherits them from the preset only if it doesn't set them. |
 | `webhooks` | Preset and task webhooks are combined. Only `task.*` events are kept. |
 
 ## Monitoring a Task
@@ -225,7 +225,7 @@ FFmate returns a JSON array containing all configured tasks. The `X-Total` respo
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
 - **`perPage`** *[optional]* – Defines how many tasks should be included in each page. Default: `100`.
-- **`status`** *[optional]* <Badge type="tip" text="v2.0.19+" /> – Only returns tasks with this status, e.g. `?status=DONE_ERROR`. Use one of the statuses from the [table above](#understanding-tasks-in-ffmate).
+- **`status`** *[optional]* – Only returns tasks with this status, e.g. `?status=DONE_ERROR`. Use one of the statuses from the [table above](#understanding-tasks-in-ffmate).
 
 💡 Tip: You can also check the status of all tasks: queued, processing, completed, or failed directly in the [FFmate Web UI](/docs/web-ui.md#monitoring-tasks)
 
