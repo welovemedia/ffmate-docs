@@ -12,10 +12,10 @@ When you add webhooks, FFmate can `notify` your external systems whenever events
 FFmate supports two kinds of webhooks:
 
 ### Global Webhooks
-Global webhooks let you define a **single target endpoint per webhook** [event](#task-events). They can be configured through the **/webhooks** [api](#creating-a-webhook) endpoint or the Web UI.
+Each global webhook sends one [event](#global-webhook-events) to one URL. Several global webhooks can use the same event. They can be configured through the **/webhooks** [api](#creating-a-webhook) endpoint or the Web UI.
 
 ### Direct Webhooks
-**Direct webhooks** are for cases where you need more fine-grained notifications with additional target endpoints. You can add them **directly to tasks** when submitting via the [api](/docs/tasks.md#creating-a-task), or to an FFmate [preset](/docs/presets.md#creating-a-preset) so every task using that `preset` includes the direct webhooks.
+**Direct webhooks** belong to a single task or preset and only report on that task or preset. You can add them **directly to tasks** when submitting via the [api](/docs/tasks.md#creating-a-task), or to an FFmate [preset](/docs/presets.md#creating-a-preset). On a preset, `task.*` webhooks are copied to every task created from that preset, and `preset.*` webhooks fire when that preset changes.
 
 Direct webhooks are only available for the following events:
 
@@ -56,7 +56,9 @@ curl -X POST http://localhost:3000/api/v1/webhooks \
      }'
 ```
 
-After you create a webhook, FFmate responds with a JSON object containing the `id` of the newly created webhook. A `webhook.created` event is also fired via [webhooks](#webhook-events)
+The `event` must be one of the [global webhook events](#global-webhook-events), and `url` must be a valid URL. Otherwise FFmate responds with `422`.
+
+After you create a webhook, FFmate responds with a JSON object containing the `uuid` of the newly created webhook, its `event` and `url`, and `createdAt` / `updatedAt` as date-time strings. A `webhook.created` event is also fired via [webhooks](#webhook-events)
 
 💡 Tip: Creating a new webhook? You can define and save webhooks directly in the [FFmate Web UI](/docs/web-ui.md#creating-a-webhook) without writing any API requests
 
@@ -140,7 +142,7 @@ curl -X GET 'http://localhost:3000/api/v1/webhooks?page=0&perPage=10'
 **Query Parameters:**
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
-- **`perPage`** *[optional]* – Defines how many webhooks should be included in each page. Default: `100`.
+- **`perPage`** *[optional]* – Defines how many webhooks should be included in each page. Default: `100`. Maximum: `100`.
 
 FFmate returns a JSON array with all configured webhooks. The `X-Total` response header provides the total number of webhooks available.
 
@@ -148,7 +150,7 @@ FFmate returns a JSON array with all configured webhooks. The `X-Total` response
 
 ## Getting a Single Webhook
 
-To retrieve the details of a specific webhook, send a `GET` request to the FFmate API using its unique ID.
+To retrieve the details of a specific webhook, send a `GET` request to the FFmate API using its `uuid`.
 
 ```sh
 curl -X GET http://localhost:3000/api/v1/webhooks/{webhookId}
@@ -159,7 +161,7 @@ FFmate returns a JSON object containing the details of the requested webhook.
 
 ## Updating a Webhook
 
-To modify an existing webhook, such as changing its **target URL** or the **event** it subscribes to, send a `PUT` request o the FFmate API with the **webhook's ID** in the URL and the new configuration in the request body. The request body should **contain the same fields** as when creating a new webhook.
+To modify an existing webhook, such as changing its **target URL** or the **event** it subscribes to, send a `PUT` request to the FFmate API with the **webhook's `uuid`** in the URL and the new configuration in the request body. The request body should **contain the same fields** as when creating a new webhook.
 
 ```sh
 curl -X PUT http://localhost:3000/api/v1/webhooks/{webhookId} \
@@ -172,11 +174,11 @@ curl -X PUT http://localhost:3000/api/v1/webhooks/{webhookId} \
 
 FFmate returns the updated webhook object in JSON format. A `webhook.updated` event is also fired via [webhooks](#webhook-events)
 
-💡 Tip: Making changes to a webhook? You can update settings like name and url directly in the [FFmate Web UI](/docs/web-ui.md#updating-a-webhook).
+💡 Tip: Making changes to a webhook? You can update the event and URL directly in the [FFmate Web UI](/docs/web-ui.md#updating-a-webhook).
 
 ## Deleting a Webhook  
 
-To remove a webhook, send a `DELETE` request with its ID:
+To remove a webhook, send a `DELETE` request with its `uuid`:
 
 ```sh
 curl -X DELETE http://localhost:3000/api/v1/webhooks/{webhookId}
@@ -194,7 +196,7 @@ Here's what your endpoint should do:
 
 1. **Accept HTTP POST requests**
 
-   FFmate sends events as `POST` requests with a JSON payload. Your endpoint should accept and correctly parse these requests.
+   FFmate sends events as `POST` requests with a JSON payload and the headers `Content-Type: application/json` and `User-Agent: ffmate/<version>`. Your endpoint should accept and correctly parse these requests.
 
 2. **Return a 2xx status code**
 
@@ -208,14 +210,44 @@ Here's what your endpoint should do:
 
 ## Webhook logs
 
-   FFmate automatically records every webhook delivery attempt in the database. For each attempt, it stores:  
-   
-   * the `event type` and `target URL`.
-   * the exact `request headers` and `body sent`.
-   * the HTTP status code, response headers, and response body returned by your server:
+FFmate records every webhook that gets an answer from your server, for global and direct webhooks. For each one, it stores:
 
-   You can fetch this full history through the API or UI:
+* the `event` and target `url`.
+* the exact request headers and body sent.
+* the HTTP status code, response headers, and response body returned by your server.
 
-   ```sh
-   curl -X GET http://localhost:3000/api/v1/webhooks/executions
-   ```
+If your server can't be reached, even after all retries, nothing is recorded here. FFmate writes the error to its log instead.
+
+You can fetch this history through the API or UI:
+
+```sh
+curl -X GET 'http://localhost:3000/api/v1/webhooks/executions?page=0&perPage=10'
+```
+
+**Query Parameters:**
+
+- **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
+- **`perPage`** *[optional]* – Defines how many records should be included in each page. Default: `100`. Maximum: `100`.
+
+FFmate returns a JSON array, newest first. The `X-Total` response header provides the total number of records.
+
+```json
+[
+  {
+    "uuid": "0b6c1d7e-3f2a-4e8b-9c51-7a2d4e6f8a90",
+    "event": "task.created",
+    "url": "https://yourserver.com/webhook-handler",
+    "request": {
+      "headers": { "Content-Type": ["application/json"], "User-Agent": ["ffmate/2.0.19"] },
+      "body": "{\"data\":{...},\"event\":\"task.created\"}"
+    },
+    "response": {
+      "status": 200,
+      "headers": { "Content-Type": ["text/plain"] },
+      "body": "ok"
+    },
+    "createdAt": "2026-10-28T11:18:22.603438+01:00",
+    "updatedAt": "2026-10-28T11:18:22.603438+01:00"
+  }
+]
+```

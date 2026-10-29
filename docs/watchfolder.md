@@ -7,16 +7,16 @@ description: "Configure FFmate watchfolders to auto-detect & transcode files. Gu
 
 **Watchfolders** in FFmate allow you to automatically detect and process new files in a specified directory.
 
-Once a watchfolder is configured, FFmate will **continuously scan** the folder for new or modified files and create **tasks** to process them based on a task preset. 
+Once a watchfolder is configured, FFmate will **continuously scan** the folder for new files and create **tasks** to process them based on a task preset. 
 
 The watchfolder feature is useful for **automatically transcoding** footage from a camera SD card dropped into a network share or creating low-resolution versions of high-resolution files exported from an NLE for review.
 
 ## How Watchfolders Work
 
-1. **Monitor a Folder** – FFmate scans the specified directory at a **set interval** to watch for new files.  
+1. **Monitor a Folder** – FFmate scans the specified directory and all its subfolders at a **set interval** to watch for new files. Hidden files, whose names start with `.`, are skipped.  
 2. **Detect New Files** – When a new file appears, FFmate doesn’t process it immediately. Instead, it checks the file’s **size** over time.  
    - If the size continues to change, the file is still being copied or written.  
-   - If the size remains the same for a number of consecutive checks (controlled by the `growthChecks` setting), FFmate considers the file as finished and creates a task for it.  
+   - If the size remains the same for a number of consecutive checks (controlled by the `growthChecks` setting), FFmate considers the file as finished and creates a task for it. With `growthChecks` set to `0`, FFmate creates the task at the first scan.  
 
     By waiting until the file stops growing, FFmate ensures that partially copied or incomplete files aren’t processed too early. This is especially important for large media files being uploaded over a network or transferred from external systems.
 
@@ -87,7 +87,7 @@ curl -X POST http://localhost:3000/api/v1/watchfolders \
        "growthChecks": 3,
        "preset": "cabfad2c-70d1-4df6-9267-f549a376301f",
        "path": "/volumes/media/camera_cards",
-       "suspended": false
+       "suspended": false,
        "filter": {
          "extensions": {
            "exclude": ["tmp", "log"]
@@ -96,20 +96,21 @@ curl -X POST http://localhost:3000/api/v1/watchfolders \
      }'
 ```
 
-After you create a preset, FFmate responds with a JSON object that includes the `ID` of the newly created watchfolder. A `watchfolder.created` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
+After you create a watchfolder, FFmate responds with a JSON object that includes the `uuid` of the newly created watchfolder. A `watchfolder.created` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
 
-💡 Tip: Creating a new preset? You can define and save presets directly in the [FFmate Web UI](/docs/web-ui.md) without writing any API requests
+💡 Tip: Creating a new watchfolder? You can define and save watchfolders directly in the [FFmate Web UI](/docs/web-ui.md) without writing any API requests
 
 ## Watchfolder Properties
 
-- **`name`** – A unique name for the watchfolder.  
-- **`description`** – Optional description of what this watchfolder does.  
+- **`name`** – A name for the watchfolder.  
+- **`description`** *[optional]* – A description of what this watchfolder does.  
 - **`interval`** – How often (in seconds) FFmate scans the folder for new files.  
 - **`growthChecks`** – The number of checks FFmate performs to ensure a file is fully copied before processing.  
-- **`preset`** – The ID of a predefined transcoding **preset** that will be applied to detected files.  
+- **`preset`** – The `uuid` of the [preset](/docs/presets.md) FFmate uses for every task this watchfolder creates.  
 - **`path`** – The **absolute path** of the directory to monitor.  
-- **`suspended`** – A boolean flag that pauses watchfolder scanning. When set to `true`, FFmate temporarily stops detecting and processing files in the folder.
-- **`filter`** – Rules for file selection:  
+- **`suspended`** *[optional]* – A boolean flag that pauses watchfolder scanning. When set to `true`, FFmate temporarily stops detecting and processing files in the folder.
+- **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. Only an FFmate instance with at least one matching label scans the watchfolder. A watchfolder without labels is scanned by any FFmate instance. Labels can use `*` as a wildcard, for example `gpu-*`. The tasks it creates don't inherit these labels; they get the labels of the preset. See [`--labels`](/docs/flags.md#server-command-flags).
+- **`filter`** *[optional]* – Rules for file selection, set inside `filter.extensions`. Write extensions without the dot.  
   - **`include`** – Only process files with these extensions (e.g., `mp4`, `mov`).  
   - **`exclude`** – Ignore files with these extensions (e.g., `tmp`, `log`).  
 
@@ -120,6 +121,13 @@ If a file’s extension matches anything in `exclude`, the file will be skipped�
 To keep things simple and predictable, it's best to use **either** `include` or `exclude`, not both at the same time.
 :::
 
+FFmate adds these properties to every watchfolder it returns:
+
+- **`uuid`** – The unique ID of the watchfolder.
+- **`createdAt`** / **`updatedAt`** – When the watchfolder was created and last changed, in milliseconds since the Unix epoch.
+- **`lastCheck`** – When FFmate last scanned the folder, in milliseconds since the Unix epoch.
+- **`error`** – Why the last scan failed, for example because the folder doesn't exist. Only present after a failed scan.
+
 ## Listing Watchfolders  
 
 Send a `GET` request to the FFmate API to list all configured watchfolders.
@@ -128,12 +136,12 @@ Send a `GET` request to the FFmate API to list all configured watchfolders.
 curl -X GET 'http://localhost:3000/api/v1/watchfolders?page=0&perPage=10'
 ```
 
-FFmate rreturns a JSON array containing all configured watchfolders. The `X-Total` response headers provides the total number of presets available.
+FFmate returns a JSON array containing all configured watchfolders. The `X-Total` response header provides the total number of watchfolders.
 
 **Query Parameters:**
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
-- **`perPage`** *[optional]* – Defines how many watchfolders should be included in each page. Default: `100`.
+- **`perPage`** *[optional]* – Defines how many watchfolders should be included in each page. Default: `100`. Maximum: `100`.
 
 💡 Tip: Need an overview of all watchfolders? You can browse and manage them easily in the [FFmate Web UI](/docs/web-ui.md).
 
@@ -163,7 +171,7 @@ curl -X PUT http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
        "growthChecks": 5,
        "preset": "uuid-of-updated-preset",
        "path": "/volumes/media/camera_cards_archive",
-       "suspended": false
+       "suspended": false,
        "filter": {
          "extensions": {
            "include": ["mov", "mp4", "mxf"]
@@ -193,7 +201,7 @@ curl -X PUT http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
        "growthChecks": 5,
        "preset": "uuid-of-updated-preset",
        "path": "/volumes/media/camera_cards_archive",
-       "suspended": true
+       "suspended": true,
        "filter": {
          "extensions": {
            "include": ["mov", "mp4", "mxf"]
@@ -216,6 +224,6 @@ Send a `DELETE` request to the FFmate API to remove a watchfolder by including t
 curl -X DELETE http://localhost:3000/api/v1/watchfolders/{watchfolderId}
 ```
 
- FFmate responds with a `204` No Content status. The watchfolder will be **removed** from the system, and any monitoring for that folder will **stop**. A `watchfolder.deleted` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
+FFmate responds with a `204` No Content status. The watchfolder will be **removed** from the system, and any monitoring for that folder will **stop**. The files in the folder and their `.lock` files stay where they are. A `watchfolder.deleted` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
 
 💡 Tip: No need to send a delete request manually—you can remove watchfolders instantly from the [FFmate Web UI](/docs/web-ui.md).

@@ -150,12 +150,6 @@ After downloading FFmate, open your terminal, navigate to the folder where you s
 ffmate server
 ```
 
-💡 Tip: For easy access to FFmate’s features, start it with a tray icon using the following command:
-
-```cmd
-ffmate server --tray
-```
-
 ### macOS & Linux
 
 After downloading FFmate, open your terminal, navigate to the folder where you saved it, and start the server with:
@@ -164,13 +158,26 @@ After downloading FFmate, open your terminal, navigate to the folder where you s
 ffmate server
 ```
 
-💡 Tip: For easy access to FFmate’s features, start it with a tray icon using the following command:
+By default, FFmate runs on port `3000` and can be opened at **[http://localhost:3000](http://localhost:3000)**. Once it's ready, FFmate prints:
 
-```sh
-ffmate server --tray
+```
+info ffmate version 2.0.19
+info connecting to database
+info ffmpeg binary found at '/usr/local/bin/ffmpeg'
+info server started on port '3000' using driver 'sqlite3'
 ```
 
-By default, FFmate runs on **[http://localhost:3000](http://localhost:3000)**. If port 3000 is already in use or you prefer a different one, you can easily change it. Learn how to change the port here 👉 [Learn more](/docs/flags/#server-command-flags).
+If port `3000` is already in use, FFmate stops with `failed to start ffmate server: … address already in use`. Start it on a different port with [`--port`](/docs/flags/#server-command-flags), for example `ffmate server --port 8080`.
+
+::: danger FFmate is reachable from your network by default
+FFmate listens on **all network interfaces (`0.0.0.0`)**, not only `localhost`, and does **not** require a password. Anyone who can reach port `3000` on your machine can run commands on it through [pre/post-processing scripts](/docs/pre-post-prcessing.md).
+
+* **Only using FFmate on this machine?** Start it with `ffmate server --host 127.0.0.1`.
+* **Other machines need access?** Start it with `--basic-auth "username:password"`, and only allow those machines through your firewall.
+* **Never** expose FFmate directly to the internet.
+
+See [`--host`](/docs/flags.md#server-command-flags) and [`--basic-auth`](/docs/flags.md#server-command-flags) for details.
+:::
 
 
 > [!NOTE]
@@ -178,8 +185,8 @@ By default, FFmate runs on **[http://localhost:3000](http://localhost:3000)**. I
 
 ### Running FFmate with Docker
 
-FFmate is also available as a Docker image hosted on GitHub Container Registry.
-The Docker image comes bundled with `FFmpeg`, making it much easier to get started.
+FFmate is also available as a Docker image hosted on GitHub Container Registry, for `amd64` and `arm64`.
+The Docker image comes with [jellyfin-ffmpeg](https://github.com/jellyfin/jellyfin-ffmpeg), an FFmpeg build with extra codecs, and `ffprobe`. It also includes `bash`, `jq` and `curl` for [pre/post-processing scripts](/docs/pre-post-prcessing.md).
 
 You can pull and run FFmate using Docker with a single command:
 
@@ -191,6 +198,35 @@ docker run -it --rm \
 
 This will start FFmate and expose the web interface at http://localhost:3000
 
+::: warning Anyone who can reach the port can run commands in the container
+`-p 3000:3000` publishes FFmate on every network interface of your Docker host, without a password. Since tasks can run [pre/post-processing scripts](/docs/pre-post-prcessing.md), anyone who can reach the port can run commands inside the container, which runs as `root` by default.
+
+**Keep it local.** Publish the port on the Docker host's `localhost` only:
+
+```sh
+docker run -it --rm -p 127.0.0.1:3000:3000 ghcr.io/welovemedia/ffmate:latest
+```
+
+**Or enable basic auth.** The image has no environment variable for it, so override the start command:
+
+```sh
+docker run -it --rm \
+  -p 3000:3000 \
+  -v $(pwd)/ffmate-data:/app/db \
+  ghcr.io/welovemedia/ffmate:latest \
+  /app/ffmate server --database=/app/db/sqlite.db --basic-auth "admin:a-long-random-password"
+```
+
+**Run as a non-root user** with `--user 1000:1000` (or `user:` in Docker Compose). The image creates `/app/db` as `root`, so a non-root user can't write the database there. Mount a folder that user can write to:
+
+```sh
+docker run -it --rm --user 1000:1000 \
+  -p 127.0.0.1:3000:3000 \
+  -v $(pwd)/ffmate-data:/app/db \
+  ghcr.io/welovemedia/ffmate:latest
+```
+:::
+
 > [!NOTE]
 > By default, data won't persist after the container stops.
 > To preserve your database, map a local folder to `**/app/db**`.
@@ -198,26 +234,27 @@ This will start FFmate and expose the web interface at http://localhost:3000
 
 ### Optional Environment Variables
 
-You can customize FFmate’s behavior using the following environment variables:
+The Docker image supports these environment variables:
 
-| Variable              | Description                                                                 |
-|-----------------------|-----------------------------------------------------------------------------|
-| `PORT`                | The port FFmate will run on (default: `3000`)                              |
-| `DATABASE`                  | Path to the internal SQLite database (default: `/app/db/sqlite.db`)        |
-| `LOGLEVEL`            | Logging level (`info`, `warn`, `error`, `debug`)                           |
-| `MAX_CONCURRENT_TASKS`| Maximum number of FFmpeg tasks to run at the same time (default: `3`)      |
-| `DEBUGO`              | Enables verbose debug output (e.g., `ffmate:*`) |
+| Variable | Description | Default |
+|---|---|---|
+| `PORT` | The port FFmate listens on inside the container. When changing it, change the `-p` mapping too. | `3000` |
+| `DATABASE` | Path to the SQLite database, or a `postgresql://` URI for [clustering](/docs/clustering.md). | `/app/db/sqlite.db` |
+| `MAX_CONCURRENT_TASKS` | Maximum number of FFmpeg tasks running at the same time. | `3` |
+| `IDENTIFIER` | Name of this FFmate instance, shown in the Web UI and used in a cluster. | Container hostname |
+| `DEBUGO` | Which log messages FFmate prints, e.g. `debug:?` for debug output or `*` for everything. See [Debugging](/docs/debugging.md). | `info:?,warn:?,error:?` |
+
+Other flags, such as `--host`, `--labels` or `--basic-auth`, have no environment variable. To use them, override the start command as shown in the basic auth example above.
 
 ### Example:
 
-Run FFmate with all environment variables set in a single command:
+Run FFmate with debug logging and up to 5 tasks at the same time:
 
 ```sh
 docker run -it --rm \
   -p 3000:3000 \
   -v $(pwd)/ffmate-data:/app/db \
-  -e PORT=3000 \
-  -e LOGLEVEL=debug \
+  -e DEBUGO="debug:?" \
   -e MAX_CONCURRENT_TASKS=5 \
   ghcr.io/welovemedia/ffmate:latest
 ```
@@ -227,20 +264,18 @@ docker run -it --rm \
 Prefer using Docker Compose? Here's a ready-to-use docker-compose.yml to get FFmate up and running quickly:
 
 ```yaml
-version: "3.8"
-
 services:
   ffmate:
     image: ghcr.io/welovemedia/ffmate:latest
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     volumes:
       - ./ffmate-data:/app/db
     environment:
       - PORT=3000
-      - DB=/app/db/sqlite.db
-      - LOGLEVEL=info
+      - DATABASE=/app/db/sqlite.db
       - MAX_CONCURRENT_TASKS=3
+      - IDENTIFIER=ffmate-docker
 ```
 
 Start FFmate using your `docker-compose.yml` file:
@@ -340,8 +375,14 @@ This command will check for the latest release and install the update automatica
 
 ### Verify the Installed Version
 
-After updating, you can confirm that FFmate is running the latest version:
+After updating, confirm which version is installed:
 
 ```sh
-ffmate --version
+ffmate version
+```
+
+FFmate prints the version, for example:
+
+```
+version: 2.0.18
 ```

@@ -7,10 +7,10 @@ description: Learn how to use wildcards in FFmate to generate dynamic file and f
 
 **Wildcards** in FFmate act as placeholders that are **automatically replaced** with actual values when a FFmate [task](/docs/tasks.md#task-flow) runs.  
 
-You can use wildcards in:  
+Wildcards work in:  
 
-- [Tasks](/docs/tasks.md#task-properties): `inputFile`, `outputFile`, and `command`  
-- [Pre- and post-processing](/docs/pre-post-prcessing.md) `script`, and `sidecard`
+- [Tasks](/docs/tasks.md#task-properties) and [presets](/docs/presets.md): `inputFile`, `outputFile` and `command`  
+- [Pre- and post-processing](/docs/pre-post-prcessing.md): `scriptPath` and `sidecarPath`
 
 
 ## Input and Output File Information
@@ -23,7 +23,6 @@ These wildcards return the **complete file path**, including the directory, file
 |-----------------|----------------------------------|-------------------------|
 | `${INPUT_FILE}`  | Full path of the input file      | `/source/input.mp4`     | 
 | `${OUTPUT_FILE}` | Full path of the output file     | `/destination/output.mp4`    |
-
 #### Example:
 
 ```sh
@@ -63,7 +62,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 #### Output Path:
 
 ```sh
-/volumes/ffmate/converted/input.mkv
+/volumes/ffmate/converted/original_movie.mkv
 ```
 
 ---
@@ -78,7 +77,6 @@ These wildcards return **the file extension** and the **directory path**.
 | `${OUTPUT_FILE_EXTENSION}` | File extension of the output file        | `.mp4`           |
 | `${INPUT_FILE_DIR}`       | Directory path of the input file         | `/source`        |
 | `${OUTPUT_FILE_DIR}`      | Directory path of the output file        | `/destination`        |
-
 #### Example:
 
 ```sh
@@ -94,7 +92,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 #### Output Path:
 
 ```sh
-/volumes/ffmate/destination/input_converted.mp4
+/volumes/ffmate/destination/video_converted.mp4
 ```
 
 ## Date & Time
@@ -107,7 +105,7 @@ These wildcards return the **current date and time** values when the task runs.
 | `${DATE_SHORTYEAR}`        | Short year (last 2 digits)                | `24`             |
 | `${DATE_MONTH}`            | Month number (01-12)                      | `01`             |
 | `${DATE_DAY}`              | Day of the month (01-31)                   | `15`             |
-| `${DATE_WEEK}`             | Week number (01-52)                   | `03`             |
+| `${DATE_WEEK}`             | ISO week number (1-53)                    | `3`              |
 | `${TIME_HOUR}`             | Hour (24-hour format, 00-23)              | `14`             |
 | `${TIME_MINUTE}`           | Minute (00-59)                            | `05`             |
 | `${TIME_SECOND}`           | Second (00-59)                            | `32`             |
@@ -171,7 +169,7 @@ You can reference any key that was:
 
 | Wildcard Pattern            | Description                                     |
 |-----------------------------|-------------------------------------------------|
-| `${METADATA_<json-path>}`   | Inserts the value from the `metadata` object at the given JSON path |
+| `${METADATA_<json-path>}`   | Inserts the value from the `metadata` object at the given JSON path. If the path doesn't exist, it's replaced with nothing. |
 
 ---
 
@@ -228,7 +226,15 @@ This wildcard returns the **source** of the task: either `api` or `watchfolder`.
 
 ### Example
 
-Use `${SOURCE}` in a Bash script to apply different behavior depending on the task’s origin.
+Pass `${SOURCE}` to a pre-processing script to apply different behavior depending on the task’s origin. Wildcards are not environment variables, so the value has to be passed as an argument:
+
+```json
+"preProcessing": {
+  "scriptPath": "/opt/ffmate/scripts/prepare.sh ${SOURCE}"
+}
+```
+
+The script then reads it as its first argument:
 
 ```bash
 #!/usr/bin/env bash
@@ -236,7 +242,7 @@ Use `${SOURCE}` in a Bash script to apply different behavior depending on the ta
 # Pre-processing script example
 # Adjusts logic based on the source of the task
 
-case "$SOURCE" in
+case "$1" in
   api)
     echo "Task originated from API. Applying API-specific logic."
     # Add API-specific pre-processing commands here
@@ -272,7 +278,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
        "outputFile": "/volumes/ffmate/destination/video.webm"
      }'
 ```
-This command performs a two-pass VP9 encode. FFmate **automatically** prepends the configured `ffmpeg` path to the beginning of the `command` for the first pass. When chaining commands with `&&`, you must explicitly use the `${FFMPEG}` wildcard for any subsequent `ffmpeg` calls to ensure the correct executable is used in each chained command.
+This command performs a two-pass VP9 encode. FFmate **automatically** prepends the configured `ffmpeg` path to the beginning of the `command` for the first pass. When chaining commands with `&&`, start every following command with the `${FFMPEG}` wildcard so the same executable is used.
 
 ## Unique Identifier
 
@@ -300,7 +306,6 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 ```sh
 /volumes/ffmate/processed/550e8400-e29b-41d4-a716-446655440000_video.mp4
 ```
-
 ## System Information
 
 These wildcards return the **operating system name** and **CPU architecture**.
