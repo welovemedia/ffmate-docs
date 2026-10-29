@@ -135,7 +135,7 @@ These are the properties that can be set when creating a task in FFmate:
     
 - **`preset`** - The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task. This field is **mandatory** unless a `command` is set. See [Using a Preset](#using-a-preset) for which settings the task takes from the preset.
 
-- **`labels`** *[optional]* – Up to 5 labels (1–32 characters each) that decide which FFmate instance processes the task. Only an FFmate instance with at least one matching label picks it up; a task without labels runs on any FFmate instance. `*` works as a wildcard, e.g. `gpu-*`. See [`--labels`](/docs/flags.md#server-command-flags).
+- **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. Only an FFmate instance with at least one matching label picks up the task. A task without labels runs on any FFmate instance. Labels can use `*` as a wildcard, for example `gpu-*`. See [`--labels`](/docs/flags.md#server-command-flags).
 
 - **`retries`** *[optional]* – How many times FFmate retries the task if it fails (`DONE_ERROR`). Each retry starts 3 seconds after the failure and puts the task back into `QUEUED`. The response field `retried` shows how many retries have run so far. Canceled tasks are not retried. Default: `0`.
 
@@ -256,7 +256,7 @@ To restart a task, send a `PATCH` request to the FFmate API by including the tas
 curl -X PATCH 'http://localhost:3000/api/v1/tasks/{taskId}/restart'
 ```
 
-FFmate responds with a JSON object containing the updated details of the task. The task's `status` will be reset to `QUEUED`, `progress` to `0`, `error` cleared, and `startedAt`/`finishedAt` timestamps reset. From v2.0.19, `retried` is also reset to `0`. The task will then be re-added to the processing queue according to its priority.
+FFmate responds with a JSON object containing the updated details of the task. The task's `status` will be reset to `QUEUED`, `progress` to `0`, `error` cleared, `startedAt`/`finishedAt` timestamps reset, and `retried` set back to `0`. The task will then be re-added to the processing queue according to its priority.
 
 > [!Note]
 > - Restarting a task will **re-run the exact same command** using the original input and output paths.  

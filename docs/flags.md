@@ -30,7 +30,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
 *   **`--host <address>`** or **`--host="<address>"`**
     *   **Purpose:** Sets the network interface FFmate listens on.
     *   **Value:** An IP address or hostname. Use `127.0.0.1` to only accept connections from the same machine.
-    *   **Default:** `0.0.0.0` (all network interfaces — FFmate is reachable from other machines).
+    *   **Default:** `0.0.0.0`. FFmate listens on all network interfaces, so other machines can reach it.
     *   **Example:** `ffmate server --host="127.0.0.1"`
 
     ::: danger Anyone who can reach FFmate can run commands on this machine
@@ -40,8 +40,6 @@ The `server` command starts FFmate. All flags listed in this section are specifi
     * Need access from other machines? Enable `--basic-auth`, and only allow the machines that need it through your firewall.
     * Never expose FFmate directly to the internet.
     * Run FFmate as a dedicated user without admin or `root` rights, so scripts can only touch what that user can.
-
-    On versions before v2.0.19, which always listen on `0.0.0.0`, use a firewall to restrict access to the port.
     :::
 
 *   **`--basic-auth <username:password>`** or **`--basic-auth="<username:password>"`**
@@ -52,7 +50,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
     *   **What's protected:** every route — the API, Web UI, WebSocket (`/api/v1/ws`), Swagger, `/health` and `/metrics`. Requests without valid credentials get `401 Unauthorized`.
     *   **Calling the API:** send the credentials with every request, e.g. `curl -u admin:a-long-random-password http://ffmate-host:3000/api/v1/tasks`.
     *   **Health checks and monitoring:** anything that calls FFmate automatically also needs the credentials. That includes Docker or Kubernetes health checks, load balancers, and the Prometheus scrape config (`basic_auth`).
-    *   **Clusters:** set `--basic-auth` on **every** node. All nodes share one database, so a task created through a single unprotected node is picked up and run by any node.
+    *   **Clusters:** set `--basic-auth` on **every** FFmate instance. All FFmate instances share one database, so a task created through one unprotected FFmate instance can be picked up by any other.
 
     ::: warning Basic auth doesn't encrypt anything
     FFmate serves plain HTTP, so the username and password travel unencrypted. If traffic leaves the machine, run FFmate with `--host 127.0.0.1` behind a reverse proxy that serves HTTPS, for example [nginx](https://nginx.org/), [Caddy](https://caddyserver.com/) or [Traefik](https://doc.traefik.io/traefik/).
@@ -90,7 +88,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
         FFmate server --database="C:\Users\YourName\AppData\Roaming\ffmate\data.sqlite"
         ```
 
-    * **PostgreSQL URI:** FFmate supports **PostgreSQL** for multi-node setups. If you pass a `URI` starting with `postgresql://` to `--database`, FFmate automatically switches into **cluster mode**, allowing all FFmate instances to share the same database.
+    * **PostgreSQL URI:** FFmate supports **PostgreSQL** for clusters of several FFmate instances. If you pass a `URI` starting with `postgresql://` to `--database`, FFmate automatically switches into **cluster mode**, allowing all FFmate instances to share the same database.
     
     * **Connection URI:**
 
@@ -100,10 +98,10 @@ The `server` command starts FFmate. All flags listed in this section are specifi
 
         * `port` is optional and defaults to `5432`.
         * `options` are optional PostgreSQL connection parameters written as `key=value`, for example `sslmode=require` or `connect_timeout=10`. FFmate passes them to the PostgreSQL driver as they are.
-        * From **v2.0.19**, you can combine several options with `&`. On earlier versions, only pass **one** option.
+        * Several options are joined with `&`.
 
         ```
-        # Single option (all 2.x versions)
+        # Single option
         postgresql://ffuser:ffpass@db.internal/ffmatedb?sslmode=require
 
         # Several options
@@ -115,7 +113,7 @@ The `server` command starts FFmate. All flags listed in this section are specifi
         :::
 
         ::: info
-        The PostgreSQL database must exist before connecting a FFmate node to it. FFmate will create the required tables and schema at startup if they are not already present
+        The PostgreSQL database must exist before connecting an FFmate instance to it. FFmate will create the required tables and schema at startup if they are not already present
         :::
 
     * **Example:**
@@ -125,10 +123,10 @@ The `server` command starts FFmate. All flags listed in this section are specifi
         ```
 
 *   **`--identifier <name>`** or **`--identifier="<name>"`**
-    *   **Purpose:** Assigns a unique name to an FFmate instance. This is essential in a cluster setup to distinguish between different processing nodes and in the Web UI it makes it clear which node is running each task.
+    *   **Purpose:** Assigns a unique name to an FFmate instance. This is essential in a cluster setup to tell the FFmate instances apart. The Web UI shows which FFmate instance is running each task.
     *   **Value:** A string representing the unique name for the instance.
     *   **Default:** The machine's hostname.
-    *   **Example:** `ffmate server --identifier=“node”-a`
+    *   **Example:** `ffmate server --identifier="ffmate-a"`
 
 *   **`--labels <label,label,...>`** or **`--labels="<label,label,...>"`**
     *   **Purpose:** Controls which tasks and watchfolders the FFmate instance processes. For example, in a [cluster](/docs/clustering.md), GPU encoding tasks can be limited to the FFmate instance whose machine has a graphics card.

@@ -15,7 +15,7 @@ FFmate supports two kinds of webhooks:
 Each global webhook sends one [event](#global-webhook-events) to one URL. Several global webhooks can use the same event. They can be configured through the **/webhooks** [api](#creating-a-webhook) endpoint or the Web UI.
 
 ### Direct Webhooks
-**Direct webhooks** are for cases where you need more fine-grained notifications with additional target endpoints. You can add them **directly to tasks** when submitting via the [api](/docs/tasks.md#creating-a-task), or to an FFmate [preset](/docs/presets.md#creating-a-preset). On a preset, `task.*` webhooks are copied to every task created from that preset, and `preset.*` webhooks fire when that preset changes.
+**Direct webhooks** belong to a single task or preset and only report on that task or preset. You can add them **directly to tasks** when submitting via the [api](/docs/tasks.md#creating-a-task), or to an FFmate [preset](/docs/presets.md#creating-a-preset). On a preset, `task.*` webhooks are copied to every task created from that preset, and `preset.*` webhooks fire when that preset changes.
 
 Direct webhooks are only available for the following events:
 
@@ -210,13 +210,15 @@ Here's what your endpoint should do:
 
 ## Webhook logs
 
-FFmate automatically records every webhook delivery in the database, for global and direct webhooks. For each delivery, it stores:  
+FFmate records every webhook that gets an answer from your server, for global and direct webhooks. For each one, it stores:
 
 * the `event` and target `url`.
 * the exact request headers and body sent.
 * the HTTP status code, response headers, and response body returned by your server.
 
-You can fetch this full history through the API or UI:
+If your server can't be reached, even after all retries, nothing is recorded here. FFmate writes the error to its log instead.
+
+You can fetch this history through the API or UI:
 
 ```sh
 curl -X GET 'http://localhost:3000/api/v1/webhooks/executions?page=0&perPage=10'

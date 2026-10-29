@@ -151,7 +151,7 @@ The [Watchfolder](/docs/watchfolder.md) feature allows FFmate to monitor directo
 This is the core process where your transcoding jobs are managed and processed from submission to completion.
 
 *   **Queueing:**
-    *   New tasks (submitted via `API`, or `Watchfolders`) are added to a queue. FFmate checks the queue every second.
+    *   New tasks from the API or from watchfolders are added to a queue. FFmate checks the queue every second.
     *   Tasks are processed based on their **Priority** (higher priority first) and then by creation time.
     *   Initially, tasks are in the `QUEUED` status.
 *   **Concurrency Control:**

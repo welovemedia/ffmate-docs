@@ -161,11 +161,11 @@ ffmate server
 By default, FFmate runs on port `3000` and can be opened at **[http://localhost:3000](http://localhost:3000)**. Once it's ready, FFmate prints:
 
 ```
+info ffmate version 2.0.19
+info connecting to database
 info ffmpeg binary found at '/usr/local/bin/ffmpeg'
 info server started on port '3000' using driver 'sqlite3'
 ```
-
-From v2.0.19, FFmate also prints its version and `connecting to database` first.
 
 If port `3000` is already in use, FFmate stops with `failed to start ffmate server: … address already in use`. Start it on a different port with [`--port`](/docs/flags/#server-command-flags), for example `ffmate server --port 8080`.
 
@@ -176,7 +176,7 @@ FFmate listens on **all network interfaces (`0.0.0.0`)**, not only `localhost`, 
 * **Other machines need access?** Start it with `--basic-auth "username:password"`, and only allow those machines through your firewall.
 * **Never** expose FFmate directly to the internet.
 
-Both flags are available from v2.0.19. On earlier versions, use a firewall to block port `3000` from other machines. See [`--host`](/docs/flags.md#server-command-flags) and [`--basic-auth`](/docs/flags.md#server-command-flags) for details.
+See [`--host`](/docs/flags.md#server-command-flags) and [`--basic-auth`](/docs/flags.md#server-command-flags) for details.
 :::
 
 
@@ -186,11 +186,7 @@ Both flags are available from v2.0.19. On earlier versions, use a firewall to bl
 ### Running FFmate with Docker
 
 FFmate is also available as a Docker image hosted on GitHub Container Registry, for `amd64` and `arm64`.
-The Docker image comes bundled with `FFmpeg`, making it much easier to get started. It also includes `bash` and `jq` for [pre/post-processing scripts](/docs/pre-post-prcessing.md).
-
-::: info Image changes in v2.0.19
-From v2.0.19, the image uses [jellyfin-ffmpeg](https://github.com/jellyfin/jellyfin-ffmpeg), an FFmpeg build with extra codecs, instead of Alpine's standard FFmpeg. It also includes `ffprobe` and `curl`.
-:::
+The Docker image comes with [jellyfin-ffmpeg](https://github.com/jellyfin/jellyfin-ffmpeg), an FFmpeg build with extra codecs, and `ffprobe`. It also includes `bash`, `jq` and `curl` for [pre/post-processing scripts](/docs/pre-post-prcessing.md).
 
 You can pull and run FFmate using Docker with a single command:
 

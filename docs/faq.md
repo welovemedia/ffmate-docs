@@ -142,7 +142,7 @@ Learn more → [Monitoring a Task](/docs/tasks#monitoring-a-task)
 The most common reasons:
 
 * FFmate can't find FFmpeg. Check the startup log, and set the path with `--ffmpeg` if needed.
-* All slots are busy. FFmate only runs as many tasks at once as [`--max-concurrent-tasks`](/docs/flags#server-command-flags) allows.
+* FFmate is already running as many tasks as [`--max-concurrent-tasks`](/docs/flags#server-command-flags) allows. The task starts when one of them finishes.
 * The task has [labels](/docs/tasks#task-properties), but no FFmate instance has a matching label.
 
 Learn more → [Tasks](/docs/tasks)
@@ -210,7 +210,7 @@ Learn more → [Pre and Post Processing](/docs/pre-post-prcessing)
 </details>
 
 <details>
-<summary>How do I send tasks to specific machines, e.g. ones with a GPU?</summary>
+<summary>How do I run tasks only on certain FFmate instances, e.g. ones with a GPU?</summary>
 
 Give those FFmate instances a label with `--labels`, e.g. `ffmate server --labels="gpu"`, and add the same label to the tasks or presets: `"labels": ["gpu"]`. Tasks with labels only run on FFmate instances with a matching label. Tasks without labels run on any FFmate instance.
 
@@ -267,7 +267,7 @@ Learn more → [Creating a Watchfolder](/docs/watchfolder#creating-a-watchfolder
 <details>
 <summary>How does FFmate ensure a file is fully copied before processing?</summary>
 
-Each detected file passes through **growth checks**: FFmate compares the file size across `growthChecks` successive scans. Only when the size remains constant does the task start. This prevents half‑copied media from breaking jobs.
+Each detected file passes through **growth checks**: FFmate compares the file size across `growthChecks` successive scans. Only when the size remains constant does the task start. This way, FFmate never starts a task on a half-copied file.
 
 Learn more → [How Watchfolders Work](/docs/watchfolder#how-watchfolders-work)
 </details>
