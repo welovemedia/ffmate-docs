@@ -5,7 +5,7 @@ description: "Set up FFmate clustering with PostgreSQL to scale FFmpeg transcodi
 
 # Clustering  
 
-**Clustering** in FFmate lets you run several instances connected to the same **PostgreSQL** database. They share a common queue, distribute jobs across FFmate instances, and handle more tasks in parallel. It lets you go beyond the limits of a single machine while keeping the system resilient if one or more FFmate instances in the cluster go down.
+**Clustering** connects several FFmate instances to the same **PostgreSQL** database. They share one task queue and run more tasks in parallel than a single machine can. If one FFmate instance goes down, the others keep running tasks.
 
 ## When to Use Clustering  
 
@@ -66,9 +66,9 @@ All FFmate instances in a cluster share one database. A task or preset created t
 
 ## How Clustering Works  
 
-When you run multiple FFmate instances against the same **PostgreSQL** database, they **automatically** form a cluster and split the work between them. There’s **no main FFmate instance**: you submit [tasks](/docs/tasks.md#creating-a-task) and [task batches](/docs/tasks.md#submitting-multiple-tasks-as-a-batch) exactly as you would in a non-cluster setup. The database makes sure each task is picked up by **only one FFmate instance**, so jobs **aren’t duplicated**. The FFmate instances share updates through PostgreSQL, and each one passes them on to its Web UI over `WebSockets`, so every UI shows the same state. The live log stream is the exception: it only shows the logs of the FFmate instance the Web UI is connected to.
+When you run multiple FFmate instances against the same **PostgreSQL** database, they **automatically** form a cluster and share the tasks between them. There’s **no main FFmate instance**: you submit [tasks](/docs/tasks.md#creating-a-task) and [task batches](/docs/tasks.md#submitting-multiple-tasks-as-a-batch) exactly as you would in a non-cluster setup. The database makes sure each task is picked up by **only one FFmate instance**, so no task runs twice. The FFmate instances share updates through PostgreSQL, and each one passes them on to its Web UI over `WebSockets`, so every UI shows the same state. The live log stream is the exception: it only shows the logs of the FFmate instance the Web UI is connected to.
 
-FFmate’s clustering is built on PostgreSQL’s `LISTEN/NOTIFY`: each FFmate instance publishes updates with `pg_notify`, and the others `LISTEN` and react. Simple and built-in — no separate broker needed.
+FFmate’s clustering is built on PostgreSQL’s `LISTEN/NOTIFY`: each FFmate instance publishes updates with `pg_notify`, and the others `LISTEN` and react. No extra software is needed.
 
 ```mermaid
 sequenceDiagram
@@ -88,7 +88,7 @@ sequenceDiagram
 
 Each FFmate instance picks up queued tasks on its own, up to its own [`--max-concurrent-tasks`](/docs/flags.md#server-command-flags) limit. An FFmate instance with a higher limit takes on more tasks at the same time.
 
-Use [`--labels`](/docs/flags.md#server-command-flags) to send tasks to specific FFmate instances. An FFmate instance only picks up tasks without labels and tasks with at least one label that matches its own. For example, start the FFmate instances on computers with GPUs with `--labels="gpu"` and give GPU tasks the label `gpu`.
+[`--labels`](/docs/flags.md#server-command-flags) controls which FFmate instance picks up which tasks. An FFmate instance only picks up tasks without labels and tasks with at least one label that matches its own. For example, start the FFmate instances on computers with GPUs with `--labels="gpu"` and give GPU tasks the label `gpu`.
 
 ## Watchfolders in a Cluster
 
@@ -104,7 +104,7 @@ Every FFmate instance sends a small “`I’m alive`” signal to the cluster ab
  
 ## When an FFmate Instance Fails
 
-Clustering improves scalability and resilience, but it **isn’t a full high-availability setup**. There’s no built-in automatic failover or requeue.
+Clustering improves scalability and resilience, but it **isn’t a full high-availability setup**. If an FFmate instance fails, its running tasks don’t move to another FFmate instance automatically.
 
 If an FFmate instance goes down mid-transcode, the others notice that its heartbeats have stopped. After about **60 seconds**, they set its running tasks to `DONE_ERROR` with the error `client disconnected during execution`. If the FFmate instance starts again before that, it does the same for its own tasks on startup.
 

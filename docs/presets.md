@@ -85,9 +85,9 @@ When you create a preset, you define parameters that are automatically applied t
 
 - **`outputFile`** *[optional]* – The path where the transcoded file should be saved. If the specified directory does not exist, FFmate will **create it automatically**. This can be a full path or a pattern that includes [Wildcards](/docs/wildcards.md) like `${INPUT_FILE_BASENAME}` to dynamically generate structured filenames (e.g., /exports/${INPUT_FILE_BASENAME}_1080p.mp4). If a task also includes its own `outputFile`, that will be used instead of this one. In other words, the task's setting always takes priority over the preset.
 
-- **`priority`** *[optional]* – Sets the task's priority in the processing queue. Higher numbers mean higher priority — for example, a task with priority `100` will be processed before one with `10`. If multiple tasks share the same priority, they’ll generally run in the order they were created (FIFO for that priority level). If a task defines its own `priority`, that will override the preset’s value. If neither is set, `0` is used.
+- **`priority`** *[optional]* – Sets the task's priority in the processing queue. Higher numbers mean higher priority — for example, a task with priority `100` will be processed before one with `10`. If multiple tasks share the same priority, they run in the order they were created. If a task defines its own `priority`, that will override the preset’s value. If neither is set, `0` is used.
 
-- **`labels`** *[optional]* – Up to 5 labels (1–32 characters each) that decide which FFmate instance processes tasks created from this preset. A task without its own labels inherits these. See [`--labels`](/docs/flags.md#server-command-flags).
+- **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. They decide which FFmate instance processes tasks created from this preset. A task without its own labels inherits these. See [`--labels`](/docs/flags.md#server-command-flags).
 
 - **`retries`** *[optional]* – How many times a failed task created from this preset is retried. A task without its own `retries` inherits this value. See [task properties](/docs/tasks.md#task-properties). Default: `0`.
 

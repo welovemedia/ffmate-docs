@@ -12,11 +12,11 @@ An overview of new features, enhancements, and bug fixes for each version.
 ### Breaking Changes
 
 - **Tray Icon Removed**
-  The experimental system tray icon and its `--tray` flag have been removed. The tray required CGO, which FFmate no longer uses. Starting FFmate with `--tray` now fails with an `unknown flag` error, so remove the flag from your scripts and services before upgrading.
+  The experimental system tray icon and its `--tray` flag have been removed. Starting FFmate with `--tray` now fails with an `unknown flag` error, so remove the flag from your scripts and services before upgrading.
 
 ### New Features
 
-- **Host Argument**
+- **Choose the Network Address**
   The new `--host` flag sets the network address FFmate listens on. The default stays `0.0.0.0`. Use `--host 127.0.0.1` to keep FFmate on the local machine. For details, see [--host](/docs/flags.md#server-command-flags).
 
 - **Basic Authentication**
@@ -47,8 +47,8 @@ An overview of new features, enhancements, and bug fixes for each version.
 
 ### Bug Fixes
 
-- **Canceling During Scripts**
-  Canceling a task now also stops it during pre- and post-processing.
+- **Canceling During Pre-Processing**
+  A task canceled during pre-processing now stays canceled. Before, FFmpeg still ran afterwards and the task ended as `DONE_SUCCESSFUL`.
 
 - **Output Wildcards**
   `${OUTPUT_FILE_BASE}` and `${OUTPUT_FILE_DIR}` now resolve the output file instead of the input file, and `${OUTPUT_FILE_EXTENSION}` no longer leaves a stray `}`. For details, see [Wildcards](/docs/wildcards.md).
@@ -95,15 +95,15 @@ An overview of new features, enhancements, and bug fixes for each version.
 
 ## Version 2.0.7 (27-09-2025)
 
-### Bug Fixes
-
-- **Watchfolders in the Web UI**
-  The Web UI now uses the renamed `/watchfolders` endpoint.
-
 ### Changes
 
 - **Telemetry**
   Telemetry now includes the cluster and session IDs.
+
+### Bug Fixes
+
+- **Watchfolders in the Web UI**
+  The Web UI now uses the renamed `/watchfolders` endpoint.
 
 ## Version 2.0.2 (26-09-2025)
 

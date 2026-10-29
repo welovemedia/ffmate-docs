@@ -21,7 +21,7 @@ For both pre-processing and post-processing, you can configure the following:
 FFmate will attempt to run the `scriptPath` as a system command. Make sure the **script is executable** and the path is correct. It runs with the same environment variables, permissions and working directory as the FFmate process.
 
 ::: danger Anyone with API access can run commands
-`scriptPath` can be any command, not only the path to a script, for example `bash -c "…"`. Anyone who can create a task, preset or watchfolder can therefore run commands on the computer FFmate runs on. With the default settings (listening on `0.0.0.0`, no authentication), that is anyone on your network.
+`scriptPath` can be any command, not only the path to a script, for example `bash -c "…"`. Anyone who can create a task, preset or watchfolder can therefore run commands on the computer FFmate runs on. By default, FFmate listens on `0.0.0.0` without a password, so that is anyone on the network.
 
 Restrict who can reach FFmate with [`--host 127.0.0.1`](/docs/flags.md#server-command-flags) or [`--basic-auth`](/docs/flags.md#server-command-flags) and a firewall, and run FFmate as a user without admin or `root` rights.
 :::
