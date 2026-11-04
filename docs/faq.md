@@ -151,7 +151,7 @@ Learn more → [Tasks](/docs/tasks)
 <details>
 <summary>How do I cancel a running task?</summary>
 
-`PATCH /api/v1/tasks/{uuid}/cancel` immediately stops queued or running tasks and marks them `DONE_CANCELED`.
+`PATCH /api/v1/tasks/{uuid}/cancel` marks a queued or running task `DONE_CANCELED` right away. A running FFmpeg command is stopped.
 The Web UI offers a one‑click “Cancel” button too.
 
 Learn more → [Canceling a Task](/docs/tasks#canceling-a-task)

@@ -56,7 +56,7 @@ curl -X POST http://localhost:3000/api/v1/webhooks \
      }'
 ```
 
-The `event` must be one of the [global webhook events](#global-webhook-events), and `url` must be a valid URL. Otherwise FFmate responds with `422`.
+Use one of the [global webhook events](#global-webhook-events) as `event`. FFmate saves any name, but a webhook with a name that isn't on that list never fires. `url` must be a valid URL, otherwise FFmate responds with `422`.
 
 After you create a webhook, FFmate responds with a JSON object containing the `uuid` of the newly created webhook, its `event` and `url`, and `createdAt` / `updatedAt` as date-time strings. A `webhook.created` event is also fired via [webhooks](#webhook-events)
 

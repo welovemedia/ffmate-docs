@@ -141,7 +141,7 @@ This section outlines how FFmate runs a task, showing where pre- and post-proces
 5. **Task Completion**
    - If post-processing was successful (or not defined), the task status is set to `DONE_SUCCESSFUL`.
 
-If a task is canceled while a pre- or post-processing script is running, FFmate stops the script and sets the task status to `DONE_CANCELED`.
+If a task is canceled while a pre- or post-processing script is running, the script runs to the end. The task status changes to `DONE_CANCELED` right away and stays that way. When a task is canceled during pre-processing, FFmpeg doesn't run.
 
 ```mermaid
 flowchart TD
