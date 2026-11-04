@@ -242,7 +242,7 @@ curl -X PATCH 'http://localhost:3000/api/v1/tasks/{taskId}/cancel'
 
 FFmate responds with a JSON object containing the updated details of the task. The task's status will be changed to `DONE_CANCELED`, and the progress will be set to 100. A `task.updated` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events), with `status` set to `DONE_CANCELED`. There is no separate cancel event. If this was the last unfinished task of a batch, `batch.finished` is fired too.
 
-If the task is already processing, FFmate stops it, including a running `FFmpeg` command or [pre- or post-processing script](/docs/pre-post-prcessing.md).
+If `FFmpeg` is already running, FFmate stops it. A [pre- or post-processing script](/docs/pre-post-prcessing.md) that is already running isn't stopped. It runs to the end, and the task stays `DONE_CANCELED`.
 
 💡 Tip: You can also cancel a running task directly from the [FFmate Web UI](/docs/web-ui.md#canceling-tasks) with a single click—no API call needed.
 
@@ -279,7 +279,7 @@ FFmate responds with a `204` No Content status. The task will be removed from th
 
 ::: warning Important
 - Deleting a task **removes the database entry** from FFmate but **does not** delete the input or output files.  
-- If the task is still processing, FFmate stops it before deleting it.
+- Deleting a task doesn't stop it. To remove a running task, cancel it first and then delete it.
 :::
 
 💡 Tip: Tasks can also be deleted from the [FFmate Web UI](/docs/web-ui.md#deleting-tasks)
