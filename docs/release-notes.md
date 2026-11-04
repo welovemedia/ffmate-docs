@@ -47,8 +47,8 @@ An overview of new features, enhancements, and bug fixes for each version.
 
 ### Bug Fixes
 
-- **Canceling During Pre-Processing**
-  A task canceled during pre-processing now stays canceled. Before, FFmpeg still ran afterwards and the task ended as `DONE_SUCCESSFUL`.
+- **Canceling During Pre- and Post-Processing**
+  A task canceled while its pre- or post-processing script runs now stays canceled. Before, the task ended as `DONE_SUCCESSFUL`, and a task canceled during pre-processing still ran FFmpeg.
 
 - **Output Wildcards**
   `${OUTPUT_FILE_BASE}` and `${OUTPUT_FILE_DIR}` now resolve the output file instead of the input file, and `${OUTPUT_FILE_EXTENSION}` no longer leaves a stray `}`. For details, see [Wildcards](/docs/wildcards.md).
