@@ -224,7 +224,7 @@ This endpoint lists all FFmate instances that are connected to the database and 
         "labels": ["gpu"],
         "os": "linux",
         "arch": "amd64",
-        "version": "2.0.19",
+        "version": "2.1.0",
         "ffmpeg": "/usr/bin/ffmpeg",
         "maxConcurrentTasks": 3,
         "lastSeen": 1678886400000,
@@ -236,7 +236,7 @@ This endpoint lists all FFmate instances that are connected to the database and 
         "cluster": "1bf42674-941f-4389-8525-48fa6613d77d",
         "os": "linux",
         "arch": "amd64",
-        "version": "2.0.19",
+        "version": "2.1.0",
         "ffmpeg": "/usr/bin/ffmpeg",
         "maxConcurrentTasks": 3,
         "lastSeen": 1678886395000

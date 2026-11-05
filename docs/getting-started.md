@@ -161,7 +161,7 @@ ffmate server
 By default, FFmate runs on port `3000` and can be opened at **[http://localhost:3000](http://localhost:3000)**. Once it's ready, FFmate prints:
 
 ```
-info ffmate version 2.0.19
+info ffmate version 2.1.0
 info connecting to database
 info ffmpeg binary found at '/usr/local/bin/ffmpeg'
 info server started on port '3000' using driver 'sqlite3'

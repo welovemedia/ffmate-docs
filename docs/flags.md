@@ -189,7 +189,7 @@ Checks for and applies new versions of the FFmate binary.
 * **Flags:**  
   * `--dry` — checks for updates without installing them.  
     * **Result:** Prints either `no newer version found` or `found newer version: X.Y.Z`. The binary itself is not modified.  
-  * `--dev` — uses the **development** update channel instead of the stable one. Dev builds (for example `2.0.19-dev-19`) contain features that haven't been released yet and may be unstable. Don't use them in production.
+  * `--dev` — uses the **development** update channel instead of the stable one. Dev builds (for example `2.1.0-dev-19`) contain features that haven't been released yet and may be unstable. Don't use them in production.
     * Combine it with `--dry` to only check: `ffmate update --dev --dry`.  
 
 * **Default behavior:**  
