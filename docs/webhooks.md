@@ -238,7 +238,7 @@ FFmate returns a JSON array, newest first. The `X-Total` response header provide
     "event": "task.created",
     "url": "https://yourserver.com/webhook-handler",
     "request": {
-      "headers": { "Content-Type": ["application/json"], "User-Agent": ["ffmate/2.0.19"] },
+      "headers": { "Content-Type": ["application/json"], "User-Agent": ["ffmate/2.1.0"] },
       "body": "{\"data\":{...},\"event\":\"task.created\"}"
     },
     "response": {
