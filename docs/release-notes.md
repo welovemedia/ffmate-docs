@@ -7,7 +7,7 @@ description: Explore the latest FFmate release notes including new features, API
 
 An overview of new features, enhancements, and bug fixes for each version.
 
-## Version 2.1.0 (upcoming)
+## Version 2.1.0
 
 ### Breaking Changes
 
