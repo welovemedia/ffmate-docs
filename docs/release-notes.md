@@ -257,7 +257,7 @@ While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustme
   Introduced a new endpoint that returns detailed information about the client environment, including system architecture, operating system, and FFmate version.
 
 - **FFmate AI (Preview)**
-  Initial support for the upcoming FFmate AI assistant is now available. This release includes:
+  Initial support for the FFmate AI assistant is now available. This release includes:
   - A new `--ai` flag to enable AI-related features
   - A new `/ai` REST endpoint to retrieve model-related information
 
