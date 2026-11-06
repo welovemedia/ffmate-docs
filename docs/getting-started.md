@@ -124,16 +124,22 @@ brew upgrade ffmate
 ```
 
 ### 🖥️ Windows (Manual Download)
-- [Windows – AMD64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-windows-amd64.zip)
-- [Windows – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-windows-arm64.zip)
+- [Windows – AMD64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Windows_x86_64.zip)
+- [Windows – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Windows_arm64.zip)
+
+The download is a `.zip` file. Unpack it first, and `ffmate` is inside.
 
 ###  macOS (Manual Download)
-- [macOS – Apple Silicon (arm64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-darwin-arm64.gz)
-- [macOS – Intel (x86_64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-darwin-amd64.gz)
+- [macOS – Apple Silicon (arm64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_arm64.tar.gz)
+- [macOS – Intel (x86_64)](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Darwin_x86_64.tar.gz)
+
+The download is a `.tar.gz` file. Unpack it first, and `ffmate` is inside.
 
 ### 🐧 Linux (Manual Download)
-- [Linux – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-linux-arm64.gz)
-- [Linux – x86_64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate-linux-amd64.gz)
+- [Linux – ARM64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Linux_arm64.tar.gz)
+- [Linux – x86_64](https://github.com/welovemedia/ffmate/releases/latest/download/ffmate_Linux_x86_64.tar.gz)
+
+The download is a `.tar.gz` file. Unpack it first, and `ffmate` is inside.
 
 ### 🐳 Docker
 - [Run FFmate via Docker](https://github.com/welovemedia/ffmate/pkgs/container/ffmate)
