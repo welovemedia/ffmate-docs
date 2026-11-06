@@ -82,6 +82,8 @@ Click on any task to see its full execution details, including progress, errors,
 
 <ZoomImg src="/img/ffmate-dashboard-task-details.webp" alt="FFmate task details opened below a finished task, showing UUID, priority, status, progress, the command, input and output files with their resolved values, pre- and post-processing scripts and sidecar paths, and the client that ran the task"/>
 
+<ZoomImg src="/img/ffmate-dashboard-task-details-labels-retries.webp" alt="FFmate task details of a failed task with the Retry row showing 2/2 and the Labels row showing prores highlighted"/>
+
 ## Watchfolders
 
 Watchfolders let you automate task creation by continuously monitoring specific folders and triggering jobs when new media files are detected.
@@ -95,6 +97,10 @@ Click the **plus (+) button** in the bottom-right corner of the Watchfolders pag
 Specify the name, folder path, preset, scan interval, number of growth checks, and optional file extension filters. Turn off **Enabled** to create the watchfolder in a suspended state. You can also add labels.
 
 <ZoomImg src="/img/ffmate-watchfolder-add-new-form-input.webp" alt="FFmate New watchfolder form filled in with name, description, path, preset, interval, growth check, include and exclude extensions, and the Enabled switch turned on"/>
+
+Labels are added at the bottom of the form with **+ Label**.
+
+<ZoomImg src="/img/ffmate-watchfolder-labels.webp" alt="FFmate New watchfolder form with the Labels section highlighted at the bottom, showing the label prores and the + Label button"/>
 
 ### Checking Configured Watchfolders
 
@@ -135,6 +141,10 @@ You can create your own custom preset or choose from a set of predefined, ready-
 The form covers the name, description, `FFmpeg` command, output file, priority, and pre- and post-processing settings, including **Import sidecar**. It also has fields for retries and labels.
 
 <ZoomImg src="/img/ffmate-presets-add-new-form-input.webp" alt="FFmate New preset form filled in with name, description, command, output file, priority and a post-processing script. The global presets to start from are listed on the left"/>
+
+**Retries** sits next to **Priority**. Labels are added at the bottom of the form with **+ Label**.
+
+<ZoomImg src="/img/ffmate-presets-labels-retries.webp" alt="FFmate New preset form with the Retries field set to 2 and the Labels section with the labels proxy and social highlighted"/>
 
 ### List of Active Presets
 
@@ -203,9 +213,12 @@ The **Sent hooks** page lists every webhook FFmate has sent, newest first, with 
 
 The **Clients** page lists every FFmate instance connected to the database, with its identifier, version, whether it's online, and when it was last seen. An FFmate instance counts as online if it has sent a heartbeat in the last 60 seconds. The FFmate instance the Web UI is connected to is listed first.
 
-<ZoomImg src="/img/ffmate-clients.webp" alt="FFmate Clients page listing one FFmate instance with its identifier, version, operating system, architecture, online dot and last seen time"/>
+<ZoomImg src="/img/ffmate-clients.webp" alt="FFmate Clients page listing one FFmate instance with its identifier, version, online dot and last seen time"/>
 
-Click an FFmate instance to see its details: FFmpeg path, operating system, architecture and labels.
+Click an FFmate instance to see its details: version, FFmpeg path, labels, operating system, architecture and the maximum number of concurrent tasks.
+
+<ZoomImg src="/img/ffmate-clients-details.webp" alt="FFmate Clients page with the details of the FFmate instance studio-encoder-01 highlighted, showing version, FFmpeg path, labels, OS, architecture and max concurrent tasks"/>
+
 
 ## Accessing Real-Time Logs
 

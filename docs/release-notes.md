@@ -7,12 +7,22 @@ description: Explore the latest FFmate release notes including new features, API
 
 An overview of new features, enhancements, and bug fixes for each version.
 
-## Version 2.1.0
+## Version 2.1.1 (06-11-2026)
+
+### Changes
+
+- **Docker `latest` Tag**
+  `ghcr.io/welovemedia/ffmate:latest` now always points to the newest release. For details, see [Running FFmate with Docker](/docs/getting-started.md#running-ffmate-with-docker).
+
+## Version 2.1.0 (05-11-2026)
 
 ### Breaking Changes
 
 - **Tray Icon Removed**
   The experimental system tray icon and its `--tray` flag have been removed. Starting FFmate with `--tray` now fails with an `unknown flag` error, so remove the flag from your scripts and services before upgrading.
+
+- **Quotes Around File Path Wildcards**
+  FFmate now puts quotes around file path wildcards, such as `${INPUT_FILE}` or `${OUTPUT_FILE_DIR}`, in the command and in `scriptPath`. Paths with spaces now work with every one of these wildcards. Remove any quotes placed around these wildcards before upgrading: `"${OUTPUT_FILE_DIR}/${INPUT_FILE_BASENAME}.jpg"` now becomes a path with stray `'` characters, and FFmpeg fails. Write `${OUTPUT_FILE_DIR}/${INPUT_FILE_BASENAME}.jpg` instead. For details, see [Wildcards](/docs/wildcards.md).
 
 ### New Features
 
@@ -34,6 +44,12 @@ An overview of new features, enhancements, and bug fixes for each version.
 - **Labels and Task Limit per FFmate Instance**
   `GET /api/v1/clients` now shows the `labels` and the `maxConcurrentTasks` limit of every FFmate instance, so it's easy to see which FFmate instance takes which tasks. For details, see [Client Endpoint](/docs/ffmate-internals.md#client-endpoint).
 
+- **Labels and Retries in the Web UI**
+  The preset form has new fields for labels and retries, and the watchfolder form a field for labels. The details of tasks, presets and watchfolders show their labels, and task details show how many retries have run. For details, see [Web UI](/docs/web-ui.md).
+
+- **FFmate Instance Details**
+  Clicking an FFmate instance on the Clients page opens its details: version, FFmpeg, labels, operating system, architecture and the maximum number of concurrent tasks. For details, see [Clients](/docs/web-ui.md#clients).
+
 - **Install Development Builds**
   `ffmate update --dev` updates FFmate to the latest development build, so new features can be tested before they are released. Development builds aren't meant for production. For details, see [Update Command](/docs/flags.md#update-command).
 
@@ -54,7 +70,16 @@ An overview of new features, enhancements, and bug fixes for each version.
   `${OUTPUT_FILE_BASE}` and `${OUTPUT_FILE_DIR}` now resolve the output file instead of the input file, and `${OUTPUT_FILE_EXTENSION}` no longer leaves a stray `}`. For details, see [Wildcards](/docs/wildcards.md).
 
 - **Task Status Filter**
-  `GET /api/v1/tasks?status=…` now filters the list by status. For details, see [Monitoring All Tasks](/docs/tasks.md#monitoring-all-tasks).
+  `GET /api/v1/tasks?status=…` now filters the list by status. A status that doesn't exist is rejected with an error. For details, see [Monitoring All Tasks](/docs/tasks.md#monitoring-all-tasks).
+
+- **Unreachable Webhooks**
+  FFmate no longer crashes when a webhook URL can't be reached. It now tries again after 3, 5 and 10 seconds, and logs an error if every try fails.
+
+- **Empty Script Path**
+  A `scriptPath` that contains only spaces now fails the task with `processing script resolves to an empty command`. Before, FFmate crashed.
+
+- **Restarting a Task After a Failed Script**
+  A restarted task now runs its pre- and post-processing scripts again. Before, the task kept the error of the failed script, skipped the script and failed again straight away.
 
 - **PostgreSQL Connection**
   A PostgreSQL URI with a port, e.g. `postgresql://user:pass@db:5433/ffmate`, now connects. Before, FFmate stopped on startup with a `hostname resolving error`. Several options in one URI, e.g. `?sslmode=require&connect_timeout=10`, now work too.
