@@ -7,7 +7,7 @@ description: "FFmate wildcards such as ${INPUT_FILE}, ${DATE_YEAR} or ${SOURCE} 
 
 **Wildcards** are placeholders such as `${INPUT_FILE}` that FFmate replaces with real values when a [task](/docs/tasks.md#task-flow) runs.
 
-Wildcards work in `inputFile`, `outputFile` and `command` of [tasks](/docs/tasks.md#task-properties) and [presets](/docs/presets.md), and in `scriptPath` and `sidecarPath` of [pre- and post-processing](/docs/pre-post-prcessing.md).
+Wildcards work in `inputFile`, `outputFile` and `command` of [tasks](/docs/tasks.md#task-properties) and in `outputFile` and `command` of [presets](/docs/presets.md). They also work in `scriptPath` and `sidecarPath` of [pre- and post-processing](/docs/pre-post-prcessing.md).
 
 
 ## Input and Output File Information
@@ -163,7 +163,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 
 ## Task Metadata
 
-This wildcard inserts a value from the task's `metadata` object. It works in every field that supports wildcards, including task input and output paths and pre- and post-processing actions.
+This wildcard inserts a value from the task's `metadata` object. It works in every field that supports wildcards, for example `outputFile` or `scriptPath`.
 
 The key can come from the `metadata` object sent when the task was created. FFmate also adds keys of its own, for example when a watchfolder creates the task.
 
@@ -177,9 +177,9 @@ The key can come from the `metadata` object sent when the task was created. FFma
 
 When a task is created from a watchfolder, FFmate adds metadata about the file that triggered the task.
 
-This includes fields like `relativeDir`, which you can use to recreate the original folder structure in your output.  
+One of these fields is `relativeDir`, the folder of the file relative to the watchfolder.
 
-A file dropped into `/volumes/ffmate/wf/parent/subfolder1/18moo.mov` gets this `metadata` object:
+The task for a file dropped into `/volumes/ffmate/wf/parent/subfolder1/18moo.mov` gets this `metadata` object:
 
 
 ```json

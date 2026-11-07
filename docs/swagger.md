@@ -1,6 +1,6 @@
 ---
 title: "Accessing FFmate's REST API Documentation via Swagger UI"
-description: "FFmate serves a Swagger UI at /swagger/index.html that lists every REST API endpoint under /api/v1 and sends test requests to a running FFmate."
+description: "FFmate serves a Swagger UI at /swagger/index.html that lists every REST API endpoint under /api/v1 and sends test requests to an FFmate instance."
 ---
 
 # API Documentation with Swagger (OpenAPI)
@@ -9,7 +9,7 @@ FFmate comes with a Swagger UI, an interactive reference for its REST API. It li
 
 ## How to Access the Swagger UI
 
-Once your FFmate server is running, you can access the Swagger UI in your web browser at the following URL:
+While FFmate is running, the Swagger UI opens in a web browser at this URL:
 
 **`http://<your-ffmate-host>:<port>/swagger/index.html`**
 
