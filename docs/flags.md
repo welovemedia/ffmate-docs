@@ -1,15 +1,11 @@
 ---
 title: "FFmate Command-Line Flags: Server, Update & Global Options"
-description: "Comprehensive guide to all FFmate command-line flags. Learn to configure FFmate's server settings (FFmpeg path, port, DB), manage updates, enable debug logs, and more"
+description: "Every flag of the FFmate server, update and version commands, with defaults and examples for host, port, basic auth, database, labels and debug output."
 ---
 
 # Command-Line Interface (CLI)
 
-FFmate’s command-line interface is the main way to start and manage the application. It follows a standard `ffmate [command] [flags]` pattern and provides three distinct commands:
-
-* `server:` This is the main command that runs FFmate.
-* `update:` This is a utility command used to check for and install new versions of the FFmate binary.
-* `version:` This is a simple utility command that prints the currently installed version number.
+The FFmate command-line interface starts and updates FFmate. Every call follows the pattern `ffmate [command] [flags]`. There are three commands. `server` starts FFmate. `update` checks for a newer version and installs it. `version` prints the installed version.
 
 To see all commands and their flags, run:  
 ```bash
@@ -19,12 +15,12 @@ ffmate <command> --help
 
 ## Server Command Flags
 
-The `server` command starts FFmate. All flags listed in this section are specific to this command and allow you to configure everything from ports, database path, logging, and other configuration options.
+The `server` command starts FFmate. The flags in this section only apply to `server`, except `--debug`, which every command accepts.
 
 *   **`--ffmpeg <path>`** or **`--ffmpeg="<path>"`**
-    *   **Purpose:** Set the path to the `ffmpeg` executable.
+    *   **Purpose:** Sets the path to the `ffmpeg` executable.
     *   **Value:** The full path to your `ffmpeg` binary.
-    *   **Default:** `ffmpeg` (assumes `ffmpeg` is in your system's `PATH`).
+    *   **Default:** `ffmpeg`. FFmate looks for `ffmpeg` in the folders listed in `PATH`.
     *   **Example:** `ffmate server --ffmpeg="/usr/local/bin/ffmpeg"`
 
 *   **`--host <address>`** or **`--host="<address>"`**
@@ -45,9 +41,9 @@ The `server` command starts FFmate. All flags listed in this section are specifi
 *   **`--basic-auth <username:password>`** or **`--basic-auth="<username:password>"`**
     *   **Purpose:** Protects the API, Web UI, WebSocket, Swagger, `/health` and `/metrics` with HTTP basic authentication.
     *   **Value:** `username:password`. Everything after the first `:` is the password. FFmate exits on startup if the value has no `:`.
-    *   **Default:** Disabled (no authentication).
+    *   **Default:** Disabled. FFmate asks for no username or password.
     *   **Example:** `ffmate server --basic-auth="admin:a-long-random-password"`
-    *   **What's protected:** every route — the API, Web UI, WebSocket (`/api/v1/ws`), Swagger, `/health` and `/metrics`. Requests without valid credentials get `401 Unauthorized`.
+    *   **What's protected:** every route: the API, Web UI, WebSocket (`/api/v1/ws`), Swagger, `/health` and `/metrics`. Requests without valid credentials get `401 Unauthorized`.
     *   **Calling the API:** send the credentials with every request, e.g. `curl -u admin:a-long-random-password http://ffmate-host:3000/api/v1/tasks`.
     *   **Health checks and monitoring:** anything that calls FFmate automatically also needs the credentials. That includes Docker or Kubernetes health checks, load balancers, and the Prometheus scrape config (`basic_auth`).
     *   **Clusters:** set `--basic-auth` on **every** FFmate instance. All FFmate instances share one database, so a task created through one unprotected FFmate instance can be picked up by any other.
@@ -61,14 +57,14 @@ The `server` command starts FFmate. All flags listed in this section are specifi
     :::
 
 *   **`--port <port_number>`** or **`--port="<port_number>"`**
-    *   **Purpose:** Sets the port number on which the FFmate server (API and Web UI) will listen.
+    *   **Purpose:** Sets the port FFmate listens on for the API and the Web UI.
     *   **Value:** A valid port number.
     *   **Default:** `3000`
     *   **Example:** `ffmate server --port="8080"`
 
 * **`--database <value>`** or **`--database="<value>"`**
 
-  * **Purpose:** Sets where FFmate stores its data (tasks, presets, webhooks, etc.). FFmate supports **SQLite** for standalone instances (default out of the box) and **PostgreSQL** for clustered setups.
+  * **Purpose:** Sets where FFmate stores its data, for example tasks, presets and webhooks. A single FFmate instance uses **SQLite** by default. A cluster of FFmate instances uses **PostgreSQL**.
   * **Value:**
     * **SQLite file path:** FFmate uses SQLite out of the box. By default, the database is created at:
 
@@ -82,13 +78,13 @@ The `server` command starts FFmate. All flags listed in this section are specifi
 
         ```
         # Unix example
-        FFmate server --database="~/ffmate/data/production.sqlite"
+        ffmate server --database="~/ffmate/data/production.sqlite"
 
         # Windows example
-        FFmate server --database="C:\Users\YourName\AppData\Roaming\ffmate\data.sqlite"
+        ffmate server --database="C:\Users\YourName\AppData\Roaming\ffmate\data.sqlite"
         ```
 
-    * **PostgreSQL URI:** FFmate supports **PostgreSQL** for clusters of several FFmate instances. If you pass a `URI` starting with `postgresql://` to `--database`, FFmate automatically switches into **cluster mode**, allowing all FFmate instances to share the same database.
+    * **PostgreSQL URI:** For a cluster of several FFmate instances, pass a PostgreSQL URI that starts with `postgresql://`. FFmate then runs in **cluster mode**, and all FFmate instances share the same database.
     
     * **Connection URI:**
 
@@ -109,11 +105,11 @@ The `server` command starts FFmate. All flags listed in this section are specifi
         ```
 
         ::: tip
-        If your password contains special characters such as `@`, `:`, `/` or `?`, URL-encode them (for example, `@` becomes `%40`).
+        If your password contains special characters such as `@`, `:`, `/` or `?`, URL-encode them. For example, `@` becomes `%40`.
         :::
 
         ::: info
-        The PostgreSQL database must exist before connecting an FFmate instance to it. FFmate will create the required tables and schema at startup if they are not already present
+        The PostgreSQL database must exist before connecting an FFmate instance to it. FFmate creates the required tables and schema at startup if they don't exist yet.
         :::
 
     * **Example:**
@@ -123,8 +119,8 @@ The `server` command starts FFmate. All flags listed in this section are specifi
         ```
 
 *   **`--identifier <name>`** or **`--identifier="<name>"`**
-    *   **Purpose:** Assigns a unique name to an FFmate instance. This is essential in a cluster setup to tell the FFmate instances apart. The Web UI shows which FFmate instance is running each task.
-    *   **Value:** A string representing the unique name for the instance.
+    *   **Purpose:** Assigns a unique name to an FFmate instance. In a cluster, the identifier tells the FFmate instances apart. The Web UI shows which FFmate instance is running each task.
+    *   **Value:** A string representing the unique name for the FFmate instance.
     *   **Default:** The machine's hostname.
     *   **Example:** `ffmate server --identifier="ffmate-a"`
 
@@ -154,46 +150,46 @@ The `server` command starts FFmate. All flags listed in this section are specifi
         * Labels on tasks, presets and watchfolders can use `*` as a wildcard. For example, `gpu-*` matches an FFmate instance labelled `gpu-nvidia` or `gpu-amd`.
 
 *   **`--max-concurrent-tasks <number>`** or **`--max-concurrent-tasks="<number>"`**
-    *   **Purpose:** Sets the maximum number of `ffmpeg` tasks that FFmate will run simultaneously.
+    *   **Purpose:** Sets the maximum number of tasks FFmate runs at the same time.
     *   **Value:** A positive integer.
     *   **Default:** `3`
-    *   **Example:** `ffmate server --max-concurrent-tasks="5"` (allows up to 5 tasks to run at once)
+    *   **Example:** `ffmate server --max-concurrent-tasks="5"`. Up to 5 tasks run at the same time.
 
 *   **`--send-telemetry <true|false>`** or **`--send-telemetry=<true|false>`**
-    *   **Purpose:** Enables or disables the sending of anonymous usage telemetry data to `telemetry.FFmate.io`.
+    *   **Purpose:** Controls whether FFmate sends anonymous usage data to `https://telemetry.ffmate.io`.
     *   **Value:** `true` or `false`.
-    *   **Default:** `true` (telemetry is enabled).
+    *   **Default:** `true`. FFmate sends telemetry.
     *   **Example:** `ffmate server --send-telemetry=false`
 
 *   **`--no-ui`**
     *   **Purpose:** Prevents FFmate from automatically opening the Web UI in your default web browser when the server starts.
-    *   **Default:** `false` (The UI is opened by default when running on a desktop OS).
+    *   **Default:** `false`. On startup, FFmate opens `http://localhost:<port>/ui` in the default browser. In Docker, FFmate never opens the browser.
     *   **Example:** `ffmate server --no-ui`
 
 * **`--debug <namespaces>`** or **`-d <namespaces>`**
 
-  * **Purpose:** FFmate uses a **namespace system** instead of classic levels (INFO, DEBUG, ERROR). It’s built on our own lightweight Go library, [yosev/debugo](https://github.com/yosev/debugo), inspired by the popular [debug-js](https://github.com/debug-js/debug) package. This gives you fine-grained control over which parts of the app produce logs.  
+  * **Purpose:** Selects which parts of FFmate print debug messages, for example `task` or `watchfolder`. FFmate uses namespaces instead of fixed levels such as `INFO` or `ERROR`. The namespaces come from [yosev/debugo](https://github.com/yosev/debugo), a Go library inspired by [debug-js](https://github.com/debug-js/debug).
   * **Default:** `info:?,warn:?,error:?`.
   * **Example:**
 
     ```bash
     ffmate server --debug="*:task,*:watchfolder"
     ```
-The full debugging guide can be found in the [debugging documentation](/docs/debugging.md).
+For details, see [Debugging](/docs/debugging.md).
 
-# Update Command  
+## Update Command
 
 Checks for and applies new versions of the FFmate binary.  
 
-* **Purpose:** Keep FFmate up to date with the latest release.  
+* **Purpose:** Replaces the FFmate binary with the newest release.  
 * **Flags:**  
-  * `--dry` — checks for updates without installing them.  
+  * `--dry` – Checks for updates without installing them.  
     * **Result:** Prints either `no newer version found` or `found newer version: X.Y.Z`. The binary itself is not modified.  
-  * `--dev` — uses the **development** update channel instead of the stable one. Dev builds (for example `2.1.0-dev-19`) contain features that haven't been released yet and may be unstable. Don't use them in production.
+  * `--dev` – Uses the development update channel instead of the stable one. Dev builds, for example `2.1.0-dev-19`, contain features that haven't been released yet and may be unstable. Don't use them in production.
     * Combine it with `--dry` to only check: `ffmate update --dev --dry`.  
 
 * **Default behavior:**  
-  If a newer version is available, FFmate downloads and replaces its own binary. You’ll see a success message, and you’ll need to restart the application to use the new version.  
+  If a newer version is available, FFmate downloads it and replaces its own binary. It prints `updated to version: X.Y.Z`. Restart FFmate to use the new version.  
 
 **Examples:**  
 ```bash
@@ -210,11 +206,11 @@ ffmate update
 If you installed FFmate with **Homebrew**, use `brew upgrade ffmate` to update instead of the built-in `update` command.
 :::
 
-# Version Command  
+## Version Command
 
 Prints the currently installed FFmate version and exits.  
 
-* **Purpose:** Quickly check which version of FFmate you’re running.  
+* **Purpose:** Shows which version of FFmate is installed.  
 * **Flags:** None  
 * **Result:** Prints a single line to the console.  
 
