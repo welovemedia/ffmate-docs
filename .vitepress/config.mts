@@ -6,7 +6,7 @@ const siteUrl = "https://docs.ffmate.io"
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
-  ignoreDeadLinks: true,
+  ignoreDeadLinks: "localhostLinks",
 
   // Also the suffix of every page title: "Tasks | FFmate Docs"
   title: "FFmate Docs",
