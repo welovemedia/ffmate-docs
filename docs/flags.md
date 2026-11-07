@@ -15,7 +15,7 @@ ffmate <command> --help
 
 ## Server Command Flags
 
-The `server` command starts FFmate. The flags in this section only apply to `server`, except `--debug`, which every command accepts.
+The `server` command starts FFmate. The flags in this section only apply to `server`.
 
 *   **`--ffmpeg <path>`** or **`--ffmpeg="<path>"`**
     *   **Purpose:** Sets the path to the `ffmpeg` executable.
