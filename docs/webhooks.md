@@ -142,7 +142,7 @@ When an event happens, FFmate sends a `POST` request to the webhook's `url`. The
 }
 ```
 
-## Listing all Webhooks
+## Listing All Webhooks
 
 To get a list of all available webhooks, send a `GET` request to the FFmate API:
 
@@ -161,7 +161,7 @@ FFmate returns a JSON array with all configured webhooks. The `X-Total` response
 
 ## Getting a Single Webhook
 
-To retrieve the details of a specific webhook, send a `GET` request to the FFmate API using its `uuid`.
+To retrieve the details of a specific webhook, send a `GET` request to the FFmate API using its `uuid`:
 
 ```sh
 curl -X GET http://localhost:3000/api/v1/webhooks/{uuid}
@@ -209,11 +209,11 @@ If the server can't be reached, FFmate tries again up to 3 times, after 3, 5 and
 
 ## Webhook Logs
 
-FFmate records every webhook that gets an answer from your server, for global and direct webhooks. For each one, it stores the `event` and target `url`, the exact request headers and body sent, and the HTTP status code, headers and body of the answer.
+FFmate records every webhook that gets an answer from your server, for global and direct webhooks. For each one, FFmate stores the `event`, the target `url` and the exact request headers and body. It also stores the HTTP status code, headers and body of the answer.
 
 If your server can't be reached, even after all retries, nothing is recorded here. FFmate writes the error to its log instead.
 
-You can fetch this history through the API or UI:
+To get the webhook logs, send a `GET` request to the FFmate API:
 
 ```sh
 curl -X GET 'http://localhost:3000/api/v1/webhooks/executions?page=0&perPage=10'
@@ -246,3 +246,5 @@ FFmate returns a JSON array, newest first. The `X-Total` response header provide
   }
 ]
 ```
+
+💡 Tip: To check the webhook logs in the Web UI, see [Sent Hooks](/docs/web-ui.md#sent-hooks).

@@ -146,7 +146,7 @@ flowchart TD
     C --> D[Resolve pre scriptPath]
     D --> P[Run pre-processing script]
     P --> POK{Script exit code 0?}
-    POK -- No --> X[Done error]
+    POK -- No --> X[DONE_ERROR]
     POK -- Yes --> I{importSidecar true?}
     I -- Yes --> R[Re-import sidecar JSON]
     I -- No --> E
@@ -155,7 +155,7 @@ flowchart TD
     F --> FOK{FFmpeg success?}
     FOK -- No --> X
     FOK -- Yes --> G{Post-processing defined?}
-    G -- No --> S[Done successful]
+    G -- No --> S[DONE_SUCCESSFUL]
     G -- Yes --> H[Resolve post sidecarPath and write sidecar]
     H --> J[Resolve post scriptPath]
     J --> Q[Run post-processing script]
@@ -171,6 +171,8 @@ flowchart TD
     class S success
     class X error
 ```
+
+The diagram shows the same steps. Each failed step sets the task to `DONE_ERROR`.
 
 
 ##  Examples
