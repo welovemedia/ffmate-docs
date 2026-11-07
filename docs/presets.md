@@ -57,7 +57,7 @@ When you create a preset, you define parameters that are automatically applied t
 
 ⚠️ **Important details about how `command` works:** 
 
-  - You don’t need to add `ffmpeg` at the start of the command. FFmate automatically prepends it. By default, FFmate uses the `ffmpeg` binary in your system’s `PATH`. If you want to use a different version, you can override the default with the `--ffmpeg <path>` [command-line flag](/docs/flags.md#server-command-flags).  
+  - You don’t need to add `ffmpeg` at the start of the command. FFmate automatically prepends it. By default, FFmate uses the `ffmpeg` binary in your system’s `PATH`. If you want to use a different version, you can override the default with the `--ffmpeg <path>` [command-line flag](/docs/flags.md#ffmpeg).  
 
   - FFmate also implicitly adds the `-stats_period 1` [option](https://ffmpeg.org/ffmpeg-all.html#Advanced-options) to every command, which limits FFmpeg’s progress output to one update per second.  
     
@@ -87,7 +87,7 @@ When you create a preset, you define parameters that are automatically applied t
 
 - **`priority`** *[optional]* – Sets the task's priority in the processing queue. Higher numbers mean higher priority — for example, a task with priority `100` will be processed before one with `10`. If multiple tasks share the same priority, they run in the order they were created. If a task defines its own `priority`, that will override the preset’s value. If neither is set, `0` is used.
 
-- **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. They decide which FFmate instance processes tasks created from this preset. A task without its own labels inherits these. See [`--labels`](/docs/flags.md#server-command-flags).
+- **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. They decide which FFmate instance processes tasks created from this preset. A task without its own labels inherits these. See [`--labels`](/docs/flags.md#labels).
 
 - **`retries`** *[optional]* – How many times a failed task created from this preset is retried. A task without its own `retries` inherits this value. See [task properties](/docs/tasks.md#task-properties). Default: `0`.
 

@@ -97,7 +97,7 @@ These are the properties that can be set when creating a task in FFmate:
 
   ⚠️ **Important details about how `command` works:** 
 
-  - You don’t need to add `ffmpeg` at the start of the command. FFmate automatically prepends it. By default, FFmate uses the `ffmpeg` binary in your system’s `PATH`. If you want to use a different version, you can override the default with the `--ffmpeg <path>` [command-line flag](/docs/flags.md#server-command-flags).  
+  - You don’t need to add `ffmpeg` at the start of the command. FFmate automatically prepends it. By default, FFmate uses the `ffmpeg` binary in your system’s `PATH`. If you want to use a different version, you can override the default with the `--ffmpeg <path>` [command-line flag](/docs/flags.md#ffmpeg).  
 
   - FFmate also implicitly adds the `-stats_period 1` [option](https://ffmpeg.org/ffmpeg-all.html#Advanced-options) to every command, which limits FFmpeg’s progress output to one update per second.  
     
@@ -135,7 +135,7 @@ These are the properties that can be set when creating a task in FFmate:
     
 - **`preset`** - The UUID of a pre-configured [Preset](/docs/presets.md) to use for this task. This field is **mandatory** unless a `command` is set. See [Using a Preset](#using-a-preset) for which settings the task takes from the preset.
 
-- **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. Only an FFmate instance with at least one matching label picks up the task. A task without labels runs on any FFmate instance. Labels can use `*` as a wildcard, for example `gpu-*`. See [`--labels`](/docs/flags.md#server-command-flags).
+- **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. Only an FFmate instance with at least one matching label picks up the task. A task without labels runs on any FFmate instance. Labels can use `*` as a wildcard, for example `gpu-*`. See [`--labels`](/docs/flags.md#labels).
 
 - **`retries`** *[optional]* – How many times FFmate retries the task if it fails (`DONE_ERROR`). Each retry starts 3 seconds after the failure and puts the task back into `QUEUED`. The response field `retried` shows how many retries have run so far. Canceled tasks are not retried. Default: `0`.
 

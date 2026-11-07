@@ -102,7 +102,7 @@ FFmpeg is already included in the image, so there’s nothing else to install. J
 
 
 > 💡 If FFmpeg is installed in a non-standard location, you can tell FFmate where to find it using the `--ffmpeg` flag.
-> Learn more 👉 [Flags Reference](/docs/flags/#server-command-flags)
+> Learn more 👉 [Flags Reference](/docs/flags/#ffmpeg)
 
 
 ## Downloading & Installing FFmate
@@ -167,7 +167,7 @@ info ffmpeg binary found at '/usr/local/bin/ffmpeg'
 info server started on port '3000' using driver 'sqlite3'
 ```
 
-If port `3000` is already in use, FFmate stops with `failed to start ffmate server: … address already in use`. Start it on a different port with [`--port`](/docs/flags/#server-command-flags), for example `ffmate server --port 8080`.
+If port `3000` is already in use, FFmate stops with `failed to start ffmate server: … address already in use`. Start it on a different port with [`--port`](/docs/flags/#port), for example `ffmate server --port 8080`.
 
 ::: danger FFmate is reachable from your network by default
 FFmate listens on **all network interfaces (`0.0.0.0`)**, not only `localhost`, and does **not** require a password. Anyone who can reach port `3000` on your machine can run commands on it through [pre/post-processing scripts](/docs/pre-post-prcessing.md).
@@ -176,12 +176,12 @@ FFmate listens on **all network interfaces (`0.0.0.0`)**, not only `localhost`, 
 * **Other machines need access?** Start it with `--basic-auth "username:password"`, and only allow those machines through your firewall.
 * **Never** expose FFmate directly to the internet.
 
-See [`--host`](/docs/flags.md#server-command-flags) and [`--basic-auth`](/docs/flags.md#server-command-flags) for details.
+See [`--host`](/docs/flags.md#host) and [`--basic-auth`](/docs/flags.md#basic-auth) for details.
 :::
 
 
 > [!NOTE]
-> FFmate requires `FFmpeg` to be installed on **Windows**, **macOS**, or **Linux**. Make sure `FFmpeg` is available in your system’s `PATH` before launching FFmate. If `FFmpeg` is installed in a custom location, use the `--ffmpeg` flag to specify its path. [Learn more](/docs/flags/#server-command-flags)
+> FFmate requires `FFmpeg` to be installed on **Windows**, **macOS**, or **Linux**. Make sure `FFmpeg` is available in your system’s `PATH` before launching FFmate. If `FFmpeg` is installed in a custom location, use the `--ffmpeg` flag to specify its path. [Learn more](/docs/flags/#ffmpeg)
 
 ### Running FFmate with Docker
 
