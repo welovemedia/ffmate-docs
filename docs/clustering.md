@@ -1,38 +1,32 @@
 ---
 title: "Scale FFmpeg with FFmate Clustering on PostgreSQL & Docker"
-description: "Set up FFmate clustering with PostgreSQL to scale FFmpeg transcoding across servers. Distribute jobs, manage watchfolders, add redundancy, and boost throughput."
+description: "Set up FFmate clustering with PostgreSQL to run FFmpeg tasks on several servers that share one task queue, watchfolders and live updates in the Web UI."
 ---
 
-# Clustering  
+# Clustering
 
 **Clustering** connects several FFmate instances to the same **PostgreSQL** database. They share one task queue and run more tasks in parallel than a single machine can. If one FFmate instance goes down, the others keep running tasks.
 
-## When to Use Clustering  
+## When to Use Clustering
 
-Clustering is useful when:  
+Use clustering to run more tasks at the same time on several servers or containers, or to keep processing tasks when one FFmate instance fails.
 
-- You need to scale task throughput across multiple servers or containers.  
-- You need redundancy: if one FFmate instance fails, the others keep working.  
-
-At its core, clustering ensures that all FFmate instances:  
-
-- Share a single source of truth for the job queue.  
-- Show the same live data in every Web UI, such as task status and progress, no matter which FFmate instance runs the task.  
+All FFmate instances in a cluster share one task queue. Every Web UI shows the same live data, such as task status and progress, no matter which FFmate instance runs the task.
 
 
 ::: info
-FFmate clusters aren’t limited to one platform. Windows, macOS, Linux, and Docker instances can all run side by side in the same cluster, as long as they connect to the same PostgreSQL database
+A cluster can mix platforms. FFmate instances on Windows, macOS, Linux and Docker can run in the same cluster, as long as they connect to the same PostgreSQL database.
 :::
 
-## Requirements  
+## Requirements
 
 - FFmate **v2.0 or later**. You can check your version with the [version command](/docs/flags.md#version-command).  
 - A running **PostgreSQL database** that every FFmate instance can access. See [Setting up PostgreSQL](#setting-up-postgresql) for details and options.  
-- **Shared storage** (recommended) if the FFmate instances need access to the same media files.  
+- **Shared storage**, recommended if the FFmate instances need access to the same media files.  
 
-## Setup and Configuration  
+## Setup and Configuration
 
-All it takes to create a cluster of FFmate instances are three simple steps:
+A cluster takes three steps:
 
 1. **Provision a PostgreSQL database** that all FFmate instances can reach. 
 2. **Create a user and database** inside PostgreSQL for FFmate.  
@@ -53,22 +47,22 @@ ffmate server \
 ```
 
 ::: info
-If you don’t set `--identifier`, FFmate defaults to the machine hostname. That works fine across machines, but it’s best practice to set an explicit identifier — especially if you run multiple FFmate instances on the same host.
+Without `--identifier`, FFmate uses the machine's hostname. Setting `--identifier` is still recommended, especially for several FFmate instances on the same machine.
 :::
 
 ::: warning Protect every FFmate instance
-All FFmate instances in a cluster share one database. A task or preset created through **any** FFmate instance can be picked up and run by **every** FFmate instance, including its [pre- and post-processing scripts](/docs/pre-post-prcessing.md). Anyone who can create a task can use these scripts to run any command they like, for example deleting files, on every computer in the cluster. So a single FFmate instance reachable without a password exposes the whole cluster.
+All FFmate instances in a cluster share one database. A task or preset created through any FFmate instance can be picked up and run by every FFmate instance, including its [pre- and post-processing scripts](/docs/pre-post-prcessing.md). Anyone who can create a task can use these scripts to run any command they like, for example deleting files, on every computer in the cluster. So a single FFmate instance reachable without a password exposes the whole cluster.
 
 * Start every FFmate instance with the same [`--basic-auth`](/docs/flags.md#server-command-flags).
 * Use a firewall so only trusted machines can reach the FFmate instances' ports.
 * Use a dedicated PostgreSQL user for FFmate, and don't expose PostgreSQL to untrusted networks: anyone who can write to the database can create tasks too.
 :::
 
-## How Clustering Works  
+## How Clustering Works
 
-When you run multiple FFmate instances against the same **PostgreSQL** database, they **automatically** form a cluster and share the tasks between them. There’s **no main FFmate instance**: you submit [tasks](/docs/tasks.md#creating-a-task) and [task batches](/docs/tasks.md#submitting-multiple-tasks-as-a-batch) exactly as you would in a non-cluster setup. The database makes sure each task is picked up by **only one FFmate instance**, so no task runs twice. The FFmate instances share updates through PostgreSQL, and each one passes them on to its Web UI over `WebSockets`, so every UI shows the same state. The live log stream is the exception: it only shows the logs of the FFmate instance the Web UI is connected to.
+FFmate instances connected to the same **PostgreSQL** database form a cluster and share its tasks. There's no main FFmate instance. [Tasks](/docs/tasks.md#creating-a-task) and [task batches](/docs/tasks.md#submitting-multiple-tasks-as-a-batch) are created the same way as on a single FFmate instance. The database makes sure each task is picked up by only one FFmate instance, so no task runs twice. The FFmate instances share updates through PostgreSQL, and each one passes them on to its Web UI over `WebSockets`, so every UI shows the same state. The live log stream is the exception: it only shows the logs of the FFmate instance the Web UI is connected to.
 
-FFmate’s clustering is built on PostgreSQL’s `LISTEN/NOTIFY`: each FFmate instance publishes updates with `pg_notify`, and the others `LISTEN` and react. No extra software is needed.
+FFmate's clustering is built on PostgreSQL's `LISTEN/NOTIFY`: each FFmate instance publishes updates with `pg_notify`, and the others `LISTEN` and react. No extra software is needed.
 
 ```mermaid
 sequenceDiagram
@@ -92,19 +86,19 @@ Each FFmate instance picks up queued tasks on its own, up to its own [`--max-con
 
 ## Watchfolders in a Cluster
 
-FFmate clustering uses PostgreSQL transactions to make sure watchfolders don’t get processed twice. Here’s how it works:
+FFmate clustering uses PostgreSQL transactions to make sure watchfolders aren't processed twice.
 
-- At each watchfolder **interval**, every FFmate instance **queries** the database for the watchfolder. The first one to claim it scans the folder. The others see that it's already claimed and skip it until the next interval.
-- At the next interval the **cycle repeats**, and a different FFmate instance may claim the watchfolder. This guarantees that only one FFmate instance processes a watchfolder at a time, even if many are watching.
+- At each watchfolder interval, every FFmate instance queries the database for the watchfolder. The first one to claim it scans the folder. The others see that it's already claimed and skip it until the next interval.
+- At the next interval the cycle repeats, and a different FFmate instance may claim the watchfolder. This guarantees that only one FFmate instance processes a watchfolder at a time, even if many are watching.
 - A watchfolder with [`labels`](/docs/watchfolder.md#watchfolder-properties) is only scanned by FFmate instances with a matching label.
 
 ## Heartbeats
 
-Every FFmate instance sends a small “`I’m alive`” signal to the cluster about **every 15 seconds**. FFmate uses these heartbeats to show active FFmate instances and flag any that have gone quiet in the Web UI.
+About **every 15 seconds**, each FFmate instance saves a small "I'm alive" signal in the database. FFmate uses these heartbeats to show active FFmate instances and flag any that have gone quiet in the Web UI.
  
 ## When an FFmate Instance Fails
 
-Clustering improves scalability and resilience, but it **isn’t a full high-availability setup**. If an FFmate instance fails, its running tasks don’t move to another FFmate instance automatically.
+Clustering isn't a full high-availability setup. If an FFmate instance fails, its running tasks don't move to another FFmate instance automatically.
 
 If an FFmate instance goes down mid-transcode, the others notice that its heartbeats have stopped. After about **60 seconds**, they set its running tasks to `DONE_ERROR` with the error `client disconnected during execution`. If the FFmate instance starts again before that, it does the same for its own tasks on startup.
 
@@ -112,7 +106,7 @@ To run such a task again, **restart** it in the Web UI or via the API. That move
 
 ## Cluster Debugging
 
-FFmate comes with advanced debug options that are especially useful when **troubleshooting** cluster setups. If FFmate instances aren’t joining the cluster or events aren’t flowing, enable these namespaces:
+If FFmate instances aren't joining the cluster or updates don't reach the other FFmate instances, turn on these namespaces:
 
 - `websocket` – sending and receiving updates between FFmate instances.
 - `client` – registration and heartbeats of FFmate instances.
@@ -124,28 +118,28 @@ For more details on how debugging works in FFmate, see [Debugging](/docs/debuggi
 
 ## Setting up PostgreSQL
 
-**PostgreSQL** is one of the most widely used and battle-tested relational databases. This section isn't an in-depth guide, but it highlights the main options to get a PostgreSQL database up and running.
+This section lists the main options to get a PostgreSQL database running.
 
 ### Deployment Options
 
-FFmate needs a **PostgreSQL** server that all FFmate instances can reach. You’ve got a few ways to get there, depending on your environment and comfort level.
+FFmate needs a **PostgreSQL** server that all FFmate instances can reach.
 
-- **For local development**, Docker is usually the quickest route. Pull the official image, run a container, and you’ll have a database ready in minutes.  
+- **For local development**, Docker is usually the quickest route. Pull the official image and run a container.  
 
     [Postgres on Docker Hub](https://hub.docker.com/_/postgres)
 
-- **If you prefer installing directly on your machine**, PostgreSQL provides native installers for Windows, macOS, and Linux. This is handy if you want a bare-metal setup.  
+- **To install it on the machine itself**, PostgreSQL has installers for Windows, macOS and Linux.  
 
     [Download PostgreSQL](https://www.postgresql.org/download/)  
     [Installation Guide](https://www.postgresql.org/docs/current/tutorial-install.html)
 
-- **In production**, you can run a single PostgreSQL instance, but for more resilient setups it’s better to use a **high-availability cluster**. PostgreSQL has excellent built-in tools for this.  
+- **In production**, a single PostgreSQL instance works. For more resilience, use a high-availability PostgreSQL cluster.  
 
     [Creating a Database Cluster](https://www.postgresql.org/docs/current/creating-cluster.html)
 
-If you don’t want to install and run Postgres yourself, no problem! Services like [Supabase](https://supabase.com/database) and [Neon](https://neon.com) give you managed PostgreSQL with generous free tiers. You’ll have a database ready in minutes, without the low-level configuration or the headache of maintenance.
+[Supabase](https://supabase.com/database) and [Neon](https://neon.com) offer managed PostgreSQL with free tiers. FFmate can use such a database with `--database`.
 
-Once PostgreSQL is running—whether `self-hosted` or `managed`—you only need two extra steps:  
+Once PostgreSQL is running, self-hosted or managed, two more steps are needed:  
 
 1. **Create a user** for FFmate. FFmate creates its own tables, so the user needs `CONNECT` and `CREATE`, plus `SELECT`, `INSERT`, `UPDATE` and `DELETE` on those tables. Making the user the owner of the FFmate database covers all of this. `LISTEN/NOTIFY` needs no extra permission.  
 
@@ -155,6 +149,6 @@ Once PostgreSQL is running—whether `self-hosted` or `managed`—you only need 
 
     [Create Database docs](https://www.postgresql.org/docs/current/sql-createdatabase.html)
 
-::: warning
-Cluster performance depends on **network latency** between your FFmate instances and the PostgreSQL server. Keep the database **close to your FFmate instances whenever possible**.
+::: info
+Cluster performance depends on the network latency between the FFmate instances and the PostgreSQL server. Keep the database close to the FFmate instances whenever possible.
 :::
