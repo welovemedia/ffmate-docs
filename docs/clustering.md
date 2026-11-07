@@ -20,7 +20,7 @@ A cluster can mix platforms. FFmate instances on Windows, macOS, Linux and Docke
 
 ## Requirements
 
-- FFmate **v2.0 or later**. You can check your version with the [version command](/docs/flags.md#version-command).  
+- FFmate **v2.0 or later**. The [version command](/docs/flags.md#version-command) prints the installed version.  
 - A running **PostgreSQL database** that every FFmate instance can access. See [Setting up PostgreSQL](#setting-up-postgresql) for details and options.  
 - **Shared storage**, recommended if the FFmate instances need access to the same media files.  
 
@@ -60,7 +60,7 @@ All FFmate instances in a cluster share one database. A task or preset created t
 
 ## How Clustering Works
 
-FFmate instances connected to the same **PostgreSQL** database form a cluster and share its tasks. There's no main FFmate instance. [Tasks](/docs/tasks.md#creating-a-task) and [task batches](/docs/tasks.md#submitting-multiple-tasks-as-a-batch) are created the same way as on a single FFmate instance. The database makes sure each task is picked up by only one FFmate instance, so no task runs twice. The FFmate instances share updates through PostgreSQL, and each one passes them on to its Web UI over `WebSockets`, so every UI shows the same state. The live log stream is the exception: it only shows the logs of the FFmate instance the Web UI is connected to.
+FFmate instances connected to the same **PostgreSQL** database form a cluster and share its tasks. There's no main FFmate instance. [Tasks](/docs/tasks.md#creating-a-task) and [task batches](/docs/tasks.md#submitting-multiple-tasks-as-a-batch) are created the same way as on a single FFmate instance. The database makes sure each task is picked up by only one FFmate instance, so no task runs twice. The FFmate instances share updates through PostgreSQL. Each one passes them on to its Web UI over `WebSockets`, so every UI shows the same state. The live log stream is the exception: it only shows the logs of the FFmate instance the Web UI is connected to.
 
 FFmate's clustering is built on PostgreSQL's `LISTEN/NOTIFY`: each FFmate instance publishes updates with `pg_notify`, and the others `LISTEN` and react. No extra software is needed.
 
@@ -117,8 +117,6 @@ For example: `ffmate server --debug="error:?,*:websocket,*:client,*:task"`.
 For more details on how debugging works in FFmate, see [Debugging](/docs/debugging.md).
 
 ## Setting up PostgreSQL
-
-This section lists the main options to get a PostgreSQL database running.
 
 ### Deployment Options
 

@@ -12,7 +12,7 @@ FFmate can print debug messages for single components, such as `task`, `webhook`
 Debug logging is turned on in two ways:
 
 1.  **Using the Command-Line Flag:**
-    *   The global `--debug` flag works with every `ffmate` command, most often `ffmate server`.
+    *   The `--debug` flag sets the namespaces when starting `ffmate server`.
     *   **Syntax:** `ffmate server --debug="<namespaces>"`
     *   **Example:** `ffmate server --debug="error:?,*:task"`
 
@@ -52,8 +52,8 @@ The `--debug` flag selects which of these namespaces FFmate prints.
 * `debug:websocket` – Logs every time a client, such as the Web UI, connects to or disconnects from the WebSocket server. In a [cluster](/docs/clustering.md), it also logs every update sent to and received from the other FFmate instances. Use it to check that the FFmate instances in a cluster are communicating over the shared PostgreSQL database.
 * `debug:client` – Logs the name the FFmate instance uses, for example `initiated client as 'ffmate-a'`. Every 15 seconds, the FFmate instance saves its entry in the database and logs `client info updated`.
 * `debug:ffmpeg` – Logs the progress of a running FFmpeg process, with details such as frame number, FPS, bitrate and speed.
-* `debug:task` – Logs each step of task processing. It shows every check of the queue for new tasks, for example `no queued tasks found`, when a task is picked up and when its status changes. Turn it on when tasks stay `QUEUED` and no FFmate instance picks them up.
-* `debug:watchfolder` – Logs each watchfolder scan and every task created for a new file. It also logs why a scan was skipped, for example because the watchfolder is suspended, its labels don't match or another FFmate instance is scanning it.
+* `debug:task` – Logs each step of task processing. It logs every check of the queue for new tasks, for example `no queued tasks found`. It also logs when FFmpeg starts and finishes and when a task is retried. Turn it on when tasks stay `QUEUED` and no FFmate instance picks them up.
+* `debug:watchfolder` – Logs each watchfolder scan and every task created for a new file. It also logs why a scan was skipped. For example, the watchfolder is suspended, its labels don't match or another FFmate instance is scanning it.
 * `debug:webhook` – Logs every webhook FFmate sends and every delivery it records. If an application doesn't receive notifications, this log shows whether FFmate sends them.
 * `debug:middleware` – Logs the registration of background request processors, like the compression or the `debug:http` logger itself. This namespace is only needed when working on the FFmate source code.
 
@@ -127,8 +127,8 @@ The value of `--debug` is a comma-separated list of rules.
 
 Two API endpoints change the debug namespaces while FFmate runs. For example, detailed logging can be turned on for a live system without a restart:
 
-*   **`PATCH /api/v1/debug/{namespaces}`**
-    *   **Purpose:** Sets the active debug namespaces. The [{namespaces}](#understanding-namespaces) part of the URL should be your comma-separated filter string.
+*   **`PATCH /api/v1/debug/{namespace}`**
+    *   **Purpose:** Sets the active debug namespaces. The [{namespace}](#understanding-namespaces) part of the URL should be your comma-separated filter string.
     *   **Example:** To see only task and webhook logs:
 
         ```sh
