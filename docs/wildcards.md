@@ -1,65 +1,64 @@
 ---
-title: Wildcards in FFmate – Dynamic File Naming and Task Scripting
-description: Learn how to use wildcards in FFmate to generate dynamic file and folder names, automate output paths, insert timestamps, and adapt processing logic based on task sources like the API or watchfolders
+title: "Wildcards in FFmate: Dynamic File Naming and Task Scripting"
+description: "FFmate wildcards such as ${INPUT_FILE}, ${DATE_YEAR} or ${SOURCE} insert file names, dates, timestamps and task metadata into paths, commands and scripts."
 ---
 
 # Wildcards
 
-**Wildcards** in FFmate act as placeholders that are **automatically replaced** with actual values when a FFmate [task](/docs/tasks.md#task-flow) runs.  
+**Wildcards** are placeholders such as `${INPUT_FILE}` that FFmate replaces with real values when a [task](/docs/tasks.md#task-flow) runs.
 
-Wildcards work in:  
-
-- [Tasks](/docs/tasks.md#task-properties) and [presets](/docs/presets.md): `inputFile`, `outputFile` and `command`  
-- [Pre- and post-processing](/docs/pre-post-prcessing.md): `scriptPath` and `sidecarPath`
+Wildcards work in `inputFile`, `outputFile` and `command` of [tasks](/docs/tasks.md#task-properties) and [presets](/docs/presets.md), and in `scriptPath` and `sidecarPath` of [pre- and post-processing](/docs/pre-post-prcessing.md).
 
 
 ## Input and Output File Information
 
-### Full File Path:
+### Full File Path
 
-These wildcards return the **complete file path**, including the directory, filename, and extension.
+These wildcards return the complete file path, including the directory, filename and extension.
 
 | Wildcard         | Description                          | Example Output          |
 |-----------------|----------------------------------|-------------------------|
 | `${INPUT_FILE}`  | Full path of the input file      | `/source/input.mp4`     | 
 | `${OUTPUT_FILE}` | Full path of the output file     | `/destination/output.mp4`    |
-#### Example:
+#### Example
 
 ```sh
 curl -X POST http://localhost:3000/api/v1/tasks \
      -H "Content-Type: application/json" \
      -d '{
+       "name": "Full file path example",
        "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset fast -crf 23 ${OUTPUT_FILE}",
        "inputFile": "/volumes/ffmate/source/input.mp4",
        "outputFile": "/volumes/ffmate/destination/output.mp4"
      }'
 ```
 
-### Filename Information:
+### Filename Information
 
-These wildcards return the **filename** from the full path, either with or without the extension.
+These wildcards return the filename from the full path, either with or without the extension.
 
 | Wildcard               | Description                                         | Example Output    |
 |------------------------|-----------------------------------------------------|-------------------|
-| `${INPUT_FILE_BASE}`   | Filename with extension (without the path)         | `input.mp4`      |
-| `${OUTPUT_FILE_BASE}`  | Filename with extension (without the path)         | `output.mp4`     |
+| `${INPUT_FILE_BASE}`   | Filename with extension, without the path          | `input.mp4`      |
+| `${OUTPUT_FILE_BASE}`  | Filename with extension, without the path          | `output.mp4`     |
 | `${INPUT_FILE_BASENAME}` | Filename without extension                        | `input`          |
 | `${OUTPUT_FILE_BASENAME}` | Filename without extension                        | `output`         |
 
 
-#### Example:
+#### Example
 
 ```sh
 curl -X POST http://localhost:3000/api/v1/tasks \
      -H "Content-Type: application/json" \
      -d '{
+       "name": "Filename example",
        "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset fast -crf 23 ${OUTPUT_FILE}.mkv",
        "inputFile": "/volumes/ffmate/videos/original_movie.mp4",
        "outputFile": "/volumes/ffmate/converted/${INPUT_FILE_BASENAME}"
      }'
 ```
 
-#### Output Path:
+#### Output Path
 
 ```sh
 /volumes/ffmate/converted/original_movie.mkv
@@ -67,9 +66,9 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 
 ---
 
-### File Extensions and Directory Path:
+### File Extensions and Directory Path
 
-These wildcards return **the file extension** and the **directory path**.
+These wildcards return the file extension and the directory path.
 
 | Wildcard                  | Description                               | Example Output    |
 |---------------------------|-------------------------------------------|-------------------|
@@ -77,19 +76,20 @@ These wildcards return **the file extension** and the **directory path**.
 | `${OUTPUT_FILE_EXTENSION}` | File extension of the output file        | `.mp4`           |
 | `${INPUT_FILE_DIR}`       | Directory path of the input file         | `/source`        |
 | `${OUTPUT_FILE_DIR}`      | Directory path of the output file        | `/destination`        |
-#### Example:
+#### Example
 
 ```sh
 curl -X POST http://localhost:3000/api/v1/tasks \
      -H "Content-Type: application/json" \
      -d '{
+       "name": "Extension and directory example",
        "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset fast -crf 23 ${OUTPUT_FILE}",
        "inputFile": "/volumes/ffmate/source/video.mp4",
        "outputFile": "/volumes/ffmate/destination/${INPUT_FILE_BASENAME}_converted${INPUT_FILE_EXTENSION}"
      }'
 ```
 
-#### Output Path:
+#### Output Path
 
 ```sh
 /volumes/ffmate/destination/video_converted.mp4
@@ -97,7 +97,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 
 ## Date & Time
 
-These wildcards return the **current date and time** values when the task runs.
+These wildcards return the current date and time values when the task runs.
 
 | Wildcard                   | Description                                | Example Output   |
 |----------------------------|--------------------------------------------|------------------|
@@ -110,12 +110,13 @@ These wildcards return the **current date and time** values when the task runs.
 | `${TIME_MINUTE}`           | Minute (00-59)                            | `05`             |
 | `${TIME_SECOND}`           | Second (00-59)                            | `32`             |
 
-#### Example:
+### Example
 
 ```sh
 curl -X POST http://localhost:3000/api/v1/tasks \
      -H "Content-Type: application/json" \
      -d '{
+       "name": "Date and time example",
        "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset fast -crf 23 ${OUTPUT_FILE}",
        "inputFile": "/volumes/ffmate/source/video.mp4",
        "outputFile": "/volumes/ffmate/destination/${DATE_YEAR}/${DATE_MONTH}/${DATE_DAY}/video_${TIME_HOUR}-${TIME_MINUTE}-${TIME_SECOND}.mp4",
@@ -123,7 +124,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
      }'
 ```
 
-#### Output Path:
+### Output Path
 
 ```sh
 /volumes/ffmate/destination/2024/02/15/video_14-30-45.mp4
@@ -131,7 +132,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 
 ## Timestamps
 
-These wildcards return **Unix timestamps** based on the current system time.
+These wildcards return Unix timestamps based on the current system time.
 
 | Wildcard                      | Description                                | Example Output          |
 |--------------------------------|--------------------------------------------|-------------------------|
@@ -141,19 +142,20 @@ These wildcards return **Unix timestamps** based on the current system time.
 | `${TIMESTAMP_NANOSECONDS}`    | Unix timestamp with nanoseconds precision  | `1705318712123456789`   |
 
 
-#### Example:
+### Example
 
 ```sh
 curl -X POST http://localhost:3000/api/v1/tasks \
      -H "Content-Type: application/json" \
      -d '{
+       "name": "Timestamp example",
        "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset fast -crf 23 ${OUTPUT_FILE}",
        "inputFile": "/volumes/ffmate/source/video.mp4",
        "outputFile": "/volumes/ffmate/destination/video_${TIMESTAMP_SECONDS}.mp4"
      }'
 ```
 
-#### Output Path:
+### Output Path
 
 ```sh
 /volumes/ffmate/destination/video_1705318712.mp4
@@ -161,11 +163,9 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 
 ## Task Metadata
 
-This wildcard lets you insert values from the task’s `metadata` object. This works in **any field** where wildcards are supported, including [task](/docs/tasks.md#task-properties) input and output paths, as well as [pre- and post-processing](/docs/pre-post-prcessing.md) actions.  
+This wildcard inserts a value from the task's `metadata` object. It works in every field that supports wildcards, including task input and output paths and pre- and post-processing actions.
 
-You can reference any key that was:  
-- **Provided during task creation** via the `metadata` object, or  
-- **Automatically populated** by FFmate (for example, when a task is triggered by a watchfolder).  
+The key can come from the `metadata` object sent when the task was created. FFmate also adds keys of its own, for example when a watchfolder creates the task.
 
 | Wildcard Pattern            | Description                                     |
 |-----------------------------|-------------------------------------------------|
@@ -173,34 +173,37 @@ You can reference any key that was:
 
 ---
 
-#### Example: Recreating Watchfolder Structure
+### Example: Recreating Watchfolder Structure
 
-When a task is created from a watchfolder, FFmate automatically adds **watchfolder file metadata** about the file that triggered the task.
+When a task is created from a watchfolder, FFmate adds metadata about the file that triggered the task.
 
 This includes fields like `relativeDir`, which you can use to recreate the original folder structure in your output.  
 
-Here’s an example `metadata` object for a file dropped into `/volumes/ffmate/wf/parent/subfolder1/18moo.mov`:  
+A file dropped into `/volumes/ffmate/wf/parent/subfolder1/18moo.mov` gets this `metadata` object:
 
 
 ```json
-"metadata": {
-  "ffmate": {
-    "watchfolder": {
-      "path": "/volumes/ffmate/wf",
-      "relativeDir": "parent/subfolder1",
-      "relativePath": "parent/subfolder1/18moo.mov",
-      "uuid": "06bbbe21-8003-41b3-94f4-62508486c482"
+{
+  "metadata": {
+    "ffmate": {
+      "watchfolder": {
+        "path": "/volumes/ffmate/wf",
+        "relativeDir": "parent/subfolder1",
+        "relativePath": "parent/subfolder1/18moo.mov",
+        "uuid": "06bbbe21-8003-41b3-94f4-62508486c482"
+      }
     }
   }
 }
 ```
 
-With `${METADATA_}`, you can reference `relativeDir` and automatically recreate the same folder structure from the watchfolder in your output.
+`${METADATA_ffmate.watchfolder.relativeDir}` inserts `relativeDir`, so the output recreates the folder structure of the watchfolder:
 
 ```sh
 curl -X POST http://localhost:3000/api/v1/tasks \
   -H "Content-Type: application/json" \
   -d '{
+    "name": "Watchfolder structure example",
     "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset fast -crf 23 ${OUTPUT_FILE}",
     "inputFile": "/volumes/ffmate/wf/parent/subfolder1/18moo.mov",
     "outputFile": "/volumes/ffmate/processed/${METADATA_ffmate.watchfolder.relativeDir}/${INPUT_FILE_BASENAME}.mp4"
@@ -208,7 +211,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 '
 ```
 
-#### Output Path:
+### Output Path
 
 ```sh
 /volumes/ffmate/processed/parent/subfolder1/18moo.mp4
@@ -216,21 +219,23 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 
 ## Task Source
 
-This wildcard returns the **source** of the task: either `api` or `watchfolder`.
+This wildcard returns the source of the task: either `api` or `watchfolder`.
 
 | Wildcard    | Description                                                | Example Output        |
 |-------------|------------------------------------------------------------|------------------------|
-| `${SOURCE}` | Returns the source that triggered the task (either API or watchfolder) | `api` or `watchfolder`  |
+| `${SOURCE}` | Returns the source that triggered the task                             | `api` or `watchfolder`  |
 
 ---
 
 ### Example
 
-Pass `${SOURCE}` to a pre-processing script to apply different behavior depending on the task’s origin. Wildcards are not environment variables, so the value has to be passed as an argument:
+Pass `${SOURCE}` to a pre-processing script to apply different behavior depending on the task's origin. Wildcards are not environment variables, so the value has to be passed as an argument:
 
 ```json
-"preProcessing": {
-  "scriptPath": "/opt/ffmate/scripts/prepare.sh ${SOURCE}"
+{
+  "preProcessing": {
+    "scriptPath": "/opt/ffmate/scripts/prepare.sh ${SOURCE}"
+  }
 }
 ```
 
@@ -260,74 +265,77 @@ esac
 
 ## FFmpeg Path
 
-This wildcard returns the full, resolved path to the `FFmpeg` executable as configured in FFmate (see [command-line flags](/docs/flags.md#server-command-flags)). It is particularly useful for advanced workflows that require chaining multiple `ffmpeg` calls within a single command, such as **two-pass encoding**.
+This wildcard returns the path to the `FFmpeg` executable that FFmate uses, set with the [`--ffmpeg`](/docs/flags.md#server-command-flags) flag. For example, a two-pass encode chains two `ffmpeg` calls in one command.
 
 
 | Wildcard    | Description                                  | Example Output      |
 |-------------|----------------------------------------------|---------------------|
 | `${FFMPEG}` | Returns the full path to the FFmpeg executable | `/usr/bin/ffmpeg`   |
 
-#### Example: Two-Pass VP9 Encoding
+### Example: Two-Pass VP9 Encoding
 
 ```sh
 curl -X POST http://localhost:3000/api/v1/tasks \
      -H "Content-Type: application/json" \
      -d '{
+       "name": "Two-pass VP9 encode",
        "command": "-i ${INPUT_FILE} -c:v libvpx-vp9 -b:v 2M -pass 1 -an -f null - && ${FFMPEG} -i ${INPUT_FILE} -c:v libvpx-vp9 -b:v 2M -pass 2 -c:a libopus ${OUTPUT_FILE}",
        "inputFile": "/volumes/ffmate/source/video.mp4",
        "outputFile": "/volumes/ffmate/destination/video.webm"
      }'
 ```
-This command performs a two-pass VP9 encode. FFmate **automatically** prepends the configured `ffmpeg` path to the beginning of the `command` for the first pass. When chaining commands with `&&`, start every following command with the `${FFMPEG}` wildcard so the same executable is used.
+This command performs a two-pass VP9 encode. FFmate prepends the configured `ffmpeg` path to the beginning of the `command` for the first pass. When chaining commands with `&&`, start every following command with the `${FFMPEG}` wildcard so the same executable is used.
 
 ## Unique Identifier
 
-This wildcard generates **random unique identifiers**.
+This wildcard generates random unique identifiers.
 
 | Wildcard       | Description                        | Example Output                                  |
 |---------------|------------------------------------|------------------------------------------------|
 | `${UUID}`     | Randomly generated UUID (v4)      | `550e8400-e29b-41d4-a716-446655440000`        |
 
 
-#### Example:
+### Example
 
 ```sh
 curl -X POST http://localhost:3000/api/v1/tasks \
      -H "Content-Type: application/json" \
      -d '{
+       "name": "UUID example",
        "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset fast -crf 23 ${OUTPUT_FILE}",
        "inputFile": "/volumes/ffmate/source/video.mp4",
        "outputFile": "/volumes/ffmate/processed/${UUID}_video.mp4"
      }'
 ```
 
-#### Output Path:
+### Output Path
 
 ```sh
 /volumes/ffmate/processed/550e8400-e29b-41d4-a716-446655440000_video.mp4
 ```
 ## System Information
 
-These wildcards return the **operating system name** and **CPU architecture**.
+These wildcards return the operating system name and CPU architecture.
 
 | Wildcard       | Description                        | Example Output  |
 |---------------|------------------------------------|----------------|
 | `${OS_NAME}`  | Operating system name             | `linux`        |
 | `${OS_ARCH}`  | CPU architecture                  | `amd64`        |
 
-#### Example:
+### Example
 
 ```sh
 curl -X POST http://localhost:3000/api/v1/tasks \
      -H "Content-Type: application/json" \
      -d '{
+       "name": "System information example",
        "command": "-y -i ${INPUT_FILE} -c:v libx264 -preset fast -crf 23 ${OUTPUT_FILE}",
        "inputFile": "/volumes/ffmate/source/video.mp4",
        "outputFile": "/volumes/ffmate/processed/${OS_NAME}/${OS_ARCH}/video.mp4"
      }'
 ```
 
-#### Output Path:
+### Output Path
 
 ```sh
 /volumes/ffmate/processed/linux/amd64/video.mp4

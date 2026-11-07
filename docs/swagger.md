@@ -1,6 +1,6 @@
 ---
 title: "Accessing FFmate's REST API Documentation via Swagger UI"
-description: "Find FFmate's comprehensive API documentation using Swagger (OpenAPI). Get the URL to access interactive specs for all REST endpoints, models, and parameters"
+description: "FFmate serves a Swagger UI at /swagger/index.html that lists every REST API endpoint under /api/v1 and sends test requests to a running FFmate."
 ---
 
 # API Documentation with Swagger (OpenAPI)
@@ -13,15 +13,13 @@ Once your FFmate server is running, you can access the Swagger UI in your web br
 
 **`http://<your-ffmate-host>:<port>/swagger/index.html`**
 
-*   Replace `<your-ffmate-host>` with the hostname or IP address where FFmate is running (e.g., `localhost` if running locally).
-*   Replace `<port>` with the port number FFmate is listening on (default is `3000`).
-*   Opening `/swagger` redirects to the same page.
+Replace `<your-ffmate-host>` with the hostname or IP address where FFmate is running, for example `localhost` on the same computer. Replace `<port>` with the port number FFmate is listening on. The default port is `3000`. Opening `/swagger` redirects to the same page.
 
 The Swagger UI is always available, even when FFmate runs with [`--no-ui`](/docs/flags.md#server-command-flags). If FFmate runs with [`--basic-auth`](/docs/flags.md#server-command-flags), the browser asks for the username and password first.
 
 ::: tip Default URL
 
-If you're running FFmate locally on the default port, just copy the URL below into your browser's address bar to access the Swagger (OpenAPI) interface:
+With FFmate running locally on the default port, the Swagger UI is at:
 
 ```sh
 http://localhost:3000/swagger/index.html
@@ -44,8 +42,6 @@ Import it into tools such as Postman or Insomnia, or use it to generate an API c
 
 ## Postman Collection
 
-Prefer testing APIs in Postman?
+Click **Run in Postman** to open the official FFmate Postman collection. It has ready-made requests for the FFmate API and needs no setup.
 
-Click the button below to open the official FFmate Postman collection and start exploring the API with ready-made requests—no setup required.
-
-[<img src="https://run.pstmn.io/button.svg" alt="Run in Postman" style="width: 128px; height: 32px;">](https://www.postman.com/welovemedia/ffmate)
+[<img src="https://run.pstmn.io/button.svg" alt="Run in Postman button." style="width: 128px; height: 32px;">](https://www.postman.com/welovemedia/ffmate)
