@@ -103,7 +103,7 @@ FFmate includes a [Web UI](/docs/web-ui.md#navigation-overview) for managing and
 
 [Webhooks](/docs/webhooks.md) let FFmate notify external systems about events by sending HTTP `POST` requests to configured URLs.  
 
-FFmate has two types of webhooks. A [global webhook](/docs/webhooks.md#global-webhooks) sends one event to one URL. A [direct webhook](/docs/webhooks.md#direct-webhooks) belongs to one [task](/docs/tasks.md#task-properties) or [preset](/docs/presets.md#presets-properties). A task inherits the direct webhooks of its preset that fire on task events, for example `task.updated`.
+FFmate has two types of webhooks. A [global webhook](/docs/webhooks.md#global-webhooks) sends one event to one URL. A [direct webhook](/docs/webhooks.md#direct-webhooks) belongs to one [task](/docs/tasks.md#task-properties) or [preset](/docs/presets.md#preset-properties). A task inherits the direct webhooks of its preset that fire on task events, for example `task.updated`.
 
 * **Configuration:**
   * Global webhooks can be created with a `POST` request to `/api/v1/webhooks` or in the [Web UI](/docs/web-ui.md#webhooks).  
