@@ -2,10 +2,15 @@
 import { withBase } from 'vitepress'
 import { onMounted, ref } from 'vue'
 import mediumZoom from 'medium-zoom'
+import sizes from 'virtual:image-sizes'
 
-defineProps({
-    src: String
+const props = defineProps({
+    src: String,
+    // Pass loading="eager" for an image at the top of a page
+    loading: { type: String, default: 'lazy' }
 })
+
+const size = sizes[props.src] || []
 
 const imgRef = ref(null)
 
@@ -15,7 +20,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <img ref="imgRef" :src="withBase(src)">
+    <img ref="imgRef" :src="withBase(src)" :width="size[0]" :height="size[1]" :loading="loading" decoding="async">
 </template>
 
 <style>
