@@ -1,13 +1,13 @@
 ---
 title: FFmate Release Notes
-description: Explore the latest FFmate release notes including new features, API changes, improvements, and bug fixes. Stay updated with every version of the open-source FFmpeg automation tool.
+description: Release notes for every version of FFmate, the open-source FFmpeg automation tool, with breaking changes, new features, changes and bug fixes.
 ---
 
 # FFmate Release Notes
 
 An overview of new features, enhancements, and bug fixes for each version.
 
-## Version 2.1.0
+## Version 2.1.0 (05-11-2026)
 
 ### Breaking Changes
 
@@ -121,8 +121,8 @@ An overview of new features, enhancements, and bug fixes for each version.
 
 ## Version 2.0 (26-09-2025)
 
-FFmate 2.0 is a **complete rewrite** of the project, powered by the amazing [Goyave](https://goyave.dev/) framework. This new version delivers a more structured, maintainable, and efficient codebase, paving the way for community members to get involved and shape FFmate’s future.
-While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustments to existing setups may be necessary.
+FFmate 2.0 is a **complete rewrite** of the project, powered by the [Goyave](https://goyave.dev/) framework. This new version delivers a more structured, maintainable, and efficient codebase.
+While we've aimed to remain mostly backward-compatible with 1.x, some adjustments to existing setups may be necessary.
 
 ### Breaking Changes
 
@@ -142,7 +142,7 @@ While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustme
 ### New Features
 
 - **Cluster Mode**
-  FFmate can now run in cluster mode with multiple instances sharing the same **Postgres** database. For details, see [Clustering](/docs/clustering.md).
+  FFmate can now run in cluster mode with multiple FFmate instances sharing the same **Postgres** database. For details, see [Clustering](/docs/clustering.md).
 
 - **Clients Endpoint**
   Added an endpoint to list all FFmate instances connected to the cluster. For details, see [Listing Cluster Clients](/docs/ffmate-internals.md#client-endpoint).
@@ -195,19 +195,19 @@ While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustme
   You can now chain multiple FFmpeg commands in a single task using `&&`. For details, see the [task properties](/docs/tasks.md#task-properties).
 
 - **Task Metadata Wildcard**
-  Added `${METADATA_<json-path>}` to resolve values from the task’s `metadata` object across commands, inputs, outputs, and scripts. For details, see the [wildcards](/docs/wildcards.md#task-metadata).
+  Added `${METADATA_<json-path>}` to resolve values from the task's `metadata` object across commands, inputs, outputs, and scripts. For details, see the [wildcards](/docs/wildcards.md#task-metadata).
 
 - **Watchfolder Metadata**
-  Tasks created by watchfolders now include file information under `metadata.ffmate.watchfolder` (fields include `path`, `relativeDir`, `relativePath`, and the watchfolder `uuid`). For details, see the [watchfolder](/docs/watchfolder.md#how-watchfolders-work).
+  Tasks created by watchfolders now include file information under `metadata.ffmate.watchfolder`. The fields include `path`, `relativeDir`, `relativePath` and the watchfolder `uuid`. For details, see the [watchfolder](/docs/watchfolder.md#how-watchfolders-work).
 
 - **Sidecar Re-Import in Pre-Processing**
-  Added the option to re-import the task’s `sidecar` after the pre-processing script finishes. For details, see the [Pre-Post Processing](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar).
+  Added the option to re-import the task's `sidecar` after the pre-processing script finishes. For details, see the [Pre-Post Processing](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar).
 
 - **Webhooks API: Get & Update**
   Added new REST endpoints to retrieve a single webhook and to update an existing webhook. For details, see the [webhooks](/docs/webhooks.md).
 
 - **Webhooks in the Web UI**
-  The web UI now supports creating, viewing, and updating webhooks. For details, see the [webui](/docs/web-ui.md#webhooks).
+  The Web UI now supports creating, viewing, and updating webhooks. For details, see the [webui](/docs/web-ui.md#webhooks).
 
 ### Changes
 
@@ -231,7 +231,7 @@ While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustme
   FFmate now creates output directories automatically if they do not exist.
 
 - **FFmpeg Detection**
-  FFmate checks for FFmpeg in the system’s default PATH or the location specified by the `--ffmpeg` flag, and logs a warning in both the web UI and logs if it’s not found.
+  FFmate checks for FFmpeg in the system's default PATH or the location specified by the `--ffmpeg` flag, and logs a warning in both the Web UI and logs if it's not found.
 
 ### Changes
 
@@ -251,12 +251,12 @@ While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustme
 ### New Features
 
 - **Windows Support**
-  FFmate is now fully compatible with Windows. A dedicated installer is available for download — [get it here](https://github.com/welovemedia/ffmate/releases/tag/1.0.8).
+  FFmate is now fully compatible with Windows. A dedicated installer is available for download: [get it here](https://github.com/welovemedia/ffmate/releases/tag/1.0.8).
 
 - **New API Endpoint: `/client`**
   Introduced a new endpoint that returns detailed information about the client environment, including system architecture, operating system, and FFmate version.
 
-- **FFmate AI (Preview)**
+- **FFmate AI Preview**
   Initial support for the FFmate AI assistant is now available. This release includes:
   - A new `--ai` flag to enable AI-related features
   - A new `/ai` REST endpoint to retrieve model-related information
@@ -267,7 +267,7 @@ While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustme
 ### Improvements
 
 - **Automatic Update Checks**
-  FFmate now performs periodic checks for new releases. When an update is available, a notification appears in the web UI or is printed to the console in headless mode.
+  FFmate now performs periodic checks for new releases. When an update is available, a notification appears in the Web UI or is printed to the console in headless mode.
 
 ### Bug Fixes
 

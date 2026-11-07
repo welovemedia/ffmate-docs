@@ -1,20 +1,15 @@
 ---
-title: "FFmate: API-Powered FFmpeg automation layer for Automated Transcoding & Workflows"
-description: "Discover FFmate, the modern and powerful API-powered FFmpeg automation layer. Automate media workflows with its queue system, webhooks, presets & watchfolders. Simplify transcoding at scale"
+title: "FFmate: FFmpeg Automation Layer with a REST API"
+description: "FFmate is an open-source automation layer on top of FFmpeg that runs FFmpeg commands as tasks, with a REST API, presets, watchfolders, webhooks and a Web UI."
 ---
 
 # What is FFmate?
 
-**FFmate is a modern and powerful automation layer built on top of [FFmpeg](https://ffmpeg.org/)—designed to make video and audio transcoding simpler, smarter, and easier to integrate.**
+**FFmate** is an automation layer on top of [FFmpeg](https://ffmpeg.org/). It runs FFmpeg commands as tasks and offers a REST API to create and track them.
 
+FFmpeg encodes and converts video and audio, but each command has to be written, started and checked by hand. FFmate adds a task queue, presets, watchfolders, webhooks and a Web UI. Several FFmate instances can share one queue as a cluster.
 
-While `FFmpeg` is the industry standard for media encoding and conversion, it can be complex to use directly—especially at scale.  
-
-With FFmate, you get all the raw power of `FFmpeg`—plus the tools you need to automate, monitor, and scale your workflows with ease.
-
-Whether you’re a developer building a media pipeline, a workflow engineer managing a farm of agents, or a non-technical user needing simple batch conversions, FFmate is designed to work for you.
-
-## 🚀 Key Features
+## Key Features
 
 - **REST API** – Create and control tasks, presets, watchfolders and webhooks from any tool or script. See [Swagger](/docs/swagger.md).
 - **Queueing System** – Run several tasks at the same time, with priorities.
@@ -22,54 +17,40 @@ Whether you’re a developer building a media pipeline, a workflow engineer mana
 - **Labels** – Choose which FFmate instances pick up which tasks, for example only the ones with a GPU.
 - **Automatic Retries** – Run failed tasks again automatically.
 - **Wildcards** – Insert file names, dates, metadata and more into commands, file paths and scripts.
-- **Webhook Notifications** – Receive real-time updates for seamless integration with external workflows.
-- **Watchfolder** – Automatically detect and process new files as they appear.
+- **Webhook Notifications** – Send a `POST` request to a URL when an event happens, for example when a task changes.
+- **Watchfolder** – Create a task for every new file in a folder.
 - **Pre & Post Processing Actions** – Execute custom commands or scripts before and after transcoding.
-- **Preconfigured Presets** – Simplify common media conversion tasks with ready-to-use settings.
-- **Web UI** – Monitor and configure transcoding workflows with an intuitive interface.
+- **Preconfigured Presets** – Reuse an FFmpeg command, output path and scripts across tasks, or start from a ready-made preset.
+- **Web UI** – Create and watch tasks, presets, watchfolders and webhooks in the browser.
 - **Monitoring** – Check each FFmate instance with a health endpoint and Prometheus metrics. See [FFmate Internals](/docs/ffmate-internals.md).
 - **Password Protection** – Protect the API and Web UI with a username and password.
 - **Runs Everywhere** – Windows, macOS, Linux and Docker.
 
-Want to see it in action? Skip to the [Getting started](/docs/getting-started.md)
+To install FFmate and run a first task, see [Getting Started](/docs/getting-started.md).
 
-## 📌 Use Cases
+## Use Cases
 
-### 📽️ Automated Media Transcoding  
+### Automated Media Transcoding
 
-Easily automate common media processing tasks like video conversion, audio extraction, and thumbnail generation.  
-FFmate allows you to submit multiple `FFmpeg` jobs at once and handles them efficiently through a built-in queueing system.  
-Perfect for post-production pipelines, cloud workflows, or any scenario where repetitive transcoding needs to be streamlined.
+FFmate runs FFmpeg commands for video conversion, audio extraction, thumbnail generation and other media processing tasks.
+Many tasks can be submitted at once, for example as a [batch](/docs/tasks.md#submitting-multiple-tasks-as-a-batch). FFmate queues them and runs the ones with the highest `priority` first.
+Post-production teams and cloud services use this to transcode the same kind of file again and again.
 
+### Connecting Other Systems with Webhooks
 
-### ⚙️ Workflow & Pipeline Automation  
+FFmate's [webhooks](/docs/webhooks.md) send a `POST` request to a URL when an event happens, for example when a task changes or a batch finishes. Internal automation tools, media asset management platforms and cloud publishing systems can react to these events without polling the API.
 
-Use FFmate’s webhook system to sync with:
+### Running Tasks at Scale
 
-- Internal automation tools  
-- Media asset management (MAM) platforms  
-- Cloud-based production or publishing workflows  
-
-No polling required—just plug in your endpoint and go.
-
-### ☁️ Scalable FFmpeg Job Management  
-
-Run FFmate as a centralized, API-first backend for `FFmpeg` job orchestration.  
+Other programs can start FFmpeg commands through the FFmate REST API instead of running FFmpeg themselves.  
 Set how many tasks each FFmate instance runs at the same time, based on the machine's resources. When one machine isn't enough, add more FFmate instances as a [cluster](/docs/clustering.md). They share one queue.  
-With full control over job priority, queuing, and task lifecycle, FFmate is ideal for high-volume transcoding environments where reliability and automation matter.
+Each task has a `priority`, and with `retries` FFmate puts a failed task back into the queue. For example, FFmate can run behind a cloud encoding service, a media conversion microservice or an internal tool that needs FFmpeg on demand.
 
-Use it to power:
+### Drop Folder Ingest with Watchfolders
 
-- Cloud-based encoding workflows.  
-- Media conversion microservices.
-- Internal development tools that need `FFmpeg` processing on demand.
+A [watchfolder](/docs/watchfolder.md) creates a task for every new file in a folder, using the watchfolder's preset. For example, to transcode camera card offloads copied to shared storage.
 
-
-### 🗂️ Drop Folder Ingest (Watchfolder)  
-
-Set up a watchfolder to automatically detect new files and trigger predefined processing workflows—perfect for camera card offloads, shared storage, or ingest pipelines.
-
-## 🤝 Who's Behind FFmate
+## Who's Behind FFmate
 
 FFmate is created and maintained by developers and product managers at [MoovIT GmbH](https://moovit.de), a German systems integrator and software company that brings video production and IT together.
 
