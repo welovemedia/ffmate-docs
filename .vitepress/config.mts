@@ -77,8 +77,9 @@ export default withMermaid({
       {
         text: "Introduction",
         items: [
-          { text: "What is FFmate", link: "/docs/what-is-ffmate" },
+          { text: "What Is FFmate", link: "/docs/what-is-ffmate" },
           { text: "Getting Started", link: "/docs/getting-started" },
+          { text: "FAQ", link: "/docs/faq" },
         ],
       },
       {
@@ -87,8 +88,8 @@ export default withMermaid({
           { text: "Tasks", link: "/docs/tasks" },
           { text: "Wildcards", link: "/docs/wildcards" },
           { text: "Presets", link: "/docs/presets" },
-          { text: "Watchfolder", link: "/docs/watchfolder" },
-          { text: "Pre and Post processing", link: "/docs/pre-post-prcessing" },
+          { text: "Watchfolders", link: "/docs/watchfolder" },
+          { text: "Pre- and Post-Processing", link: "/docs/pre-post-prcessing" },
           { text: "Clustering", link: "/docs/clustering" },
           { text: "Webhooks", link: "/docs/webhooks" },          
           { text: "Web UI", link: "/docs/web-ui" },
@@ -104,15 +105,15 @@ export default withMermaid({
         ],
       },
       {
-        text: "FFmate Communnity",
+        text: "FFmate Community",
         items: [
-          { text: "Community & Support", link: "/docs/ffmate-community.md" },
+          { text: "Community & Support", link: "/docs/ffmate-community" },
         ],
       },
       {
         text: "What's New",
         items: [
-          { text: "Release Notes", link: "/docs/release-notes.md" },
+          { text: "Release Notes", link: "/docs/release-notes" },
         ],
       },
     ],
