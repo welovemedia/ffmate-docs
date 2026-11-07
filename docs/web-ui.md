@@ -78,7 +78,7 @@ To remove a task, hover over it and click the **delete** icon. The icon appears 
 
 ### Task Details
 
-Click on any task to see its full execution details, including progress, errors, `FFmpeg` command, input/output paths, pre/post-processing information, webhooks and the FFmate instance that ran it. The details also show the task's labels and how many retries have run.
+Click on any task to see its full execution details, including progress, errors, `FFmpeg` command, input/output paths, pre/post-processing information, webhooks and the FFmate instance that ran it, with its version, operating system, architecture and labels. The details also show the task's labels and how many retries have run.
 
 <ZoomImg src="/img/ffmate-dashboard-task-details.webp" alt="FFmate task details opened below a finished task, showing UUID, priority, status, progress, the command, input and output files with their resolved values, pre- and post-processing scripts and sidecar paths, and the client that ran the task"/>
 
