@@ -122,7 +122,7 @@ An overview of new features, enhancements, and bug fixes for each version.
 ## Version 2.0 (26-09-2025)
 
 FFmate 2.0 is a **complete rewrite** of the project, powered by the [Goyave](https://goyave.dev/) framework. This new version delivers a more structured, maintainable, and efficient codebase.
-While we've aimed to remain mostly backward-compatible with 1.x, some adjustments to existing setups may be necessary.
+While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustments to existing setups may be necessary.
 
 ### Breaking Changes
 
@@ -195,13 +195,13 @@ While we've aimed to remain mostly backward-compatible with 1.x, some adjustment
   You can now chain multiple FFmpeg commands in a single task using `&&`. For details, see the [task properties](/docs/tasks.md#task-properties).
 
 - **Task Metadata Wildcard**
-  Added `${METADATA_<json-path>}` to resolve values from the task's `metadata` object across commands, inputs, outputs, and scripts. For details, see the [wildcards](/docs/wildcards.md#task-metadata).
+  Added `${METADATA_<json-path>}` to resolve values from the task’s `metadata` object across commands, inputs, outputs, and scripts. For details, see the [wildcards](/docs/wildcards.md#task-metadata).
 
 - **Watchfolder Metadata**
   Tasks created by watchfolders now include file information under `metadata.ffmate.watchfolder`. The fields include `path`, `relativeDir`, `relativePath` and the watchfolder `uuid`. For details, see the [watchfolder](/docs/watchfolder.md#how-watchfolders-work).
 
 - **Sidecar Re-Import in Pre-Processing**
-  Added the option to re-import the task's `sidecar` after the pre-processing script finishes. For details, see the [Pre-Post Processing](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar).
+  Added the option to re-import the task’s `sidecar` after the pre-processing script finishes. For details, see the [Pre-Post Processing](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar).
 
 - **Webhooks API: Get & Update**
   Added new REST endpoints to retrieve a single webhook and to update an existing webhook. For details, see the [webhooks](/docs/webhooks.md).
@@ -231,7 +231,7 @@ While we've aimed to remain mostly backward-compatible with 1.x, some adjustment
   FFmate now creates output directories automatically if they do not exist.
 
 - **FFmpeg Detection**
-  FFmate checks for FFmpeg in the system's default PATH or the location specified by the `--ffmpeg` flag, and logs a warning in both the Web UI and logs if it's not found.
+  FFmate checks for FFmpeg in the system’s default PATH or the location specified by the `--ffmpeg` flag, and logs a warning in both the Web UI and logs if it’s not found.
 
 ### Changes
 

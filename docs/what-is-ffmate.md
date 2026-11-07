@@ -21,7 +21,7 @@ FFmpeg encodes and converts video and audio, but each command has to be written,
 - **Watchfolder** – Create a task for every new file in a folder.
 - **Pre & Post Processing Actions** – Execute custom commands or scripts before and after transcoding.
 - **Preconfigured Presets** – Reuse an FFmpeg command, output path and scripts across tasks, or start from a ready-made preset.
-- **Web UI** – Create and watch tasks, presets, watchfolders and webhooks in the browser.
+- **Web UI** – Watch and cancel tasks, and create presets, watchfolders and webhooks in the browser.
 - **Monitoring** – Check each FFmate instance with a health endpoint and Prometheus metrics. See [FFmate Internals](/docs/ffmate-internals.md).
 - **Password Protection** – Protect the API and Web UI with a username and password.
 - **Runs Everywhere** – Windows, macOS, Linux and Docker.
@@ -32,9 +32,9 @@ To install FFmate and run a first task, see [Getting Started](/docs/getting-star
 
 ### Automated Media Transcoding
 
-FFmate runs FFmpeg commands for video conversion, audio extraction, thumbnail generation and other media processing tasks.
+FFmate runs FFmpeg commands for video conversion, audio extraction, thumbnail generation and other media processing.
 Many tasks can be submitted at once, for example as a [batch](/docs/tasks.md#submitting-multiple-tasks-as-a-batch). FFmate queues them and runs the ones with the highest `priority` first.
-Post-production teams and cloud services use this to transcode the same kind of file again and again.
+For example, to transcode the same kind of file again and again for post-production or a cloud service.
 
 ### Connecting Other Systems with Webhooks
 
