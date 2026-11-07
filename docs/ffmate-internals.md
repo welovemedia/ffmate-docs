@@ -156,9 +156,9 @@ This is the core process where your transcoding jobs are managed and processed f
     *   Initially, tasks are in the `QUEUED` status.
 *   **Concurrency Control:**
     *   FFmate limits the number of tasks running simultaneously.
-    *   This limit is controlled by the [`--max-concurrent-tasks`](/docs/flags.md#server-command-flags) server setting.
+    *   This limit is controlled by the [`--max-concurrent-tasks`](/docs/flags.md#max-concurrent-tasks) server setting.
     *   When a slot becomes available, the next task from the queue starts processing.
-    *   With [`--labels`](/docs/flags.md#server-command-flags), an FFmate instance only picks up tasks without labels and tasks with a matching label.
+    *   With [`--labels`](/docs/flags.md#labels), an FFmate instance only picks up tasks without labels and tasks with a matching label.
 *   **Task Lifecycle:** Once a task is selected from the queue:
     *   **Pre-processing:** If a pre-processing script is defined, the status changes to `PRE_PROCESSING` and the script is executed before `ffmpeg`.
     *   **`ffmpeg` Execution:** The status changes to `RUNNING` and the primary transcoding command (`ffmpeg`) is executed.
@@ -188,7 +188,7 @@ FFmate comes with a built-in **health endpoint** that shows if an FFmate instanc
 
 #### When to Check It
 
-This endpoint is meant for **automated health checks**. Tools like **Kubernetes**, **Docker Swarm**, or any **load balancer** can ping it to decide if an FFmate instance is ready to take traffic or still alive. If FFmate runs with [`--basic-auth`](/docs/flags.md#server-command-flags), the health check needs the username and password too.
+This endpoint is meant for **automated health checks**. Tools like **Kubernetes**, **Docker Swarm**, or any **load balancer** can ping it to decide if an FFmate instance is ready to take traffic or still alive. If FFmate runs with [`--basic-auth`](/docs/flags.md#basic-auth), the health check needs the username and password too.
 
 ::: info
 This is a check of one FFmate instance. FFmate only starts if it can connect to the database, but the health check doesn't test the connection again on each request. It also doesn’t confirm the state of other FFmate instances in a [cluster](/docs/clustering.md).
@@ -243,14 +243,14 @@ This endpoint lists all FFmate instances that are connected to the database and 
       }
     ]
     ```
-    *   **`identifier`**: The unique name of the FFmate instance (from the [--identifier](/docs/flags.md#server-command-flags) flag).
+    *   **`identifier`**: The unique name of the FFmate instance (from the [--identifier](/docs/flags.md#identifier) flag).
     *   **`session`**: A new ID each time the FFmate instance starts.
     *   **`cluster`**: The ID of the cluster. All FFmate instances that share a database have the same value.
-    *   **`labels`**: The labels of the FFmate instance (from the [--labels](/docs/flags.md#server-command-flags) flag). Left out if there are none.
+    *   **`labels`**: The labels of the FFmate instance (from the [--labels](/docs/flags.md#labels) flag). Left out if there are none.
     *   **`os`** / **`arch`**: The operating system and CPU architecture.
     *   **`version`**: The version of `ffmate` running on that FFmate instance.
     *   **`ffmpeg`**: The path of the `ffmpeg` binary the FFmate instance uses.
-    *   **`maxConcurrentTasks`**: How many tasks the FFmate instance runs at the same time (from the [--max-concurrent-tasks](/docs/flags.md#server-command-flags) flag).
+    *   **`maxConcurrentTasks`**: How many tasks the FFmate instance runs at the same time (from the [--max-concurrent-tasks](/docs/flags.md#max-concurrent-tasks) flag).
     *   **`lastSeen`**: The "heartbeat" timestamp (in Unix milliseconds) when the FFmate instance last checked in.
     *   **`self`**: `true` for the FFmate instance that answered the request. Left out for all others.
 
@@ -299,7 +299,7 @@ In a [cluster](/docs/clustering.md), every FFmate instance sends the updates of 
 
 FFmate exposes a set of internal counters via the **`GET /metrics`** endpoint, formatted for a **Prometheus server**. These metrics are updated in real-time as events occur within the application and can be scraped to monitor FFmate's activity and health.
 
-By default, you can access them at `http://localhost:3000/metrics`. With [`--basic-auth`](/docs/flags.md#server-command-flags), Prometheus needs the username and password too.
+By default, you can access them at `http://localhost:3000/metrics`. With [`--basic-auth`](/docs/flags.md#basic-auth), Prometheus needs the username and password too.
 
 Each FFmate instance counts only its own events, starting from `0` every time it starts. In a [cluster](/docs/clustering.md), scrape every FFmate instance.
 

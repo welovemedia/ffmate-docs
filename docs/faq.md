@@ -48,7 +48,7 @@ Learn more → [Installing FFmpeg](/docs/getting-started#installing-ffmpeg)
 
 FFmate’s API & Web UI listen on port **3000** by default. Add `--port <number>` when you start the server, e.g. `ffmate server --port 8080`. In Docker, set the `PORT` environment variable and change the `-p` port mapping to match.
 
-Learn more → [Server Command Flags](/docs/flags#server-command-flags)
+Learn more → [`--port`](/docs/flags#port)
 </details>
 
 <details>
@@ -56,7 +56,7 @@ Learn more → [Server Command Flags](/docs/flags#server-command-flags)
 
 Use `--ffmpeg "/full/path/to/ffmpeg"` when launching `ffmate server`. FFmate will call that binary for every task.
 
-Learn more → [Server Command Flags](/docs/flags#server-command-flags)
+Learn more → [`--ffmpeg`](/docs/flags#ffmpeg)
 </details>
 
 <details>
@@ -64,7 +64,7 @@ Learn more → [Server Command Flags](/docs/flags#server-command-flags)
 
 Start the server with `--no-ui`. The Web UI is still available at `http://localhost:3000/ui`; FFmate just doesn't open it in the browser. In Docker, FFmate never opens a browser.
 
-Learn more → [Server Command Flags](/docs/flags#server-command-flags)
+Learn more → [`--no-ui`](/docs/flags#no-ui)
 </details>
 
 <details>
@@ -78,7 +78,7 @@ In a SQLite database. By default it's created at:
 
 Use `--database` to choose another file, or a `postgresql://` URI to run several FFmate instances as a [cluster](/docs/clustering).
 
-Learn more → [Server Command Flags](/docs/flags#server-command-flags)
+Learn more → [`--database`](/docs/flags#database)
 </details>
 
 ## Security
@@ -92,7 +92,7 @@ Only with protection. By default, FFmate listens on all network interfaces (`0.0
 * To share it on a network, start it with `--basic-auth` and limit access with a firewall.
 * Run FFmate as a user without admin or `root` rights.
 
-Learn more → [Server Command Flags](/docs/flags#server-command-flags)
+Learn more → [`--host`](/docs/flags#host) and [`--basic-auth`](/docs/flags#basic-auth)
 </details>
 
 <details>
@@ -100,7 +100,7 @@ Learn more → [Server Command Flags](/docs/flags#server-command-flags)
 
 Start the server with `--basic-auth`, e.g. `ffmate server --basic-auth="admin:secret"`. Every request then needs the username and password: the API, the Web UI, the Swagger UI, `/health` and `/metrics`. The browser asks for them when opening the Web UI.
 
-Learn more → [Server Command Flags](/docs/flags#server-command-flags)
+Learn more → [`--basic-auth`](/docs/flags#basic-auth)
 </details>
 
 ## Tasks
@@ -142,7 +142,7 @@ Learn more → [Monitoring a Task](/docs/tasks#monitoring-a-task)
 The most common reasons:
 
 * FFmate can't find FFmpeg. Check the startup log, and set the path with `--ffmpeg` if needed.
-* FFmate is already running as many tasks as [`--max-concurrent-tasks`](/docs/flags#server-command-flags) allows. The task starts when one of them finishes.
+* FFmate is already running as many tasks as [`--max-concurrent-tasks`](/docs/flags#max-concurrent-tasks) allows. The task starts when one of them finishes.
 * The task has [labels](/docs/tasks#task-properties), but no FFmate instance has a matching label.
 
 Learn more → [Tasks](/docs/tasks)
@@ -214,7 +214,7 @@ Learn more → [Pre and Post Processing](/docs/pre-post-prcessing)
 
 Give those FFmate instances a label with `--labels`, e.g. `ffmate server --labels="gpu"`, and add the same label to the tasks or presets: `"labels": ["gpu"]`. Tasks with labels only run on FFmate instances with a matching label. Tasks without labels run on any FFmate instance.
 
-Learn more → [Server Command Flags](/docs/flags#server-command-flags)
+Learn more → [`--labels`](/docs/flags#labels)
 </details>
 
 ## Presets, Wildcards and Scripts
@@ -336,7 +336,7 @@ Learn more → [Webhook logs](/docs/webhooks#webhook-logs)
 
 Yes, by default FFmate sends anonymous usage data, such as its version, operating system, settings and task counts. Turn it off with `--send-telemetry=false`.
 
-Learn more → [Server Command Flags](/docs/flags#server-command-flags)
+Learn more → [`--send-telemetry`](/docs/flags#send-telemetry)
 </details>
 
 <details>

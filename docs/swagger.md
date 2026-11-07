@@ -17,7 +17,7 @@ Once your FFmate server is running, you can access the Swagger UI in your web br
 *   Replace `<port>` with the port number FFmate is listening on (default is `3000`).
 *   Opening `/swagger` redirects to the same page.
 
-The Swagger UI is always available, even when FFmate runs with [`--no-ui`](/docs/flags.md#server-command-flags). If FFmate runs with [`--basic-auth`](/docs/flags.md#server-command-flags), the browser asks for the username and password first.
+The Swagger UI is always available, even when FFmate runs with [`--no-ui`](/docs/flags.md#no-ui). If FFmate runs with [`--basic-auth`](/docs/flags.md#basic-auth), the browser asks for the username and password first.
 
 ::: tip Default URL
 

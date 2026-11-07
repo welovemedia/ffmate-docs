@@ -260,7 +260,7 @@ esac
 
 ## FFmpeg Path
 
-This wildcard returns the full, resolved path to the `FFmpeg` executable as configured in FFmate (see [command-line flags](/docs/flags.md#server-command-flags)). It is particularly useful for advanced workflows that require chaining multiple `ffmpeg` calls within a single command, such as **two-pass encoding**.
+This wildcard returns the full, resolved path to the `FFmpeg` executable as configured in FFmate (see [command-line flags](/docs/flags.md#ffmpeg)). It is particularly useful for advanced workflows that require chaining multiple `ffmpeg` calls within a single command, such as **two-pass encoding**.
 
 
 | Wildcard    | Description                                  | Example Output      |
