@@ -1,15 +1,15 @@
 ---
-title: "FFmate Presets: Automate & Standardize FFmpeg Workflows"
-description: "Simplify complex FFmpeg tasks with FFmate presets. Define reusable templates for commands, output paths, and processing scripts to streamline your media encoding and ensure consistency"
+title: "FFmate Presets: Reusable FFmpeg Commands"
+description: "Create, list, update and delete FFmate presets: saved FFmpeg commands with output path, priority, retries, labels, scripts and webhooks that tasks reuse."
 ---
 
 # Presets
 
-**Presets** in FFmate are reusable templates that make it easier to define and run `FFmpeg` tasks. With a preset, you can preconfigure `FFmpeg` commands, output patterns, priorities, and even pre- or post-processing scripts, so every task runs the same way without extra setup.
+A **preset** in FFmate saves an `FFmpeg` command together with its output file pattern, priority and optional pre- and post-processing scripts. Every task that uses the preset takes these settings from it, so they don't have to be repeated in each task.
 
-FFmate ships with **20 built-in presets** covering the most common media tasks, including format conversion, frame rate adjustment, audio extraction, and platform-specific encodes for YouTube, TikTok, Instagram, Facebook, and Twitch. These ready-to-use presets save you from having to figure out the right `FFmpeg` command for everyday jobs.  
+FFmate ships with 20 built-in presets covering the most common media tasks, including format conversion, frame rate adjustment, audio extraction and platform-specific encodes for YouTube, TikTok, Instagram, Facebook and Twitch.
 
-All presets are maintained in an [open GitHub repository](https://github.com/welovemedia/ffmate-presets), where you can suggest changes or contribute new ones through pull requests. You can also create your own custom presets at any time using the API or the [web interface](/docs/web-ui.md#presets)
+The built-in presets are maintained in an [open GitHub repository](https://github.com/welovemedia/ffmate-presets), where changes and new presets can be suggested through pull requests. Custom presets can be created through the REST API or in the [Web UI](/docs/web-ui.md#creating-a-preset).
 
 ## Creating a Preset
 
@@ -43,35 +43,31 @@ curl -X POST http://localhost:3000/api/v1/presets \
 
 FFmate returns a JSON object that contains the newly created preset, including its `uuid`. A `preset.created` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
 
-💡 Tip: Prefer a visual approach? You can create new presets directly in the [FFmate Web UI](/docs/web-ui.md) no API calls needed.
+💡 Tip: To create a preset in the Web UI, see [Creating a Preset](/docs/web-ui.md#creating-a-preset).
 
-## Presets properties
+## Preset Properties
 
-When you create a preset, you define parameters that are automatically applied to every task that uses it.
+The properties below apply to every task that uses the preset.
 
--   **`name`** *[mandatory]* - A short, descriptive name to help you quickly identify the preset (e.g., "Convert to MP4 1080p", "Extract Audio as MP3").
+-   **`name`** *[mandatory]* – The name of the preset, for example "Convert to MP4 1080p" or "Extract Audio as MP3".
 
--   **`description`** *[optional]* – A short note about what the preset is for or how it should be used (e.g., "Converts ProRes to H.264 for review copies").
+-   **`description`** *[optional]* – A short note about what the preset is for, for example "Converts ProRes to H.264 for review copies".
   
-- **`command`** *[mandatory]* – The custom command FFmate will use to run `FFmpeg` for this preset. Use this to define exactly how the media should be processed—for example, which codec to use, what resolution to convert to, or which filters to apply. 
+- **`command`** *[mandatory]* – The `FFmpeg` command FFmate runs for tasks that use this preset. It sets how the media is processed, for example the codec, the resolution or the filters.
 
-⚠️ **Important details about how `command` works:** 
+**How `command` works:**
 
-  - You don’t need to add `ffmpeg` at the start of the command. FFmate automatically prepends it. By default, FFmate uses the `ffmpeg` binary in your system’s `PATH`. If you want to use a different version, you can override the default with the `--ffmpeg <path>` [command-line flag](/docs/flags.md#server-command-flags).  
+  - Leave `ffmpeg` out at the start of the command. FFmate adds it when the task runs. By default, FFmate uses the `ffmpeg` binary on the system's `PATH`. To use a different FFmpeg, set its path with the [`--ffmpeg`](/docs/flags.md#server-command-flags) flag.
 
-  - FFmate also implicitly adds the `-stats_period 1` [option](https://ffmpeg.org/ffmpeg-all.html#Advanced-options) to every command, which limits FFmpeg’s progress output to one update per second.  
-    
-    You can override this by explicitly adding your own `-stats_period x` to the command.  
-    - This setting directly affects:  
-      - how often `task.updated` [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events) are sent, and  
-      - how often the job dashboard refreshes progress updates.  
+  - FFmate also adds the `-stats_period 1` [option](https://ffmpeg.org/ffmpeg-all.html#Advanced-options) to every command, so FFmpeg reports progress once per second.
+
+    A `-stats_period` in the command replaces it, for example `-stats_period 5`. The value sets how often `task.updated` [Global webhooks](/docs/webhooks#task-events-1) and [Direct webhooks](/docs/webhooks#task-events) fire and how often the Dashboard updates the progress.
 
   - [Wildcards](/docs/wildcards.md) like `${INPUT_FILE}` and `${OUTPUT_FILE}` can be used inside the command string. FFmate replaces them with the actual file paths when the task runs.
 
-  - The `command` field also supports chaining several `FFmpeg` commands with `&&`, for example for **two-pass encoding**. Start every command after an `&&` with the `${FFMPEG}` wildcard (see [FFmpeg Path](/docs/wildcards.md#ffmpeg-path)).
+  - The `command` field also supports chaining several `FFmpeg` commands with `&&`, for example for two-pass encoding. Start every command after an `&&` with the `${FFMPEG}` wildcard. See [FFmpeg Path](/docs/wildcards.md#ffmpeg-path).
 
-  - If a [task](/docs/tasks.md) references a preset, the `command` defined in the preset will **always** be used—any command provided directly in the [task](/docs/tasks.md) will be ignored.
-
+  - If a [task](/docs/tasks.md) uses a preset, FFmate always runs the preset's `command`. A `command` in the task itself is ignored.
 
 ::: tip Not sure which `FFmpeg` commands to use?
 
@@ -83,20 +79,20 @@ When you create a preset, you define parameters that are automatically applied t
 - <a href="https://chat.openai.com/?model=gpt-4&prompt=You%20are%20a%20senior%20media-encoding%20engineer%20and%20%60ffmpeg%60%20power-user.%0AFollow%20the%20outlined%20thinking%20steps%20**before**%20you%20answer.%0A%0A%5BTHINKING%20STEPS%5D%20%20%0A1.%20Draft%20the%20full%20%60ffmpeg%60%20command%3B%20include%3A%20%20%0A%C2%A0%C2%A0%E2%80%A2%20Explicit%20input%28s%29%20and%20output%28s%29%20%0A%C2%A0%C2%A0%E2%80%A2%20All%20necessary%20options%20in%20a%20logical%20order%20%0A%C2%A0%C2%A0%E2%80%A2%20Comments%20%28%23%29%20explaining%20non-obvious%20flags%0A2.%20Double-check%20every%20flag%20against%20typical%20pitfalls%20%28stream-copy%20vs.%20re-encode%2C%20color-matrix%2C%20time-bases%2C%20VFR%2C%20ProRes%20profile%2C%20CRF%20ranges%2C%20hardware%20encoders%29.%0A3.%20Provide%20a%20**single-line%20copy-pasteable%20command**%20plus%20a%20bullet%20list%20of%20key%20decisions.%0A%0A%5BOUTPUT%20FORMAT%5D%0A%60%60%60bash%0A%23%20Command%20%E2%94%80%20ready%20to%20copy%0Affmpeg%20-i%20INPUT%20%E2%80%A6%20-c%3Av%20%E2%80%A6%20-c%3Aa%20%E2%80%A6%20-vf%20%E2%80%A6%20-preset%20%E2%80%A6%20-crf%20%E2%80%A6%20OUTPUT%0A%0A%23%20Explanation%0A%E2%80%A2%20%E2%80%A6%0A%E2%80%A2%20%E2%80%A6%0A%60%60%60%0A%0A%5BUSER%20REQUEST%5D" target="_blank" rel="noopener noreferrer">Ask ChatGPT</a>
 :::
 
-- **`outputFile`** *[optional]* – The path where the transcoded file should be saved. If the specified directory does not exist, FFmate will **create it automatically**. This can be a full path or a pattern that includes [Wildcards](/docs/wildcards.md) like `${INPUT_FILE_BASENAME}` to dynamically generate structured filenames (e.g., /exports/${INPUT_FILE_BASENAME}_1080p.mp4). If a task also includes its own `outputFile`, that will be used instead of this one. In other words, the task's setting always takes priority over the preset.
+- **`outputFile`** *[optional]* – The path of the transcoded file. It can be a full path or contain [wildcards](/docs/wildcards.md), for example `/exports/${INPUT_FILE_BASENAME}_1080p.mp4`. If the folder doesn't exist, FFmate creates it. A task with its own `outputFile` uses that instead.
 
-- **`priority`** *[optional]* – Sets the task's priority in the processing queue. Higher numbers mean higher priority — for example, a task with priority `100` will be processed before one with `10`. If multiple tasks share the same priority, they run in the order they were created. If a task defines its own `priority`, that will override the preset’s value. If neither is set, `0` is used.
+- **`priority`** *[optional]* – Sets the priority of tasks in the queue. A task with priority `100` runs before one with `10`. Tasks with the same priority run in the order they were created. A task with its own `priority` uses that instead. Default: `0`.
 
 - **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. They decide which FFmate instance processes tasks created from this preset. A task without its own labels inherits these. See [`--labels`](/docs/flags.md#server-command-flags).
 
 - **`retries`** *[optional]* – How many times a failed task created from this preset is retried. A task without its own `retries` inherits this value. See [task properties](/docs/tasks.md#task-properties). Default: `0`.
 
-- **`preProcessing`** *[optional]* – Defines a [Pre-Processing Script](/docs/pre-post-prcessing.md) to run before the task starts. Useful for preparing files, validating input, or setting up the environment. If the task includes its own `preProcessing` config, FFmate will use that instead of the preset’s.
+- **`preProcessing`** *[optional]* – Defines a [Pre-Processing Script](/docs/pre-post-prcessing.md) to run before the task starts, for example to prepare files or check the input. A task with its own `preProcessing` uses that instead.
     *   **`scriptPath`**: The full path to the script or executable to run.
     *   **`sidecarPath`**: The full path to the JSON file that contains all task data.
-    *   **`importSidecar`**: Defines if the task will [re-import the sidecar](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar) JSON after the pre-processing script finishes.
+    *   **`importSidecar`**: Defines if FFmate [re-imports the sidecar](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar) JSON after the pre-processing script finishes.
      
-- **`postProcessing`** *[optional]* – Defines a [Post-Processing Script](/docs/pre-post-prcessing.md) to run after the task completes. Useful for cleanup, moving output files, or triggering follow-up actions.  If the task includes its own `postProcessing` config, FFmate will use that instead of the preset’s.
+- **`postProcessing`** *[optional]* – Defines a [Post-Processing Script](/docs/pre-post-prcessing.md) to run after the task completes, for example to move output files or clean up. A task with its own `postProcessing` uses that instead.
     *   **`scriptPath`**: The full path to the script or executable to run.
     *   **`sidecarPath`**: The full path to the JSON file that contains all task data. 
 
@@ -106,9 +102,9 @@ When you create a preset, you define parameters that are automatically applied t
 
 ### How to Use Presets in Tasks
 
-When creating a new [task](/docs/tasks.md), you can use either an [out-of-the-box preset](/docs/web-ui.md#presets) or one of your custom presets by providing its `uuid` instead of writing a custom command. See [Using a Preset](/docs/tasks.md#using-a-preset) for which settings the task takes from the preset.
+A new [task](/docs/tasks.md) can use a [built-in preset](/docs/web-ui.md#creating-a-preset) or a custom preset. Set the task's `preset` to the preset's `uuid` instead of writing a command. See [Using a Preset](/docs/tasks.md#using-a-preset) for which settings the task takes from the preset.
 
-**Example: Creating a task with a preset via API**
+This request creates a task from a preset named ProRes HQ for Archive:
 
 ```sh
 curl -X POST http://localhost:3000/api/v1/tasks \
@@ -124,26 +120,28 @@ curl -X POST http://localhost:3000/api/v1/tasks \
   }'
 ```
 
+The task runs the command of the ProRes HQ for Archive preset on `/path/to/raw_footage_01.mxf`.
+
 ## Listing Presets
 
-To get a list of all available presets, send a `GET` request to the FFmate API
+To get a list of all presets, send a `GET` request to the FFmate API:
 
 ```sh
 curl -X GET 'http://localhost:3000/api/v1/presets?page=0&perPage=10'
 ```
 
-FFmate returns a JSON array containing all configured presets. The `X-Total` response header provides the total number of presets available.
+FFmate returns a JSON array of presets. The `X-Total` response header holds the total number of presets.
 
-**Query Parameters:**
+**Query parameters:**
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
 - **`perPage`** *[optional]* – Defines how many presets should be included in each page. Default: `100`.
 
-💡 Tip: Want to browse existing presets? The [FFmate Web UI](/docs/web-ui.md#presets) lets you view and search through all available presets with ease.
+💡 Tip: To see all presets in the Web UI, see [List of Active Presets](/docs/web-ui.md#list-of-active-presets).
 
 ## Getting a Single Preset
 
-To retrieve the details of a specific preset, send a `GET` request to the FFmate API, including the preset's `uuid` in the path.
+To get a single preset, send a `GET` request to the FFmate API with the preset's `uuid` in the path:
 
 ```sh
 curl -X GET 'http://localhost:3000/api/v1/presets/a1b2c3d4-e5f6-7890-1234-567890abcdef'
@@ -151,18 +149,18 @@ curl -X GET 'http://localhost:3000/api/v1/presets/a1b2c3d4-e5f6-7890-1234-567890
 
 FFmate returns a JSON object with the full details of the specified preset.
 
-💡 Tip: Want a quick way to check the preset details? You can view preset configurations directly in the [FFmate Web UI](/docs/web-ui.md#presets) without using the API.
+💡 Tip: To check a preset's details in the Web UI, see [Checking Preset Details](/docs/web-ui.md#checking-preset-details).
 
 ## Updating a Preset
 
-You can update an existing preset by sending a `PUT` request to the FFmate API, including the preset's `uuid` in the path. The available properties are listed in the [Presets properties](#presets-properties) section above.
+To update a preset, send a `PUT` request to the FFmate API with the preset's `uuid` in the path. The properties are listed in [Preset Properties](#preset-properties).
 
 ::: warning `PUT` replaces the whole preset
 The request body must contain **every** property the preset should keep, not only the ones that change. Properties left out are cleared. For example, a `PUT` with only `name` and `command` removes the preset's `description`, `outputFile`, `priority`, `labels`, `retries`, processing scripts and webhooks.
 :::
 
 ```sh
-curl -X PUT http://localhost:3000/api/v1/presets/{presetId} \
+curl -X PUT http://localhost:3000/api/v1/presets/{uuid} \
      -H "Content-Type: application/json" \
      -d '{
        "name": "MP4 High Quality (Updated)",
@@ -178,16 +176,16 @@ curl -X PUT http://localhost:3000/api/v1/presets/{presetId} \
 
 FFmate returns the complete JSON object of the updated preset. A `preset.updated` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
 
-💡 Tip: Need to tweak an existing preset? You can update it directly in the [FFmate Web UI](/docs/web-ui.md#presets).
+💡 Tip: To update a preset in the Web UI, see [Updating a Preset](/docs/web-ui.md#updating-a-preset).
 
 ## Deleting a Preset
 
-To delete an existing preset, send a `DELETE` request to the FFmate API, replacing `{presetId}` with the `uuid` of the preset you want to remove.
+To delete a preset, send a `DELETE` request to the FFmate API with the preset's `uuid` in the path:
 
 ```sh
-curl -X DELETE 'http://localhost:3000/api/v1/presets/{presetId}'
+curl -X DELETE 'http://localhost:3000/api/v1/presets/{uuid}'
 ```
 
- FFmate responds with a `204` No Content status. The preset will be removed from the system. A `preset.deleted` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
- 
-💡 Tip: Presets can be safely deleted from the [FFmate Web UI](/docs/web-ui.md), with helpful context to avoid accidental removals.
+FFmate responds with a `204` No Content status. The preset is removed from FFmate. A `preset.deleted` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
+
+💡 Tip: To delete a preset in the Web UI, see [Removing a Preset](/docs/web-ui.md#removing-a-preset). The Web UI asks for confirmation before it deletes the preset.
