@@ -1,13 +1,15 @@
 import llmstxt from "vitepress-plugin-llms"
 import { withMermaid } from "vitepress-plugin-mermaid"
+const siteUrl = "https://docs.ffmate.io"
 
 // https://vitepress.dev/reference/site-config
 export default withMermaid({
   ignoreDeadLinks: true,
 
-  title: "FFmate documentation",
+  // Also the suffix of every page title: "Tasks | FFmate Docs"
+  title: "FFmate Docs",
   description:
-    "Documentation for FFmate.io - FFmpeg Automation for the Modern Stack",
+    "Documentation for FFmate, an open-source FFmpeg automation server: run FFmpeg tasks through a REST API, with presets, watchfolders, webhooks and a Web UI.",
 
   lastUpdated: true,
   cleanUrls: true,
@@ -16,7 +18,26 @@ export default withMermaid({
   mermaid: {},
 
   sitemap: {
-    hostname: "https://docs.ffmate.io",
+    hostname: siteUrl,
+  },
+
+  // Per-page canonical URL and Open Graph tags
+  transformHead({ pageData, siteData }) {
+    if (pageData.isNotFound) return []
+    const path = pageData.relativePath
+      .replace(/(^|\/)index\.md$/, "$1")
+      .replace(/\.md$/, "")
+    const url = `${siteUrl}/${path}`
+    const title = pageData.title
+      ? `${pageData.title} | ${siteData.title}`
+      : siteData.title
+    const description = pageData.description || siteData.description
+    return [
+      ["link", { rel: "canonical", href: url }],
+      ["meta", { property: "og:url", content: url }],
+      ["meta", { property: "og:title", content: title }],
+      ["meta", { property: "og:description", content: description }],
+    ]
   },
 
   head: [
@@ -24,13 +45,6 @@ export default withMermaid({
     ["meta", { name: "theme-color", content: "#ff4052" }],
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:locale", content: "en" }],
-    [
-      "meta",
-      {
-        property: "og:title",
-        content: "FFmate | FFmpeg Automation for the Modern Stack",
-      },
-    ],
     ["meta", { property: "og:site_name", content: "FFmate" }],
     [
       "meta",
@@ -39,7 +53,6 @@ export default withMermaid({
         content: "https://docs.ffmate.io/icon_16x9.webp",
       },
     ],
-    ["meta", { property: "og:url", content: "https://ffmate.io/" }],
     [
       "script",
       {
@@ -51,6 +64,8 @@ export default withMermaid({
   ],
 
   themeConfig: {
+    siteTitle: "FFmate documentation",
+
     nav: [
       { text: "Home", link: "/" },
       { text: "Getting Started", link: "/docs/getting-started" },
