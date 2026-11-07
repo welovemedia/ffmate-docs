@@ -11,6 +11,8 @@ export default withMermaid({
   description:
     "Documentation for FFmate, an open-source FFmpeg automation server: run FFmpeg tasks through a REST API, with presets, watchfolders, webhooks and a Web UI.",
 
+  srcExclude: ["README.md"],
+
   lastUpdated: true,
   cleanUrls: true,
   metaChunk: true,
@@ -140,7 +142,7 @@ export default withMermaid({
   },
 
   vite: {
-    plugins: [llmstxt({})],
+    plugins: [llmstxt({ domain: siteUrl, ignoreFiles: ["README.md"] })],
     build: {
       rollupOptions: {
         external: ['../todo', '../README.md']
