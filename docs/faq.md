@@ -1,6 +1,6 @@
 ---
 title: FFmate FAQ
-description: Answers to common FFmate questions about installing, tasks, presets, watchfolders, webhooks, clustering, security and telemetry, each linked to its page.
+description: Answers to common FFmate questions about installing, tasks, presets, watchfolders, webhooks, clustering and security, each linked to its page.
 ---
 
 # FFmate FAQ
@@ -335,19 +335,13 @@ See [Webhook logs](/docs/webhooks.md#webhook-logs).
 </details>
 
 <details>
-<summary>Does FFmate send telemetry?</summary>
-
-Yes, by default FFmate sends anonymous usage data, such as its version, operating system, settings and task counts. Turn it off with `--send-telemetry=false`.
-
-See [Server Command Flags](/docs/flags.md#server-command-flags).
-</details>
-
-<details>
-<summary>Where can I view API docs for FFmate?</summary>
+<summary>Where can I find the API docs and the Postman collection?</summary>
 
 Start FFmate and open `/swagger` in the browser, for example [http://localhost:3000/swagger/index.html](http://localhost:3000/swagger/index.html). It shows the Swagger UI for the FFmate REST API.
 
-See [Swagger](/docs/swagger.md).
+The official [FFmate Postman collection](https://www.postman.com/welovemedia/ffmate) has ready-made requests for the FFmate API and needs no setup.
+
+See [Swagger](/docs/swagger.md) and [Postman Collection](/docs/swagger.md#postman-collection).
 </details>
 
 <details>
@@ -361,7 +355,7 @@ See [Updating FFmate](/docs/getting-started.md#updating-ffmate).
 <details>
 <summary>Where can I get help or report bugs?</summary>
 
-Ask on the FFmate Discord server or open an issue on GitHub. To suggest a change to the docs, click **Edit this page on GitHub** at the bottom of any page.
+Ask on the [FFmate Discord server](https://discord.gg/NzfeHn37jT) or open an issue in the [FFmate GitHub repository](https://github.com/welovemedia/ffmate/issues). To suggest a change to the docs, click **Edit this page on GitHub** at the bottom of any page.
 
 See [Community & Support](/docs/ffmate-community.md).
 </details>
