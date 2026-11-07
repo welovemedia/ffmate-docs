@@ -23,7 +23,7 @@ brew install ffmpeg
 
 Homebrew installs FFmpeg and adds it to your system `PATH`, so FFmate can find it.
 
-#### Download and run the static build
+#### Download and Run the Static Build
 
 If you don't use Homebrew, install FFmpeg from a static build instead.
 
@@ -63,7 +63,7 @@ winget install FFmpeg
 
 This installs FFmpeg and adds it to your system `PATH`, so FFmate can find it.
 
-#### Download and run the static build
+#### Download and Run the Static Build
 
 To install FFmpeg manually, use a static build:
 
@@ -142,7 +142,7 @@ FFmate runs natively on Windows, macOS and Linux, or in a Docker container.
 
 ### Windows
 
-After downloading FFmate, open your terminal, navigate to the folder where you saved it, and start the server with:
+After downloading FFmate, open your terminal, navigate to the folder where you saved it and start the server with:
 
 ```cmd
 ffmate server
@@ -150,7 +150,7 @@ ffmate server
 
 ### macOS & Linux
 
-After downloading FFmate, open your terminal, navigate to the folder where you saved it, and start the server with:
+After downloading FFmate, open your terminal, navigate to the folder where you saved it and start the server with:
 
 ```sh
 ffmate server
@@ -168,7 +168,7 @@ info server started on port '3000' using driver 'sqlite3'
 If port `3000` is already in use, FFmate stops with `failed to start ffmate server: … address already in use`. Start it on a different port with [`--port`](/docs/flags.md#server-command-flags), for example `ffmate server --port 8080`.
 
 ::: danger FFmate is reachable from your network by default
-FFmate listens on all network interfaces, `0.0.0.0`, not only `localhost`, and doesn't require a password. Anyone who can reach port `3000` on your machine can run commands on it through [pre/post-processing scripts](/docs/pre-post-prcessing.md).
+FFmate listens on all network interfaces, `0.0.0.0`, not only `localhost`. It doesn't require a password. Anyone who can reach port `3000` on your machine can run commands on it through [pre/post-processing scripts](/docs/pre-post-prcessing.md).
 
 * **Only using FFmate on this machine?** Start it with `ffmate server --host 127.0.0.1`.
 * **Other machines need access?** Start it with `--basic-auth "username:password"`, and only allow those machines through your firewall.
@@ -324,7 +324,7 @@ curl -X POST http://localhost:3000/api/v1/watchfolders \
        "description": "Automatically processes new media files",
        "interval": 5,
        "growthChecks": 3,
-       "preset": "preset-id",
+       "preset": "uuid-of-a-preset",
        "path": "/path/to/watchfolder",
        "filter": {
          "extensions": {
@@ -335,7 +335,7 @@ curl -X POST http://localhost:3000/api/v1/watchfolders \
      }'
 ```
 
-Once configured, every new file that matches the filter is processed when it is added to the watchfolder.
+FFmate scans `/path/to/watchfolder` every 5 seconds. It creates a task for each new file that matches the filter, once the file stops growing.
 
 To create a watchfolder in the Web UI, see [Creating a Watchfolder](/docs/web-ui.md#creating-a-watchfolder).
 
