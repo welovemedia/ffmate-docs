@@ -86,7 +86,7 @@ curl -X POST http://localhost:3000/api/v1/tasks \
      }'
 ```
 
-FFmate responds with a JSON object that contains the newly created task, including its `uuid`. The next section uses this `uuid` to monitor the task's progress. A `task.created` event is also fired via [Global webhooks](/docs/webhooks#task-events) and [Direct webhooks](/docs/webhooks#task-events).
+FFmate responds with a JSON object that contains the newly created task, including its `uuid`. The next section uses this `uuid` to monitor the task's progress. A `task.created` event is also fired via [Global webhooks](/docs/webhooks#task-events-1) and [Direct webhooks](/docs/webhooks#task-events).
 
 ### Task Properties
 
@@ -221,7 +221,7 @@ FFmate returns a JSON array of tasks. The `X-Total` response header holds the to
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
 - **`perPage`** *[optional]* – Defines how many tasks should be included in each page. Default: `100`.
-- **`status`** *[optional]* – Only returns tasks with this status, e.g. `?status=DONE_ERROR`. Use one of the statuses from the [table above](#understanding-tasks-in-ffmate).
+- **`status`** *[optional]* – Only returns tasks with this status, e.g. `?status=DONE_ERROR`. Use one of the statuses from [Understanding Tasks in FFmate](#understanding-tasks-in-ffmate).
 
 💡 Tip: The Web UI lists all tasks too. See [Monitoring Tasks](/docs/web-ui.md#monitoring-tasks).
 
@@ -276,7 +276,7 @@ FFmate responds with a `204` No Content status. The task is removed from FFmate.
 Deleting a task removes it from FFmate but doesn't delete the input or output files. Deleting a task doesn't stop it. To remove a running task, cancel it first and then delete it.
 :::
 
-💡 Tip: Tasks can also be deleted from the [FFmate Web UI](/docs/web-ui.md#deleting-tasks)
+💡 Tip: To delete a task in the Web UI, see [Deleting Tasks](/docs/web-ui.md#deleting-tasks).
 
 ## Submitting Multiple Tasks as a Batch
 
@@ -288,7 +288,7 @@ Every task in the batch is submitted as a standalone task in FFmate. This means:
 
 *   Each task moves through its own statuses, from `QUEUED` to `DONE_SUCCESSFUL`, `DONE_ERROR` or `DONE_CANCELED`.
 *   Each is executed independently by `ffmpeg`, based on its own command or preset.
-*   Each task maintains its own progress, status, and error reporting.
+*   Each task maintains its own progress, status and error reporting.
 *   A task's success or failure does not affect others in the same batch.
   
 ::: info
@@ -378,7 +378,7 @@ FFmate returns a JSON object containing the batch `uuid` and a paginated `tasks`
 
 - **`batch.finished`** – Fires when the last unfinished task of the batch ends as `DONE_SUCCESSFUL`, `DONE_ERROR` or `DONE_CANCELED`.
 
-  The body is the task that finished **last**, not a summary of the batch. To get the final status of every task, call [`GET /api/v1/batches/{uuid}`](#managing-and-monitoring-batches) with the `batch` value from that task.
+  The body is the task that finished last, not a summary of the batch. To get the final status of every task, call [`GET /api/v1/batches/{uuid}`](#managing-and-monitoring-batches) with the `batch` value from that task.
 
 :::
 
@@ -388,4 +388,4 @@ FFmate returns a JSON object containing the batch `uuid` and a paginated `tasks`
 
 - **Multi-renditions** – Generate several versions of the same source file, for example at different bitrates or resolutions. Each rendition is submitted as an individual task within the batch.
 
-- **Sequential asset processing** – Submit tasks for different steps of the same asset, for example cleaning audio, transcoding video and adding a watermark. FFmate handles each task on its own, based on queue order, and the batch keeps them together for monitoring.
+- **Sequential asset processing** – Submit tasks for different steps of the same asset, for example cleaning audio, transcoding video and adding a watermark. FFmate handles each task on its own, based on queue order. The batch keeps them together for monitoring.
