@@ -15,7 +15,10 @@ const size = sizes[props.src] || []
 const imgRef = ref(null)
 
 onMounted(() => {
-    mediumZoom(imgRef.value, { background: 'var(--vp-c-bg)' });
+    // medium-zoom zooms a copy of the image. A lazy copy stays blank in
+    // Safari and Firefox, so switch to eager before the copy is made.
+    mediumZoom(imgRef.value, { background: 'var(--vp-c-bg)' })
+        .on('open', (event) => { event.target.loading = 'eager' });
 })
 </script>
 
