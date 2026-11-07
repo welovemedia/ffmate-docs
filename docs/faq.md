@@ -87,7 +87,7 @@ See [Server Command Flags](/docs/flags.md#server-command-flags).
 <details>
 <summary>Is it safe to make FFmate reachable from the network?</summary>
 
-Only with protection. By default, FFmate has no password and listens on `0.0.0.0`, which means all network interfaces. Anyone who can reach its port can create tasks, presets and watchfolders with [pre- and post-processing scripts](/docs/pre-post-prcessing.md). Anyone who can create a task, preset or watchfolder can run commands on the computer FFmate runs on.
+Only with protection. By default, FFmate has no password and listens on `0.0.0.0`, which means all network interfaces. Anyone who can reach its port can create tasks and presets with [pre- and post-processing scripts](/docs/pre-post-prcessing.md). Anyone who can create a task, preset or watchfolder can run commands on the computer FFmate runs on.
 
 To keep FFmate on the local machine, start it with `--host 127.0.0.1`. To share it on a network, start it with `--basic-auth` and limit access with a firewall. Run FFmate as a user without admin or `root` rights.
 
@@ -129,7 +129,7 @@ See [Creating a Task](/docs/tasks.md#creating-a-task).
 <details>
 <summary>How can I monitor the status of a task?</summary>
 
-`GET /api/v1/tasks/{uuid}` returns the task as JSON, including `status`, `progress` and timestamps. The Dashboard in the Web UI shows the same values live.
+`GET /api/v1/tasks/{uuid}` returns the task as JSON, including `status`, `progress` and timestamps. The Dashboard in the Web UI shows the status and progress of every task live.
 
 See [Monitoring a Task](/docs/tasks.md#monitoring-a-task).
 </details>
