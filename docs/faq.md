@@ -173,7 +173,9 @@ See [Task Properties](/docs/tasks.md#task-properties).
 <details>
 <summary>What happens to running tasks when FFmate stops or crashes?</summary>
 
-When FFmate starts again, it sets the tasks it was running to `DONE_ERROR` with the error `client disconnected during execution`. In a [cluster](/docs/clustering.md), the other FFmate instances do this after about 60 seconds. Restart those tasks to run them again.
+When FFmate starts again, it sets its tasks with the status `RUNNING` to `DONE_ERROR` with the error `client disconnected during execution`. In a [cluster](/docs/clustering.md), the other FFmate instances do this after about 60 seconds. Restart those tasks to run them again.
+
+A task that was in `PRE_PROCESSING` or `POST_PROCESSING` keeps that status. To run it again, restart it.
 
 See [Clustering](/docs/clustering.md).
 </details>
