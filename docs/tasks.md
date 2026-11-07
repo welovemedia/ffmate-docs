@@ -98,7 +98,7 @@ These are the properties that can be set when creating a task in FFmate:
 
   How FFmate runs the `command`:
 
-  - Leave `ffmpeg` out of the command. FFmate adds it at the start. By default, FFmate uses the `ffmpeg` program in the system's `PATH`. To use a different FFmpeg, set the [`--ffmpeg`](/docs/flags.md#server-command-flags) flag to its path.
+  - Leave `ffmpeg` out of the command. FFmate adds it at the start. By default, FFmate uses the `ffmpeg` program in the system's `PATH`. To use a different FFmpeg, set the [`--ffmpeg`](/docs/flags.md#ffmpeg) flag to its path.
 
   - FFmate also adds the `-stats_period 1` [option](https://ffmpeg.org/ffmpeg-all.html#Advanced-options) to every command, which limits FFmpeg's progress output to one update per second. To change it, add your own `-stats_period` to the command, for example `-stats_period 5`. This setting controls how often the `task.updated` [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events) fire and how often the Web UI updates the progress.
 
@@ -128,7 +128,7 @@ Set `inputFile` and `outputFile` only if the command uses the wildcards `${INPUT
 
 - **`preset`** *[mandatory]* – The `uuid` of a pre-configured [Preset](/docs/presets.md) to use for this task. This field is mandatory unless a `command` is set. See [Using a Preset](#using-a-preset) for which settings the task takes from the preset.
 
-- **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. Only an FFmate instance with at least one matching label picks up the task. A task without labels runs on any FFmate instance. Labels can use `*` as a wildcard, for example `gpu-*`. See [`--labels`](/docs/flags.md#server-command-flags).
+- **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. Only an FFmate instance with at least one matching label picks up the task. A task without labels runs on any FFmate instance. Labels can use `*` as a wildcard, for example `gpu-*`. See [`--labels`](/docs/flags.md#labels).
 
 - **`retries`** *[optional]* – How many times FFmate retries the task if it fails (`DONE_ERROR`). Each retry starts 3 seconds after the failure and puts the task back into `QUEUED`. The response field `retried` shows how many retries have run so far. Canceled tasks are not retried. Default: `0`.
 
@@ -292,7 +292,7 @@ Every task in the batch is submitted as a standalone task in FFmate. This means:
 *   A task's success or failure does not affect others in the same batch.
   
 ::: info
-FFmate runs the tasks of a batch like any other task. Up to [`--max-concurrent-tasks`](/docs/flags.md#server-command-flags) tasks run at the same time, in order of priority and then creation time.
+FFmate runs the tasks of a batch like any other task. Up to [`--max-concurrent-tasks`](/docs/flags.md#max-concurrent-tasks) tasks run at the same time, in order of priority and then creation time.
 :::
   
 ### How to Submit a Batch of Tasks

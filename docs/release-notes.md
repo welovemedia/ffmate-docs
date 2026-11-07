@@ -17,13 +17,13 @@ An overview of new features, enhancements, and bug fixes for each version.
 ### New Features
 
 - **Choose the Network Address**
-  The new `--host` flag sets the network address FFmate listens on. The default stays `0.0.0.0`. Use `--host 127.0.0.1` to keep FFmate on the local machine. For details, see [--host](/docs/flags.md#server-command-flags).
+  The new `--host` flag sets the network address FFmate listens on. The default stays `0.0.0.0`. Use `--host 127.0.0.1` to keep FFmate on the local machine. For details, see [--host](/docs/flags.md#host).
 
 - **Basic Authentication**
-  The new `--basic-auth` flag protects the API, the Web UI and all other endpoints with a username and password. For details, see [--basic-auth](/docs/flags.md#server-command-flags).
+  The new `--basic-auth` flag protects the API, the Web UI and all other endpoints with a username and password. For details, see [--basic-auth](/docs/flags.md#basic-auth).
 
 - **Labels**
-  FFmate instances, tasks, presets and watchfolders can now have labels. An FFmate instance only processes tasks and watchfolders whose labels match its own. For details, see [--labels](/docs/flags.md#server-command-flags) and [Clustering](/docs/clustering.md#tasks-in-a-cluster).
+  FFmate instances, tasks, presets and watchfolders can now have labels. An FFmate instance only processes tasks and watchfolders whose labels match its own. For details, see [--labels](/docs/flags.md#labels) and [Clustering](/docs/clustering.md#tasks-in-a-cluster).
 
 - **Automatic Retries**
   Tasks and presets have a new `retries` property. FFmate puts a failed task back into the queue up to that many times. For details, see [Task Properties](/docs/tasks.md#task-properties).
@@ -110,7 +110,7 @@ An overview of new features, enhancements, and bug fixes for each version.
 ### Changes
 
 - **Clear Error When the Server Can't Start**
-  If FFmate can't start its server, for example because another program already uses port 3000, it now logs `failed to start ffmate server` with the reason and exits. Before, it kept running without the API and Web UI. To use another port, start FFmate with [`--port`](/docs/flags.md#server-command-flags).
+  If FFmate can't start its server, for example because another program already uses port 3000, it now logs `failed to start ffmate server` with the reason and exits. Before, it kept running without the API and Web UI. To use another port, start FFmate with [`--port`](/docs/flags.md#port).
 
 ## Version 2.0.1 (26-09-2025)
 
@@ -148,7 +148,7 @@ While we’ve aimed to remain mostly backward-compatible with 1.x, some adjustme
   Added an endpoint to list all FFmate instances connected to the cluster. For details, see [Listing Cluster Clients](/docs/ffmate-internals.md#client-endpoint).
 
 - **Identifier Argument**
-  Added a new CLI argument to set the name for each FFmate instance, making it easier to recognize. For details, see [--identifier](/docs/flags.md#server-command-flags).
+  Added a new CLI argument to set the name for each FFmate instance, making it easier to recognize. For details, see [--identifier](/docs/flags.md#identifier).
 
 - **Health Endpoint**
   Added a new `/health` endpoint that orchestration tools like Kubernetes can use to monitor the health of an FFmate instance. For details, see [Health Endpoint](/docs/ffmate-internals.md#health-endpoint).

@@ -30,7 +30,7 @@ A cluster takes three steps:
 
 1. **Provision a PostgreSQL database** that all FFmate instances can reach. 
 2. **Create a user and database** inside PostgreSQL for FFmate.  
-3. **Start each FFmate instance** with the same [--database](/docs/flags.md#server-command-flags) URI and a unique [--identifier](/docs/flags.md#server-command-flags). The URI must start with `postgresql://`:  
+3. **Start each FFmate instance** with the same [--database](/docs/flags.md#database) URI and a unique [--identifier](/docs/flags.md#identifier). The URI must start with `postgresql://`:  
 
 ```bash
 # FFmate instance A
@@ -53,7 +53,7 @@ Without `--identifier`, FFmate uses the machine's hostname. Setting `--identifie
 ::: warning Protect every FFmate instance
 All FFmate instances in a cluster share one database. A task or preset created through any FFmate instance can be picked up and run by every FFmate instance, including its [pre- and post-processing scripts](/docs/pre-post-prcessing.md). Anyone who can create a task can use these scripts to run any command they like, for example deleting files, on every computer in the cluster. So a single FFmate instance reachable without a password exposes the whole cluster.
 
-* Start every FFmate instance with the same [`--basic-auth`](/docs/flags.md#server-command-flags).
+* Start every FFmate instance with the same [`--basic-auth`](/docs/flags.md#basic-auth).
 * Use a firewall so only trusted machines can reach the FFmate instances' ports.
 * Use a dedicated PostgreSQL user for FFmate, and don't expose PostgreSQL to untrusted networks: anyone who can write to the database can create tasks too.
 :::
@@ -80,9 +80,9 @@ sequenceDiagram
 
 ## Tasks in a Cluster
 
-Each FFmate instance picks up queued tasks on its own, up to its own [`--max-concurrent-tasks`](/docs/flags.md#server-command-flags) limit. An FFmate instance with a higher limit takes on more tasks at the same time.
+Each FFmate instance picks up queued tasks on its own, up to its own [`--max-concurrent-tasks`](/docs/flags.md#max-concurrent-tasks) limit. An FFmate instance with a higher limit takes on more tasks at the same time.
 
-[`--labels`](/docs/flags.md#server-command-flags) controls which FFmate instance picks up which tasks. An FFmate instance only picks up tasks without labels and tasks with at least one label that matches its own. For example, start the FFmate instances on computers with GPUs with `--labels="gpu"` and give GPU tasks the label `gpu`.
+[`--labels`](/docs/flags.md#labels) controls which FFmate instance picks up which tasks. An FFmate instance only picks up tasks without labels and tasks with at least one label that matches its own. For example, start the FFmate instances on computers with GPUs with `--labels="gpu"` and give GPU tasks the label `gpu`.
 
 ## Watchfolders in a Cluster
 

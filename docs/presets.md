@@ -57,7 +57,7 @@ The properties below apply to every task that uses the preset.
 
 **How `command` works:**
 
-  - Leave `ffmpeg` out at the start of the command. FFmate adds it when the task runs. By default, FFmate uses the `ffmpeg` binary on the system's `PATH`. To use a different FFmpeg, set its path with the [`--ffmpeg`](/docs/flags.md#server-command-flags) flag.
+  - Leave `ffmpeg` out at the start of the command. FFmate adds it when the task runs. By default, FFmate uses the `ffmpeg` binary on the system's `PATH`. To use a different FFmpeg, set its path with the [`--ffmpeg`](/docs/flags.md#ffmpeg) flag.
 
   - FFmate also adds the `-stats_period 1` [option](https://ffmpeg.org/ffmpeg-all.html#Advanced-options) to every command, so FFmpeg reports progress once per second.
 
@@ -83,7 +83,7 @@ The properties below apply to every task that uses the preset.
 
 - **`priority`** *[optional]* – Sets the priority of tasks in the queue. A task with priority `100` runs before one with `10`. Tasks with the same priority run in the order they were created. A task with its own `priority` uses that instead. Default: `0`.
 
-- **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. They decide which FFmate instance processes tasks created from this preset. A task without its own labels inherits these. See [`--labels`](/docs/flags.md#server-command-flags).
+- **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. They decide which FFmate instance processes tasks created from this preset. A task without its own labels inherits these. See [`--labels`](/docs/flags.md#labels).
 
 - **`retries`** *[optional]* – How many times a failed task created from this preset is retried. A task without its own `retries` inherits this value. See [task properties](/docs/tasks.md#task-properties). Default: `0`.
 

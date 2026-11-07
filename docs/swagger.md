@@ -15,7 +15,7 @@ While FFmate is running, the Swagger UI opens in a web browser at this URL:
 
 Replace `<your-ffmate-host>` with the hostname or IP address where FFmate is running, for example `localhost` on the same computer. Replace `<port>` with the port number FFmate is listening on. The default port is `3000`. Opening `/swagger` redirects to the same page.
 
-The Swagger UI is always available, even when FFmate runs with [`--no-ui`](/docs/flags.md#server-command-flags). If FFmate runs with [`--basic-auth`](/docs/flags.md#server-command-flags), the browser asks for the username and password first.
+The Swagger UI is always available, even when FFmate runs with [`--no-ui`](/docs/flags.md#no-ui). If FFmate runs with [`--basic-auth`](/docs/flags.md#basic-auth), the browser asks for the username and password first.
 
 ::: tip Default URL
 

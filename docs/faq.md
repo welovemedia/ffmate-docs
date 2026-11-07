@@ -49,7 +49,7 @@ See [Installing FFmpeg](/docs/getting-started.md#installing-ffmpeg).
 
 FFmate's API & Web UI listen on port **3000** by default. Add `--port <number>` when you start the server, e.g. `ffmate server --port 8080`. In Docker, set the `PORT` environment variable and change the `-p` port mapping to match.
 
-See [Server Command Flags](/docs/flags.md#server-command-flags).
+See [`--port`](/docs/flags.md#port).
 </details>
 
 <details>
@@ -57,7 +57,7 @@ See [Server Command Flags](/docs/flags.md#server-command-flags).
 
 Use `--ffmpeg "/full/path/to/ffmpeg"` when launching `ffmate server`. FFmate runs that binary for every task.
 
-See [Server Command Flags](/docs/flags.md#server-command-flags).
+See [`--ffmpeg`](/docs/flags.md#ffmpeg).
 </details>
 
 <details>
@@ -65,7 +65,7 @@ See [Server Command Flags](/docs/flags.md#server-command-flags).
 
 Start the server with `--no-ui`. The Web UI is still available at `http://localhost:3000/ui`, but FFmate doesn't open it in the browser. In Docker, FFmate never opens a browser.
 
-See [Server Command Flags](/docs/flags.md#server-command-flags).
+See [`--no-ui`](/docs/flags.md#no-ui).
 </details>
 
 <details>
@@ -79,7 +79,7 @@ In a SQLite database. By default it's created at:
 
 Use `--database` to choose another file, or a `postgresql://` URI to run several FFmate instances as a [cluster](/docs/clustering.md).
 
-See [Server Command Flags](/docs/flags.md#server-command-flags).
+See [`--database`](/docs/flags.md#database).
 </details>
 
 ## Security
@@ -91,7 +91,7 @@ Only with protection. By default, FFmate has no password and listens on `0.0.0.0
 
 To keep FFmate on the local machine, start it with `--host 127.0.0.1`. To share it on a network, start it with `--basic-auth` and limit access with a firewall. Run FFmate as a user without admin or `root` rights.
 
-See [Server Command Flags](/docs/flags.md#server-command-flags).
+See [`--host`](/docs/flags.md#host) and [`--basic-auth`](/docs/flags.md#basic-auth).
 </details>
 
 <details>
@@ -99,7 +99,7 @@ See [Server Command Flags](/docs/flags.md#server-command-flags).
 
 Start the server with `--basic-auth`, e.g. `ffmate server --basic-auth="admin:secret"`. Every request then needs the username and password: the API, the Web UI, the Swagger UI, `/health` and `/metrics`. The browser asks for them when opening the Web UI.
 
-See [Server Command Flags](/docs/flags.md#server-command-flags).
+See [`--basic-auth`](/docs/flags.md#basic-auth).
 </details>
 
 ## Tasks
@@ -140,7 +140,7 @@ See [Monitoring a Task](/docs/tasks.md#monitoring-a-task).
 Possible reasons:
 
 * FFmate can't find FFmpeg. Check the startup log, and set the path with `--ffmpeg` if needed.
-* FFmate is already running as many tasks as [`--max-concurrent-tasks`](/docs/flags.md#server-command-flags) allows. The task starts when one of them finishes.
+* FFmate is already running as many tasks as [`--max-concurrent-tasks`](/docs/flags.md#max-concurrent-tasks) allows. The task starts when one of them finishes.
 * The task has [labels](/docs/tasks.md#task-properties), but no FFmate instance has a matching label.
 
 See [Tasks](/docs/tasks.md).
@@ -213,7 +213,7 @@ See [Pre and Post Processing](/docs/pre-post-prcessing.md).
 
 Give those FFmate instances a label with `--labels`, e.g. `ffmate server --labels="gpu"`, and add the same label to the tasks or presets: `"labels": ["gpu"]`. Tasks with labels only run on FFmate instances with a matching label. Tasks without labels run on any FFmate instance.
 
-See [Server Command Flags](/docs/flags.md#server-command-flags).
+See [`--labels`](/docs/flags.md#labels).
 </details>
 
 ## Presets, Wildcards and Scripts
