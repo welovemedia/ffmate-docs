@@ -84,7 +84,7 @@ A watchfolder creates a task for every new media file in a folder. Each task use
 
 ### Creating a Watchfolder
 
-Click the **plus (+) button** in the bottom-right corner of the Watchfolders page to create a new watchfolder.
+Click the **plus (+) button** in the bottom-right corner of the Watchfolder page to create a new watchfolder.
 
 <ZoomImg src="/img/ffmate-watchfolder-add-new.webp" alt="Empty FFmate Watchfolder page with the plus button highlighted in the bottom-right corner."/>
 
@@ -106,7 +106,7 @@ Click on any watchfolder to view its full configuration, including assigned pres
 
 ### Updating a Watchfolder
 
-Hover over a watchfolder on the Watchfolders page and click the **pencil** icon. Change any field in the Edit Watchfolder form, for example the path, preset, scan interval, growth checks or filters, then click **Save**. FFmate uses the new settings from the next scan.
+Hover over a watchfolder on the Watchfolder page and click the **pencil** icon. Change any field in the Edit Watchfolder form, for example the path, preset, scan interval, growth checks or filters, then click **Save**. FFmate uses the new path, preset, growth checks and filters from the next scan.
 
 <ZoomImg src="/img/ffmate-watchfolder-edit-watchfolder.webp" alt="FFmate Watchfolder page with the pencil icon highlighted on the right of a watchfolder."/>
 
@@ -172,7 +172,7 @@ Specify the **event** you want to subscribe to and the target **URL** where noti
 
 ### Checking Configured Webhooks
 
-The Webhooks list displays all configured webhooks with their subscribed event, target URL, and when they were last changed.
+The Webhooks list displays all configured webhooks with their subscribed event, target URL and when they were last changed.
 
 <ZoomImg src="/img/ffmate-webhook-list.webp" alt="FFmate Webhooks page listing three webhooks with their event, URL and when they were last modified."/>
 
@@ -208,6 +208,6 @@ Click **Logs** at the bottom of the sidebar to open a real-time log window at th
 
 <ZoomImg src="/img/ffmate-logs.webp" alt="FFmate Dashboard with Logs highlighted at the bottom of the sidebar."/>
 
-This view shows live FFmate activity, including task execution, watchfolder events, and system messages. In a [cluster](/docs/clustering.md), it only shows the logs of the FFmate instance the Web UI is connected to.
+This view shows live FFmate activity, including task execution, watchfolder events and system messages. In a [cluster](/docs/clustering.md), it only shows the logs of the FFmate instance the Web UI is connected to.
 
 <ZoomImg src="/img/ffmate-logs-details.webp" alt="FFmate Dashboard with the log window open at the bottom, with entries for a created preset, tasks and watchfolder activity."/>

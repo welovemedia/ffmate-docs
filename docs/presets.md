@@ -41,7 +41,7 @@ curl -X POST http://localhost:3000/api/v1/presets \
      }'
 ```
 
-FFmate returns a JSON object that contains the newly created preset, including its `uuid`. A `preset.created` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
+FFmate returns a JSON object that contains the newly created preset, including its `uuid`. A `preset.created` event is also fired via [Global webhooks](/docs/webhooks.md#preset-events-1) and [Direct webhooks](/docs/webhooks.md#preset-events).
 
 💡 Tip: To create a preset in the Web UI, see [Creating a Preset](/docs/web-ui.md#creating-a-preset).
 
@@ -61,7 +61,7 @@ The properties below apply to every task that uses the preset.
 
   - FFmate also adds the `-stats_period 1` [option](https://ffmpeg.org/ffmpeg-all.html#Advanced-options) to every command, so FFmpeg reports progress once per second.
 
-    A `-stats_period` in the command replaces it, for example `-stats_period 5`. The value sets how often `task.updated` [Global webhooks](/docs/webhooks#task-events-1) and [Direct webhooks](/docs/webhooks#task-events) fire and how often the Dashboard updates the progress.
+    A `-stats_period` in the command replaces it, for example `-stats_period 5`. The value sets how often `task.updated` [Global webhooks](/docs/webhooks.md#task-events-1) and [Direct webhooks](/docs/webhooks.md#task-events) fire and how often the Dashboard updates the progress.
 
   - [Wildcards](/docs/wildcards.md) like `${INPUT_FILE}` and `${OUTPUT_FILE}` can be used inside the command string. FFmate replaces them with the actual file paths when the task runs.
 
@@ -156,7 +156,7 @@ FFmate returns a JSON object with the full details of the specified preset.
 To update a preset, send a `PUT` request to the FFmate API with the preset's `uuid` in the path. The properties are listed in [Preset Properties](#preset-properties).
 
 ::: warning `PUT` replaces the whole preset
-The request body must contain **every** property the preset should keep, not only the ones that change. Properties left out are cleared. For example, a `PUT` with only `name` and `command` removes the preset's `description`, `outputFile`, `priority`, `labels`, `retries`, processing scripts and webhooks.
+The request body must contain every property the preset should keep, not only the ones that change. Properties left out are cleared. For example, a `PUT` with only `name` and `command` removes the preset's `description`, `outputFile`, `priority`, `labels`, `retries`, processing scripts and webhooks.
 :::
 
 ```sh
@@ -174,7 +174,7 @@ curl -X PUT http://localhost:3000/api/v1/presets/{uuid} \
      }'
 ```
 
-FFmate returns the complete JSON object of the updated preset. A `preset.updated` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
+FFmate returns the complete JSON object of the updated preset. A `preset.updated` event is also fired via [Global webhooks](/docs/webhooks.md#preset-events-1) and [Direct webhooks](/docs/webhooks.md#preset-events).
 
 💡 Tip: To update a preset in the Web UI, see [Updating a Preset](/docs/web-ui.md#updating-a-preset).
 
@@ -186,6 +186,6 @@ To delete a preset, send a `DELETE` request to the FFmate API with the preset's 
 curl -X DELETE 'http://localhost:3000/api/v1/presets/{uuid}'
 ```
 
-FFmate responds with a `204` No Content status. The preset is removed from FFmate. A `preset.deleted` event is also fired via [Global webhooks](/docs/webhooks#preset-events-1) and [Direct webhooks](/docs/webhooks#preset-events).
+FFmate responds with a `204` No Content status. The preset is removed from FFmate. A `preset.deleted` event is also fired via [Global webhooks](/docs/webhooks.md#preset-events-1) and [Direct webhooks](/docs/webhooks.md#preset-events).
 
 💡 Tip: To delete a preset in the Web UI, see [Removing a Preset](/docs/web-ui.md#removing-a-preset). The Web UI asks for confirmation before it deletes the preset.
