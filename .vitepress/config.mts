@@ -1,5 +1,7 @@
 import llmstxt from "vitepress-plugin-llms"
 import { withMermaid } from "vitepress-plugin-mermaid"
+import imageSizes from "./image-sizes"
+
 const siteUrl = "https://docs.ffmate.io"
 
 // https://vitepress.dev/reference/site-config
@@ -143,7 +145,10 @@ export default withMermaid({
   },
 
   vite: {
-    plugins: [llmstxt({ domain: siteUrl, ignoreFiles: ["README.md"] })],
+    plugins: [
+      llmstxt({ domain: siteUrl, ignoreFiles: ["README.md"] }),
+      imageSizes(),
+    ],
     build: {
       rollupOptions: {
         external: ['../todo', '../README.md']
