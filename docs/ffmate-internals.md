@@ -83,7 +83,7 @@ The [REST API](/docs/swagger.md) is how the Web UI, scripts and other programs c
 
 FFmate uses **SQLite** by default. A [cluster](/docs/clustering.md) of FFmate instances shares one **PostgreSQL** database.
 
-*   **Data Stored:**
+*   **Data stored:**
     *   Tasks: All details about each task, including its status, progress, input/output files, command, priority, pre/post-processing info, timestamps and any error.
     *   Presets: Definitions for reusable transcoding templates.
     *   Webhooks: Configurations for URLs to be notified on specific events.
@@ -95,7 +95,7 @@ FFmate uses **SQLite** by default. A [cluster](/docs/clustering.md) of FFmate in
 FFmate includes a [Web UI](/docs/web-ui.md#navigation-overview) for managing and monitoring tasks, presets, watchfolders, webhooks and clients.
 
 *   **Access:** When the FFmate server starts, the Web UI is served from the `/ui` path, e.g. `http://localhost:3000/ui`. Opening `/` redirects there.
-*   **Backend Communication:** The Web UI communicates with the FFmate service via:
+*   **Backend communication:** The Web UI communicates with the FFmate service via:
     *   `REST API`: For actions like creating tasks, fetching lists, deleting presets, etc.
     *   `WebSockets`: For receiving real-time updates like task progress, new log messages and status changes. See [WebSocket Endpoint](#websocket-endpoint).
 
@@ -103,10 +103,10 @@ FFmate includes a [Web UI](/docs/web-ui.md#navigation-overview) for managing and
 
 [Webhooks](/docs/webhooks.md) let FFmate notify external systems about events by sending HTTP `POST` requests to configured URLs.  
 
-FFmate has two types of webhooks. A [global webhook](/docs/webhooks.md#global-webhooks) sends one event to one URL. A [direct webhook](/docs/webhooks.md#direct-webhooks) belongs to one [task](/docs/tasks.md#task-properties) or [preset](/docs/presets.md#presets-properties). A task inherits the direct webhooks of its preset.
+FFmate has two types of webhooks. A [global webhook](/docs/webhooks.md#global-webhooks) sends one event to one URL. A [direct webhook](/docs/webhooks.md#direct-webhooks) belongs to one [task](/docs/tasks.md#task-properties) or [preset](/docs/presets.md#presets-properties). A task inherits the direct webhooks of its preset that fire on task events, for example `task.updated`.
 
 * **Configuration:**
-  * Global webhooks can be created through the `REST API` (`/api/v1/webhooks`) or the [Web UI](/docs/web-ui.md#webhooks).  
+  * Global webhooks can be created with a `POST` request to `/api/v1/webhooks` or in the [Web UI](/docs/web-ui.md#webhooks).  
   * Direct webhooks are defined in a `task` or `preset`.  
     *   Each webhook configuration includes:
         *   **Event (`event`):** The FFmate event that fires this webhook, for example `task.created`, `task.updated`, `batch.finished` or `preset.deleted`.
@@ -133,19 +133,19 @@ A [watchfolder](/docs/watchfolder.md) makes FFmate scan a folder for new files a
     *   **Preset (`preset`):** The `uuid` of the preset to apply to newly detected files.
     *   **Interval (`interval`):** How often the directory is scanned, in seconds, e.g. `10`.
     *   **Filter (`filter`):** Optional. Rules to include or exclude files by extension, set in `filter.extensions`.
-    *   **Growth Checks (`growthChecks`):** How many scan intervals a file must remain stable in size before being processed.
+    *   **Growth checks (`growthChecks`):** How many scan intervals a file must remain stable in size before being processed.
     *   **Labels (`labels`):** Optional. Which FFmate instances scan the watchfolder.
-*   **Monitoring Process:**
+*   **Monitoring process:**
     *   FFmate starts monitoring configured directories upon startup or configuration changes.
     *   Directories are scanned periodically based on the configured `interval`.
     *   New files are detected. Hidden files, whose names start with `.`, are skipped.
     *   Files must remain the same size for the number of scans defined by `growthChecks` before they are considered ready for processing.
     *   The configured `filter` is applied to the files.
-        - If a file matches an extension in `exclude`, FFmate skips it, even if it also matches `include`.
+        - If `exclude` lists any extensions, FFmate skips the files that match them and ignores `include`.
     *   FFmate creates a new task for each stable, filtered file.
     *   The `preset` is applied to the new task.
     *   FFmate creates an empty `.lock` file next to the file, for example `movie.mp4.lock` for `movie.mp4`. This permanent marker makes sure the watchfolder doesn't process the file again, even after a restart.
-*   **Dynamic Updates:** Creating, updating or deleting a watchfolder in the API or UI takes effect from the next scan, without restarting FFmate.
+*   **Dynamic updates:** Creating, updating or deleting a watchfolder in the API or UI takes effect from the next scan, without restarting FFmate.
 
 ## Task Queue
 
@@ -155,15 +155,15 @@ The task queue holds every task that waits to run. Each FFmate instance picks up
     *   New tasks from the API or from watchfolders are added to a queue. FFmate checks the queue every second.
     *   Tasks with a higher `priority` run first. Tasks with the same `priority` run in the order they were created.
     *   Initially, tasks are in the `QUEUED` status.
-*   **Concurrency Control:**
+*   **Concurrency control:**
     *   FFmate limits the number of tasks running simultaneously.
     *   This limit is controlled by the [`--max-concurrent-tasks`](/docs/flags.md#server-command-flags) server setting.
     *   When a slot becomes available, the next task from the queue starts processing.
     *   With [`--labels`](/docs/flags.md#server-command-flags), an FFmate instance only picks up tasks without labels and tasks with a matching label.
-*   **Task Lifecycle:** Once a task is selected from the queue:
+*   **Task lifecycle:** Once a task is selected from the queue:
     *   **Pre-processing:** If a pre-processing script is defined, the status changes to `PRE_PROCESSING` and the script runs before `ffmpeg`.
-    *   **`ffmpeg` Execution:** The status changes to `RUNNING` and FFmate runs the transcoding command with `ffmpeg`.
-    *   **Progress Monitoring:** FFmate reads `ffmpeg`'s output to track progress, for example the percentage done and the time remaining. This progress is updated in the database and pushed via `WebSockets`.
+    *   **`ffmpeg` execution:** The status changes to `RUNNING` and FFmate runs the transcoding command with `ffmpeg`.
+    *   **Progress monitoring:** FFmate reads `ffmpeg`'s output to track progress, for example the percentage done and the time remaining. This progress is updated in the database and pushed via `WebSockets`.
     *   **Post-processing:** If a post-processing script is defined and `ffmpeg` completed successfully, the status changes to `POST_PROCESSING` and the post-processing script runs.
     *   **Completion:** The task status is updated to reflect the outcome: `DONE_SUCCESSFUL`, `DONE_ERROR` or `DONE_CANCELED`. Error details are saved in the task's `error` field.
     *   **Retries:** If a task with [`retries`](/docs/tasks.md#task-properties) fails, FFmate puts it back into `QUEUED` after 3 seconds.
@@ -207,7 +207,7 @@ This endpoint lists all FFmate instances that are connected to the database and 
 
 *   **Endpoint:** `GET /api/v1/clients`
 
-**Query Parameters:**
+**Query parameters:**
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
 - **`perPage`** *[optional]* – Defines how many FFmate instances should be included in each page. Default: `100`.
@@ -275,7 +275,7 @@ The Web UI receives live updates over a WebSocket connection. Other tools can co
 
 *   **Endpoint:** `ws://localhost:3000/api/v1/ws`
 
-Every message is a JSON object with a `subject` and a `payload`. The payload is the full object, for example the task that changed:
+Every message is a JSON object with a `subject` and a `payload`. The `payload` is the full object, for example the task that changed:
 
 ```json
 {
@@ -292,7 +292,7 @@ Every message is a JSON object with a `subject` and a `payload`. The payload is 
 | `webhook:created`, `webhook:updated`, `webhook:deleted` | A global webhook is created, changes or is deleted. |
 | `webhookExecution:created` | FFmate has delivered a webhook. |
 | `client:updated` | An FFmate instance sends its heartbeat. |
-| `log:created` | FFmate writes a log line. The payload is the log line as text. |
+| `log:created` | FFmate writes a log line. The `payload` is the log line as text. |
 
 In a [cluster](/docs/clustering.md), every FFmate instance sends the updates of all FFmate instances. `log:created` only contains the logs of the FFmate instance the connection goes to.
 
@@ -304,7 +304,7 @@ By default, you can access them at `http://localhost:3000/metrics`. With [`--bas
 
 Each FFmate instance counts only its own events, starting from `0` every time it starts. In a [cluster](/docs/clustering.md), scrape every FFmate instance.
 
-*   **Batch Gauges**
+*   **Batch gauges**
     *   `ffmate_batch_created` – Total number of batches created.
     *   `ffmate_batch_finished` – Total number of batches where all tasks have finished, whether successful, failed or canceled.
 
@@ -318,7 +318,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
     ffmate_batch_finished 2
     ```
 
-*   **Task Gauges**
+*   **Task gauges**
     *   `ffmate_task_created` – Total number of tasks added to the queue.
     *   `ffmate_task_deleted` – Total number of tasks that have been deleted.
     *   `ffmate_task_updated` – Total number of times a task's data has been updated, for example by a status change or a progress update.
@@ -336,7 +336,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
     ffmate_task_restarted 1
     ```
 
-*   **Preset Gauges**
+*   **Preset gauges**
     *   `ffmate_preset_created` – Total number of presets created.
     *   `ffmate_preset_updated` – Total number of presets that have been updated.
     *   `ffmate_preset_deleted` – Total number of presets that have been deleted.
@@ -350,7 +350,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
     ffmate_preset_deleted 1
     ```
 
-*   **Webhook Gauges**
+*   **Webhook gauges**
     *   `ffmate_webhook_created` – Total number of global webhooks created.
     *   `ffmate_webhook_updated` – Total number of global webhooks updated.
     *   `ffmate_webhook_deleted` – Total number of global webhooks deleted.
@@ -368,7 +368,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
     ffmate_webhook_executed_direct 25
     ```
 
-*   **Watchfolder Gauges**
+*   **Watchfolder gauges**
     *   `ffmate_watchfolder_created` – Total number of watchfolders created.
     *   `ffmate_watchfolder_updated` – Total number of watchfolders that have been updated.
     *   `ffmate_watchfolder_deleted` – Total number of watchfolders that have been deleted.
@@ -384,7 +384,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
     ffmate_watchfolder_executed 27
     ```
 
-*   **Websocket Gauges**
+*   **WebSocket gauges**
     *   `ffmate_websocket_connect` – Total number of successful WebSocket connections.
     *   `ffmate_websocket_disconnect` – Total number of WebSocket disconnections.
     *   `ffmate_websocket_broadcast` – Total number of messages broadcast to all connected WebSocket clients.
