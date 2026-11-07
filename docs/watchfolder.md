@@ -22,7 +22,7 @@ For example, a watchfolder can transcode footage from a camera SD card copied to
 
     For each processed file, FFmate creates an empty `.lock` file next to it. For example, `movie.mp4` gets `movie.mp4.lock`.
     
-    This special file ensures the file isn't picked up again, even after a restart. If the `.lock` file is removed while the original is still in the folder, the watchfolder sees it as new and processes it again.
+    The `.lock` file keeps the file from being picked up again, even after a restart. If the `.lock` file is removed while the original is still in the folder, the watchfolder sees it as new and processes it again.
 
 ### Watchfolder Metadata
 
@@ -103,21 +103,19 @@ After you create a watchfolder, FFmate responds with a JSON object that includes
 ## Watchfolder Properties
 
 - **`name`** *[mandatory]* – A name for the watchfolder.  
-- **`description`** *[optional]* – A description of what this watchfolder does.  
+- **`description`** *[optional]* – A description of what this watchfolder does. Default: empty.  
 - **`interval`** *[mandatory]* – How often FFmate scans the folder for new files, in seconds.  
 - **`growthChecks`** *[mandatory]* – The number of checks FFmate performs to ensure a file is fully copied before processing.  
 - **`preset`** *[mandatory]* – The `uuid` of the [preset](/docs/presets.md) FFmate uses for every task this watchfolder creates.  
 - **`path`** *[mandatory]* – The absolute path of the directory to monitor.  
 - **`suspended`** *[optional]* – A boolean flag that pauses watchfolder scanning. When set to `true`, FFmate temporarily stops detecting and processing files in the folder. Default: `false`.
 - **`labels`** *[optional]* – Up to 5 labels, each 1 to 32 characters long. Only an FFmate instance with at least one matching label scans the watchfolder. A watchfolder without labels is scanned by any FFmate instance. Labels can use `*` as a wildcard, for example `gpu-*`. The tasks it creates don't inherit these labels; they get the labels of the preset. See [`--labels`](/docs/flags.md#server-command-flags).
-- **`filter`** *[optional]* – Rules for file selection, set inside `filter.extensions`. Write extensions without the dot.  
+- **`filter`** *[optional]* – Rules for file selection, set inside `filter.extensions`. Write extensions without the dot. No filter by default.  
   - **`include`** *[optional]* – Only process files with these extensions, for example `mp4` and `mov`.  
   - **`exclude`** *[optional]* – Ignore files with these extensions, for example `tmp` and `log`.  
 
 ::: info How filters work  
-FFmate always checks the `exclude` list first. A file whose extension is in `exclude` is skipped, even if `include` lists it too.
-
-If `exclude` has any entries, FFmate ignores `include`. Use either `include` or `exclude`, not both.
+If `exclude` has any entries, FFmate ignores `include`. A file whose extension is in `exclude` is skipped, even if `include` lists it too. Use either `include` or `exclude`, not both.
 :::
 
 FFmate adds these properties to every watchfolder it returns:

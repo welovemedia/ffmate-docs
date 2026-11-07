@@ -162,13 +162,13 @@ The `server` command starts FFmate. The flags in this section only apply to `ser
     *   **Example:** `ffmate server --send-telemetry=false`
 
 *   **`--no-ui`**
-    *   **Purpose:** Prevents FFmate from automatically opening the Web UI in your default web browser when the server starts.
+    *   **Purpose:** Prevents FFmate from opening the Web UI in the default browser when the server starts.
     *   **Default:** `false`. On startup, FFmate opens `http://localhost:<port>/ui` in the default browser. In Docker, FFmate never opens the browser.
     *   **Example:** `ffmate server --no-ui`
 
 * **`--debug <namespaces>`** or **`-d <namespaces>`**
 
-  * **Purpose:** Selects which parts of FFmate print debug messages, for example `task` or `watchfolder`. FFmate uses namespaces instead of fixed levels such as `INFO` or `ERROR`. The namespaces come from [yosev/debugo](https://github.com/yosev/debugo), a Go library inspired by [debug-js](https://github.com/debug-js/debug).
+  * **Purpose:** Selects which parts of FFmate print debug messages, for example `task` or `watchfolder`. FFmate uses namespaces instead of fixed levels such as `INFO` or `ERROR`. The namespace system is built on [yosev/debugo](https://github.com/yosev/debugo), a Go library inspired by [debug-js](https://github.com/debug-js/debug).
   * **Default:** `info:?,warn:?,error:?`.
   * **Example:**
 
