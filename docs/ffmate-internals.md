@@ -1,6 +1,6 @@
 ---
-title: "FFmate Architecture: Internals of API, Database, UI, Webhooks & Task Queue"
-description: "Explore FFmate's internal architecture. Understand how its REST API, SQLite DB, Web UI, Webhooks, Watchfolders & Task Queue interact for FFmpeg automation & integration"
+title: "FFmate Internals: Architecture and Queue"
+description: "How the parts of FFmate fit together: REST API, task queue, database, Web UI, WebSocket events, health endpoint and metrics."
 ---
 
 # FFmate Internals

@@ -1,6 +1,6 @@
 ---
-title: "FFmate Task Management: Lifecycle, API, Batch & Automation"
-description: "Detailed FFmate task documentation: Understand the complete task lifecycle, statuses, and API usage for creating, monitoring, managing, and batching FFmpeg jobs"
+title: "FFmate Tasks: Create, Monitor and Manage"
+description: "Create FFmate tasks through the REST API, follow their status while FFmpeg runs, and cancel, restart, delete or batch them."
 ---
 
 # Understanding Tasks in FFmate

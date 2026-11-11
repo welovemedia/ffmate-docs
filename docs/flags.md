@@ -1,6 +1,6 @@
 ---
-title: "FFmate Command-Line Flags: Server, Update & Global Options"
-description: "Comprehensive guide to all FFmate command-line flags. Learn to configure FFmate's server settings (FFmpeg path, port, DB), manage updates, enable debug logs, and more"
+title: "FFmate Command-Line Flags"
+description: "Every FFmate command and flag: server options such as port, database, labels and basic auth, the update command and debug logs."
 ---
 
 # Command-Line Interface (CLI)

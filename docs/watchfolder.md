@@ -1,6 +1,6 @@
 ---
-title: "Using FFmate Watchfolders for Automated FFmpeg File Processing & Transcoding"
-description: "Configure FFmate watchfolders to auto-detect & transcode files. Guide to directory scanning, file growth checks, preset usage, filters & API for FFmpeg automation"
+title: "FFmate Watchfolders: Automatic Processing"
+description: "A watchfolder scans a folder and creates an FFmate task for each new file once it stops growing, with filters and lock files."
 ---
 
 # Watchfolders

@@ -1,6 +1,6 @@
 ---
-title: "Accessing FFmate's REST API Documentation via Swagger UI"
-description: "Find FFmate's comprehensive API documentation using Swagger (OpenAPI). Get the URL to access interactive specs for all REST endpoints, models, and parameters"
+title: "FFmate REST API Reference (Swagger)"
+description: "Open the FFmate Swagger UI to see every REST endpoint with its parameters, example requests and responses, and send test requests."
 ---
 
 # API Documentation with Swagger (OpenAPI)

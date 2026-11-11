@@ -1,6 +1,6 @@
 ---
-title: "FFmate Pre/Post-Processing: Custom Scripts, Sidecars & Workflow Automation for FFmpeg"
-description: "Learn to use FFmate's pre & post-processing for FFmpeg. Run custom scripts, use JSON sidecars for task context, manage exit codes, and automate your media workflows"
+title: "Pre- and Post-Processing Scripts in FFmate"
+description: "Run a script before or after FFmpeg for each FFmate task, with a sidecar JSON file that holds the task data, and exit codes."
 ---
 
 # Pre and Post-Processing
