@@ -2,16 +2,16 @@
   "code": {
     "repo": "welovemedia/ffmate",
     "branch": "dev",
-    "sha": "685ed7c8abcbd35daafab183ab2ebca34764f0b5",
+    "sha": "a348f393ae4b295f066d97fe06c7f30d11222750",
     "tag": "v2.1.1"
   },
   "ui": {
     "repo": "welovemedia/ffmate-ui",
-    "sha": "9409781db53ecb0a1cf64ca827222163f20f7339"
+    "sha": "cb3f2e6ec51f1c1b5d8c0857631b8b0caca4e2f5"
   },
   "release": {
     "tag": "v2.1.1",
     "publishedAt": "2026-11-06T11:34:22Z"
   },
-  "syncedAt": "2026-11-07"
+  "syncedAt": "2026-11-11"
 }
