@@ -1,6 +1,6 @@
 ---
-title: FFmate Release Notes
-description: Explore the latest FFmate release notes including new features, API changes, improvements, and bug fixes. Stay updated with every version of the open-source FFmpeg automation tool.
+title: "FFmate Release Notes"
+description: "Changes in every FFmate release: breaking changes, new features, changes and bug fixes, with the release date of each version."
 ---
 
 # FFmate Release Notes

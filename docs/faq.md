@@ -1,5 +1,6 @@
 ---
-title: FAQ
+title: "FFmate FAQ"
+description: "Answers to common FFmate questions about installing, tasks, presets, watchfolders, webhooks, clustering and security."
 ---
 
 # FFmate FAQ

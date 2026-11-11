@@ -1,6 +1,6 @@
 ---
-title: "FFmate Presets: Automate & Standardize FFmpeg Workflows"
-description: "Simplify complex FFmpeg tasks with FFmate presets. Define reusable templates for commands, output paths, and processing scripts to streamline your media encoding and ensure consistency"
+title: "FFmate Presets: Reusable FFmpeg Commands"
+description: "Create, list, update and delete FFmate presets: saved FFmpeg commands with output path, priority, retries and scripts for tasks."
 ---
 
 # Presets

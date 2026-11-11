@@ -11,7 +11,7 @@ export default withMermaid({
   // Also the suffix of every page title: "Tasks | FFmate Docs"
   title: "FFmate Docs",
   description:
-    "Documentation for FFmate, an open-source FFmpeg automation server: run FFmpeg tasks through a REST API, with presets, watchfolders, webhooks and a Web UI.",
+    "Documentation for FFmate, the open-source FFmpeg automation server with a REST API, presets, watchfolders and webhooks.",
 
   srcExclude: ["README.md"],
 
@@ -32,9 +32,9 @@ export default withMermaid({
       .replace(/(^|\/)index\.md$/, "$1")
       .replace(/\.md$/, "")
     const url = `${siteUrl}/${path}`
-    const title = pageData.title
-      ? `${pageData.title} | ${siteData.title}`
-      : siteData.title
+    // No " | FFmate Docs" suffix here: og:site_name already names the site,
+    // and link previews cut titles after about 60 characters
+    const title = pageData.title || siteData.title
     const description = pageData.description || siteData.description
     return [
       ["link", { rel: "canonical", href: url }],
@@ -50,13 +50,24 @@ export default withMermaid({
     ["meta", { property: "og:type", content: "website" }],
     ["meta", { property: "og:locale", content: "en" }],
     ["meta", { property: "og:site_name", content: "FFmate" }],
+    // Share image for link previews: 1200×630 PNG, the size X, LinkedIn,
+    // Slack and Discord expect. PNG because LinkedIn doesn't show WebP.
+    ["meta", { property: "og:image", content: `${siteUrl}/og-image.png` }],
+    ["meta", { property: "og:image:type", content: "image/png" }],
+    ["meta", { property: "og:image:width", content: "1200" }],
+    ["meta", { property: "og:image:height", content: "630" }],
     [
       "meta",
       {
-        property: "og:image",
-        content: "https://docs.ffmate.io/icon_16x9.webp",
+        property: "og:image:alt",
+        content:
+          "FFmate logo next to the text FFmate Docs, open-source FFmpeg automation server",
       },
     ],
+    // X shows the image at full width only with summary_large_image.
+    // It reads title, description and image from the og: tags.
+    ["meta", { name: "twitter:card", content: "summary_large_image" }],
+    ["meta", { name: "twitter:site", content: "@ffmateio" }],
     [
       "script",
       {

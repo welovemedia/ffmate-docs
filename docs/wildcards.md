@@ -1,6 +1,6 @@
 ---
-title: Wildcards in FFmate – Dynamic File Naming and Task Scripting
-description: Learn how to use wildcards in FFmate to generate dynamic file and folder names, automate output paths, insert timestamps, and adapt processing logic based on task sources like the API or watchfolders
+title: "FFmate Wildcards: Dynamic Paths and Names"
+description: "Every FFmate wildcard for input and output paths, dates, times, UUIDs and file metadata, with an example of what each one becomes."
 ---
 
 # Wildcards
