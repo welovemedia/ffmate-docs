@@ -1,6 +1,6 @@
 ---
-title: "FFmate Web UI Guide: Dashboard, Watchfolders, Presets & Logs Interface"
-description: "Explore the FFmate Web UI: an intuitive interface to manage FFmpeg jobs, monitor tasks, configure watchfolders, create presets, and view real-time logs"
+title: "FFmate Web UI Guide"
+description: "Use the FFmate Web UI to follow tasks, manage presets, watchfolders and webhooks, see each FFmate instance and read live logs."
 ---
 
 # FFmate Web UI

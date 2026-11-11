@@ -1,6 +1,6 @@
 ---
-title: "FFmate: API-Powered FFmpeg automation layer for Automated Transcoding & Workflows"
-description: "Discover FFmate, the modern and powerful API-powered FFmpeg automation layer. Automate media workflows with its queue system, webhooks, presets & watchfolders. Simplify transcoding at scale"
+title: "What Is FFmate? FFmpeg Automation Server"
+description: "FFmate is an open-source server that queues and runs FFmpeg tasks through a REST API and Web UI, with presets and watchfolders."
 ---
 
 # What is FFmate?

@@ -1,6 +1,6 @@
 ---
-title: "FFmate Debugging Guide: CLI Flags, Environment Variables, API & Key Log Namespaces"
-description: "Troubleshoot FFmate with this debugging guide. Control log verbosity using namespaces, command-line flags, environment variables, or dynamically via the REST API"
+title: "Debugging FFmate: Log Namespaces and Levels"
+description: "Turn on FFmate debug output per namespace with --debug, the DEBUGO variable in Docker or the REST API, and read the log format."
 ---
 
 # Debugging

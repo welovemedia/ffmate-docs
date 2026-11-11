@@ -1,4 +1,6 @@
 ---
+title: "FFmate: FFmpeg Automation Server"
+description: "Documentation for FFmate, the open-source FFmpeg automation server: queue transcoding tasks through a REST API or the Web UI."
 layout: home
 
 hero:

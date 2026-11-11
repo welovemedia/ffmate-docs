@@ -1,6 +1,6 @@
 ---
-title: "Scale FFmpeg with FFmate Clustering on PostgreSQL & Docker"
-description: "Set up FFmate clustering with PostgreSQL to scale FFmpeg transcoding across servers. Distribute jobs, manage watchfolders, add redundancy, and boost throughput."
+title: "FFmate Clustering with PostgreSQL"
+description: "Run several FFmate instances on one PostgreSQL database: how they pick up tasks, how labels control which tasks each one processes."
 ---
 
 # Clustering  

@@ -1,6 +1,6 @@
 ---
-title: "Get Help & Contribute: FFmate Support, Discord & GitHub"
-description: "Need help with FFmate or want to connect? Join our Discord community, get support, report bugs, or request features on GitHub. We'd love to hear from you!"
+title: "FFmate Community and Support"
+description: "Where to get help with FFmate, report bugs and request features: the Discord server, GitHub and the FFmate social channels."
 ---
 
 # How to Reach Out

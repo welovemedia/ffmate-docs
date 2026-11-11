@@ -1,6 +1,6 @@
 ---
-title: "FFmate Webhooks: Real-Time Event Notifications"
-description: "Integrate external systems with FFmate using webhooks. Get instant notifications for task updates, batch processing, preset changes and more"
+title: "FFmate Webhooks: Events and Payloads"
+description: "Send FFmate events such as task.created or batch.finished to a URL: global and direct webhooks, every event, payloads and retries."
 ---
 
 # Webhooks
