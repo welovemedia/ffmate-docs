@@ -30,7 +30,7 @@ An overview of new features, enhancements, and bug fixes for each version.
   <!-- commits: e39f91369 -->
 
 - **Interrupted Tasks on Startup**
-  FFmate no longer logs `failed to clean up running tasks on startup` when it starts again after a crash or stop. The tasks that were running are still set to `DONE_ERROR` with the error `client disconnected during execution`. For details, see [Clustering](/docs/clustering.md#when-an-ffmate-instance-fails).
+  FFmate no longer logs `failed to clean up running tasks on startup` when it starts again after a crash or stop. The tasks that were running are still set to `DONE_ERROR` with the error `client disconnected during execution`.
   <!-- commits: 685ed7c8a -->
 
 ## Version 2.1.1 (06-11-2026)
