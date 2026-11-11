@@ -19,7 +19,7 @@
 ### Bug Fixes
 
 - **Update Notice in the Web UI**
-  The Web UI now shows **Update available** only when a newer FFmate version is out. Before, it showed the notice even when FFmate was up to date.
+  The Web UI no longer shows **Update available** when FFmate already runs the newest release. Before, it showed the notice on every version.
   <!-- commits: e39f91369 (ffmate-ui 0dcbe526f, 0f23f42a0) -->
 
 - **FFmpeg Path After Startup**
