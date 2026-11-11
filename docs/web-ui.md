@@ -24,7 +24,7 @@ The Web UI is served at `http://localhost:3000/ui`. The sidebar on the left has 
 7.  **`API keys`** – Create, rotate and delete the API keys that scripts use instead of the username and password.
 8.  **`Logs`** – Open live system logs, including task execution, watchfolder activity, and background processing events.
 
-<ZoomImg src="/img/ffmate-nav.webp" alt="FFmate Web UI with the sidebar on the left. Numbers 1 to 7 mark Dashboard, Watchfolder, Presets, Webhooks, Sent hooks, Clients and, at the bottom, Logs"/>
+<ZoomImg src="/img/ffmate-nav.webp" alt="FFmate sidebar with numbers 1 to 8 on Dashboard, Watchfolder, Presets, Webhooks, Sent hooks, Clients, API keys and Logs."/>
 
 FFmate includes a built-in mechanism to check whether `FFmpeg` is installed and accessible. It looks for `FFmpeg` in the system’s default `PATH` or in the custom location specified via the `--ffmpeg` flag. If `FFmpeg` is not found, the Web UI shows a red **FFmpeg not found** notice in the sidebar, below the FFmate logo. This notice includes a direct link to the [documentation](/docs/getting-started#installing-ffmpeg) with step-by-step instructions on how to install `FFmpeg` on all supported operating systems.
 
@@ -226,17 +226,33 @@ The API keys page lists every [API key](/docs/api-keys.md) with its name, the fi
 
 ### Creating an API Key
 
-Click the **plus (+) button** in the bottom-right corner of the API keys page. Enter a **Name**, choose **Read** or **Write (read & write)** under **Access** and click **Create**.
+Click the **plus (+) button** in the bottom-right corner of the API keys page.
+
+<ZoomImg src="/img/ffmate-apikeys-add-new.webp" alt="FFmate API keys page listing three API keys, with the plus button highlighted in the bottom-right corner."/>
+
+Enter a **Name**, choose **Read** or **Write (read & write)** under **Access** and click **Create**.
+
+<ZoomImg src="/img/ffmate-apikeys-add-new-form-input.webp" alt="FFmate New API key form with the name Render farm scheduler and the access Write (read & write)."/>
 
 The page then shows the new key. Click the clipboard icon next to it to copy the key, then click **Done**. The Web UI shows the key only this once.
 
+<ZoomImg src="/img/ffmate-apikeys-created.webp" alt="FFmate showing the new API key Render farm scheduler once, with the clipboard icon next to the key highlighted."/>
+
 ### Rotating an API Key
 
-Hover over an API key and click the **rotate** icon, then confirm. The **API key rotated** dialog shows the new key. The previous key stops working at once.
+Hover over an API key and click the **rotate** icon, then confirm.
+
+<ZoomImg src="/img/ffmate-apikeys-rotate.webp" alt="FFmate API keys page with the rotate icon highlighted on the right of the hovered API key Monitoring dashboard."/>
+
+The **API key rotated** dialog shows the new key. The previous key stops working at once.
+
+<ZoomImg src="/img/ffmate-apikeys-rotated.webp" alt="FFmate API key rotated dialog showing the new key of Monitoring dashboard with a clipboard icon and a Done button."/>
 
 ### Deleting an API Key
 
 Hover over an API key and click the **delete** icon, then confirm. Programs that use the key can no longer connect to FFmate.
+
+<ZoomImg src="/img/ffmate-apikeys-delete.webp" alt="FFmate API keys page with the delete icon highlighted on the right of the hovered API key Monitoring dashboard."/>
 
 
 ## Accessing Real-Time Logs
