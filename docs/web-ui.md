@@ -21,7 +21,8 @@ The Web UI is served at `http://localhost:3000/ui`. The sidebar on the left has 
 4.  **`Webhooks`** – Send real-time notifications to external systems whenever events occur, such as task progress, completion, or failure.
 5.  **`Sent hooks`** – See every webhook FFmate has sent, with the request and your server's response.
 6.  **`Clients`** – See all FFmate instances connected to the database and whether they're online.
-7.  **`Logs`** – Open live system logs, including task execution, watchfolder activity, and background processing events.
+7.  **`API keys`** – Create, rotate and delete the API keys that scripts use instead of the username and password.
+8.  **`Logs`** – Open live system logs, including task execution, watchfolder activity, and background processing events.
 
 <ZoomImg src="/img/ffmate-nav.webp" alt="FFmate Web UI with the sidebar on the left. Numbers 1 to 7 mark Dashboard, Watchfolder, Presets, Webhooks, Sent hooks, Clients and, at the bottom, Logs"/>
 
@@ -218,6 +219,24 @@ The **Clients** page lists every FFmate instance connected to the database, with
 Click an FFmate instance to see its details: version, FFmpeg path, labels, operating system, architecture and the maximum number of concurrent tasks.
 
 <ZoomImg src="/img/ffmate-clients-details.webp" alt="FFmate Clients page with the details of the FFmate instance studio-encoder-01 highlighted, showing version, FFmpeg path, labels, OS, architecture and max concurrent tasks"/>
+
+## API Keys
+
+The API keys page lists every [API key](/docs/api-keys.md) with its name, the first characters of the key, its access level and when it was created. API keys need [`--basic-auth`](/docs/flags.md#basic-auth). Without it, the page shows **API keys are unavailable**.
+
+### Creating an API Key
+
+Click the **plus (+) button** in the bottom-right corner of the API keys page. Enter a **Name**, choose **Read** or **Write (read & write)** under **Access** and click **Create**.
+
+The page then shows the new key. Click the clipboard icon next to it to copy the key, then click **Done**. The Web UI shows the key only this once.
+
+### Rotating an API Key
+
+Hover over an API key and click the **rotate** icon, then confirm. The **API key rotated** dialog shows the new key. The previous key stops working at once.
+
+### Deleting an API Key
+
+Hover over an API key and click the **delete** icon, then confirm. Programs that use the key can no longer connect to FFmate.
 
 
 ## Accessing Real-Time Logs
