@@ -12,8 +12,8 @@ An overview of new features, enhancements, and bug fixes for each version.
 ### New Features
 
 - **API Keys**
-  With `--basic-auth` on, scripts and other programs can call the REST API with an API key in the `X-API-Key` header instead of the username and password. Each key has the access level `read` or `write` and can be rotated or deleted on its own, through `/api/v1/apikeys` or the new **API keys** page in the Web UI. For details, see [API Keys](/docs/api-keys.md).
-  <!-- commits: a348f393a (ffmate-ui cb3f2e6ec) -->
+  With `--basic-auth` on, scripts and other programs can call the REST API with an API key in the `X-API-Key` header instead of the username and password. Each key has the access level `read` or `write`. A `read` key can look at tasks, presets, watchfolders and webhooks but not change them. A key can be rotated or deleted on its own, through `/api/v1/apikeys` or the new **API keys** page in the Web UI. For details, see [API Keys](/docs/api-keys.md).
+  <!-- commits: b2eab6014 (ffmate-ui cb3f2e6ec) -->
 
 - **FFmate Instance Labels in Task Details**
   The task details in the Web UI now show the labels of the FFmate instance that ran the task, next to its version, operating system and architecture. For details, see [Task Details](/docs/web-ui.md#task-details).
