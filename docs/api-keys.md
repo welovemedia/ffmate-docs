@@ -30,12 +30,12 @@ The access level decides which routes a key can call:
 
 | Routes | `read` key | `write` key |
 |---|---|---|
-| `GET /api/v1/presets` and `GET /api/v1/presets/{uuid}` | allowed | allowed |
-| `POST`, `PUT` and `DELETE` on `/api/v1/presets` | `403` | allowed |
+| `GET` on `/api/v1/tasks`, `/api/v1/batches`, `/api/v1/presets`, `/api/v1/watchfolders`, `/api/v1/webhooks`, `/api/v1/clients` and `/api/v1/settings` | allowed | allowed |
+| `POST`, `PUT`, `PATCH` and `DELETE` on `/api/v1/tasks`, `/api/v1/batches`, `/api/v1/presets`, `/api/v1/watchfolders`, `/api/v1/webhooks`, `/api/v1/settings` and `/api/v1/debug` | `403` | allowed |
 | Every route under `/api/v1/apikeys` | `403` | `403` |
-| All other routes, e.g. `/api/v1/tasks`, `/api/v1/watchfolders`, `/api/v1/webhooks`, `/health` and `/metrics` | allowed | allowed |
+| All other routes, e.g. `/api/v1/version`, `/health` and `/metrics` | allowed | allowed |
 
-Only the preset routes tell `read` and `write` apart. A `read` key can create, cancel and delete tasks, and create watchfolders and webhooks. Anyone who can create a task, preset or watchfolder can run commands on the computer FFmate runs on. Give a `read` key only to programs that may do that.
+A `read` key can list and look at tasks, presets, watchfolders and webhooks. Creating, changing, canceling, restarting or deleting them needs a `write` key. Anyone who can create a task, preset or watchfolder can run commands on the computer FFmate runs on. Give a `write` key only to programs that may do that.
 
 API keys can't manage API keys. Creating, listing, rotating and deleting them needs the username and password.
 
