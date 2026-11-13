@@ -1,0 +1,17 @@
+{
+  "code": {
+    "repo": "welovemedia/ffmate",
+    "branch": "dev",
+    "sha": "b2eab6014590f8ec74b64726255d442a34b3f44b",
+    "tag": "v2.1.1"
+  },
+  "ui": {
+    "repo": "welovemedia/ffmate-ui",
+    "sha": "cb3f2e6ec51f1c1b5d8c0857631b8b0caca4e2f5"
+  },
+  "release": {
+    "tag": "v2.1.1",
+    "publishedAt": "2026-11-06T11:34:22Z"
+  },
+  "syncedAt": "2026-11-13"
+}

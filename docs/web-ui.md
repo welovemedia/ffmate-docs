@@ -21,9 +21,10 @@ The Web UI is served at `http://localhost:3000/ui`. The sidebar on the left has 
 4.  **`Webhooks`** – Send real-time notifications to external systems whenever events occur, such as task progress, completion, or failure.
 5.  **`Sent hooks`** – See every webhook FFmate has sent, with the request and your server's response.
 6.  **`Clients`** – See all FFmate instances connected to the database and whether they're online.
-7.  **`Logs`** – Open live system logs, including task execution, watchfolder activity, and background processing events.
+7.  **`API keys`** – Create, rotate and delete the API keys that scripts use instead of the username and password.
+8.  **`Logs`** – Open live system logs, including task execution, watchfolder activity, and background processing events.
 
-<ZoomImg src="/img/ffmate-nav.webp" alt="FFmate Web UI with the sidebar on the left. Numbers 1 to 7 mark Dashboard, Watchfolder, Presets, Webhooks, Sent hooks, Clients and, at the bottom, Logs"/>
+<ZoomImg src="/img/ffmate-nav.webp" alt="FFmate sidebar with numbers 1 to 8 on Dashboard, Watchfolder, Presets, Webhooks, Sent hooks, Clients, API keys and Logs."/>
 
 FFmate includes a built-in mechanism to check whether `FFmpeg` is installed and accessible. It looks for `FFmpeg` in the system’s default `PATH` or in the custom location specified via the `--ffmpeg` flag. If `FFmpeg` is not found, the Web UI shows a red **FFmpeg not found** notice in the sidebar, below the FFmate logo. This notice includes a direct link to the [documentation](/docs/getting-started#installing-ffmpeg) with step-by-step instructions on how to install `FFmpeg` on all supported operating systems.
 
@@ -78,7 +79,7 @@ To remove a task, hover over it and click the **delete** icon. The icon appears 
 
 ### Task Details
 
-Click on any task to see its full execution details, including progress, errors, `FFmpeg` command, input/output paths, pre/post-processing information, webhooks and the FFmate instance that ran it. The details also show the task's labels and how many retries have run.
+Click on any task to see its full execution details, including progress, errors, `FFmpeg` command, input/output paths, pre/post-processing information, webhooks and the FFmate instance that ran it, with its version, operating system, architecture and labels. The details also show the task's labels and how many retries have run.
 
 <ZoomImg src="/img/ffmate-dashboard-task-details.webp" alt="FFmate task details opened below a finished task, showing UUID, priority, status, progress, the command, input and output files with their resolved values, pre- and post-processing scripts and sidecar paths, and the client that ran the task"/>
 
@@ -218,6 +219,40 @@ The **Clients** page lists every FFmate instance connected to the database, with
 Click an FFmate instance to see its details: version, FFmpeg path, labels, operating system, architecture and the maximum number of concurrent tasks.
 
 <ZoomImg src="/img/ffmate-clients-details.webp" alt="FFmate Clients page with the details of the FFmate instance studio-encoder-01 highlighted, showing version, FFmpeg path, labels, OS, architecture and max concurrent tasks"/>
+
+## API Keys
+
+The API keys page lists every [API key](/docs/api-keys.md) with its name, the first characters of the key, its access level and when it was created. API keys need [`--basic-auth`](/docs/flags.md#basic-auth). Without it, the page shows **API keys are unavailable**.
+
+### Creating an API Key
+
+Click the **plus (+) button** in the bottom-right corner of the API keys page.
+
+<ZoomImg src="/img/ffmate-apikeys-add-new.webp" alt="FFmate API keys page listing three API keys, with the plus button highlighted in the bottom-right corner."/>
+
+Enter a **Name**, choose **Read** or **Write (read & write)** under **Access** and click **Create**.
+
+<ZoomImg src="/img/ffmate-apikeys-add-new-form-input.webp" alt="FFmate New API key form with the name Render farm scheduler and the access Write (read & write)."/>
+
+The page then shows the new key. Click the clipboard icon next to it to copy the key, then click **Done**. The Web UI shows the key only this once.
+
+<ZoomImg src="/img/ffmate-apikeys-created.webp" alt="FFmate showing the new API key Render farm scheduler once, with the clipboard icon next to the key highlighted."/>
+
+### Rotating an API Key
+
+Hover over an API key and click the **rotate** icon, then confirm.
+
+<ZoomImg src="/img/ffmate-apikeys-rotate.webp" alt="FFmate API keys page with the rotate icon highlighted on the right of the hovered API key Monitoring dashboard."/>
+
+The **API key rotated** dialog shows the new key. The previous key stops working at once.
+
+<ZoomImg src="/img/ffmate-apikeys-rotated.webp" alt="FFmate API key rotated dialog showing the new key of Monitoring dashboard with a clipboard icon and a Done button."/>
+
+### Deleting an API Key
+
+Hover over an API key and click the **delete** icon, then confirm. Programs that use the key can no longer connect to FFmate.
+
+<ZoomImg src="/img/ffmate-apikeys-delete.webp" alt="FFmate API keys page with the delete icon highlighted on the right of the hovered API key Monitoring dashboard."/>
 
 
 ## Accessing Real-Time Logs

@@ -99,7 +99,7 @@ Learn more → [`--host`](/docs/flags#host) and [`--basic-auth`](/docs/flags#bas
 <details>
 <summary>How do I protect FFmate with a username and password?</summary>
 
-Start the server with `--basic-auth`, e.g. `ffmate server --basic-auth="admin:secret"`. Every request then needs the username and password: the API, the Web UI, the Swagger UI, `/health` and `/metrics`. The browser asks for them when opening the Web UI.
+Start the server with `--basic-auth`, e.g. `ffmate server --basic-auth="admin:secret"`. Every request then needs the username and password: the API, the Web UI, the Swagger UI, `/health` and `/metrics`. The browser asks for them when opening the Web UI. Scripts and other programs can use an [API key](/docs/api-keys.md) instead of the password.
 
 Learn more → [`--basic-auth`](/docs/flags#basic-auth)
 </details>
