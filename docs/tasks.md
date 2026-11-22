@@ -148,7 +148,7 @@ These are the properties that can be set when creating a task in FFmate:
     *   **`scriptPath`**: The full path to the script or executable to run.
     *   **`sidecarPath`**: The full path to the JSON file that contains all task data.
 
-- **`webhooks`** *[optional]* – Direct webhook targets tied only to this task, for example to notify a project management tool whenever the task's status changes. Each entry needs an `event` and a `url`. Only `task.created`, `task.updated` and `task.deleted` are sent for direct task webhooks.
+- **`webhooks`** *[optional]* – Direct webhook targets tied only to this task, for example to notify a project management tool whenever the task's status changes. Each entry needs an `event` and a `url`. `event` must be `task.created`, `task.updated` or `task.deleted`. Any other event is rejected with `422`.
 
 - **`metadata`** *[optional]* — Any JSON object you want to attach to the task. Common uses include adding context, referencing source files, or integrating with external systems.
 
@@ -275,11 +275,12 @@ To delete a task, send a `DELETE` request to the FFmate API by including the tas
 ```sh
 curl -X DELETE 'http://localhost:3000/api/v1/tasks/{taskId}'
 ```
-FFmate responds with a `204` No Content status. The task will be removed from the system. A `task.deleted` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events).
+FFmate responds with a `204` No Content status. The task is removed from FFmate. A `task.deleted` event is also fired via [Global webhook](/docs/webhooks#task-events-1) and [Direct webhook](/docs/webhooks#task-events).
 
-::: warning Important
-- Deleting a task **removes the database entry** from FFmate but **does not** delete the input or output files.  
-- Deleting a task doesn't stop it. To remove a running task, cancel it first and then delete it.
+A task with the status `PRE_PROCESSING`, `RUNNING` or `POST_PROCESSING` can't be deleted. FFmate responds with `412` and the message `task is currently being processed, cancel it before deleting`, and the task keeps running. [Cancel the task](#canceling-a-task) first, then delete it.
+
+::: warning Files stay on disk
+Deleting a task **removes the database entry** from FFmate but **does not** delete the input or output files.
 :::
 
 💡 Tip: Tasks can also be deleted from the [FFmate Web UI](/docs/web-ui.md#deleting-tasks)
