@@ -16,7 +16,7 @@ The watchfolder feature is useful for **automatically transcoding** footage from
 1. **Monitor a Folder** – FFmate scans the specified directory and all its subfolders at a **set interval** to watch for new files. Hidden files, whose names start with `.`, are skipped.  
 2. **Detect New Files** – When a new file appears, FFmate doesn’t process it immediately. Instead, it checks the file’s **size** over time.  
    - If the size continues to change, the file is still being copied or written.  
-   - If the size remains the same for a number of consecutive checks (controlled by the `growthChecks` setting), FFmate considers the file as finished and creates a task for it. With `growthChecks` set to `0`, FFmate creates the task at the first scan.  
+   - If the size remains the same for a number of consecutive checks (controlled by the `growthChecks` setting), FFmate considers the file as finished and creates a task for it. With `growthChecks` set to `0` or `1`, FFmate creates the task at the first scan.  
 
     By waiting until the file stops growing, FFmate ensures that partially copied or incomplete files aren’t processed too early. This is especially important for large media files being uploaded over a network or transferred from external systems.
 
@@ -25,6 +25,8 @@ The watchfolder feature is useful for **automatically transcoding** footage from
     For each processed file, FFmate creates an empty `.lock` file next to it (e.g., `movie.mp4` → `movie.mp4.lock`).
     
     This special file ensures the file isn’t picked up again, even after a restart. If the `.lock` file is removed while the original is still in the folder, the watchfolder will see it as new and process it again.
+
+    If FFmate can't create the task, for example because the preset no longer exists, it writes no `.lock` file and tries again at a later scan.
 
 ### Watchfolder metadata
 
@@ -104,8 +106,8 @@ After you create a watchfolder, FFmate responds with a JSON object that includes
 
 - **`name`** – A name for the watchfolder.  
 - **`description`** *[optional]* – A description of what this watchfolder does.  
-- **`interval`** – How often (in seconds) FFmate scans the folder for new files.  
-- **`growthChecks`** – The number of checks FFmate performs to ensure a file is fully copied before processing.  
+- **`interval`** – How many seconds FFmate waits between scans of the folder. Minimum: `1`.  
+- **`growthChecks`** – The number of consecutive scans a file must keep the same size before FFmate creates a task. Minimum: `0`.  
 - **`preset`** – The `uuid` of the [preset](/docs/presets.md) FFmate uses for every task this watchfolder creates.  
 - **`path`** – The **absolute path** of the directory to monitor.  
 - **`suspended`** *[optional]* – A boolean flag that pauses watchfolder scanning. When set to `true`, FFmate temporarily stops detecting and processing files in the folder.
@@ -126,7 +128,7 @@ FFmate adds these properties to every watchfolder it returns:
 - **`uuid`** – The unique ID of the watchfolder.
 - **`createdAt`** / **`updatedAt`** – When the watchfolder was created and last changed, in milliseconds since the Unix epoch.
 - **`lastCheck`** – When FFmate last scanned the folder, in milliseconds since the Unix epoch.
-- **`error`** – Why the last scan failed, for example because the folder doesn't exist. Only present after a failed scan.
+- **`error`** – Why the last scan failed, for example because the folder doesn't exist. The next successful scan clears it.
 
 ## Listing Watchfolders  
 
@@ -180,7 +182,7 @@ curl -X PUT http://localhost:3000/api/v1/watchfolders/{watchfolderId} \
      }'
 ```
 
-FFmate responds with the full JSON object representing the updated watchfolder. The watchfolder will restart with the new configuration shortly after the update. A `watchfolder.updated` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
+FFmate responds with the full JSON object representing the updated watchfolder. FFmate uses the new configuration from the next scan on. A new `interval` applies after the wait that is already running, without a restart. A `watchfolder.updated` event is also fired via [webhooks](/docs/webhooks#watchfolder-events)
 
 💡 Tip: Making changes to a watchfolder? You can update settings like filters and intervals directly in the [FFmate Web UI](/docs/web-ui.md).
 
