@@ -20,7 +20,7 @@ curl 'http://localhost:3000/api/v1/tasks' \
      -H 'X-API-Key: ffm_f2paiZBrDmnXE3TOTSNMatx1nvdxglc5DiNGGuWXf7A'
 ```
 
-A key works on every route that `--basic-auth` protects, for example `/api/v1/tasks`, `/health` and `/metrics`. If a request has both an `X-API-Key` header and a username and password, FFmate only checks the API key.
+A key works on every route that `--basic-auth` protects, for example `/api/v1/tasks` and `/metrics`. If a request has both an `X-API-Key` header and a username and password, FFmate only checks the API key.
 
 An unknown, rotated or deleted key gets `401` with `{"error":"invalid api key"}`. A key without the access level a route needs gets `403` with `{"error":"api key has insufficient access for this route"}`.
 
@@ -33,7 +33,7 @@ The access level decides which routes a key can call:
 | `GET` on `/api/v1/tasks`, `/api/v1/batches`, `/api/v1/presets`, `/api/v1/watchfolders`, `/api/v1/webhooks`, `/api/v1/clients` and `/api/v1/settings` | allowed | allowed |
 | `POST`, `PUT`, `PATCH` and `DELETE` on `/api/v1/tasks`, `/api/v1/batches`, `/api/v1/presets`, `/api/v1/watchfolders`, `/api/v1/webhooks`, `/api/v1/settings` and `/api/v1/debug` | `403` | allowed |
 | Every route under `/api/v1/apikeys` | `403` | `403` |
-| All other routes, e.g. `/api/v1/version`, `/health` and `/metrics` | allowed | allowed |
+| All other protected routes, e.g. `/metrics` | allowed | allowed |
 
 A `read` key can list and look at tasks, presets, watchfolders and webhooks. Creating, changing, canceling, restarting or deleting them needs a `write` key. Anyone who can create a task, preset or watchfolder can run commands on the computer FFmate runs on. Give a `write` key only to programs that may do that.
 

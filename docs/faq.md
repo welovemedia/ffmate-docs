@@ -99,7 +99,7 @@ Learn more → [`--host`](/docs/flags#host) and [`--basic-auth`](/docs/flags#bas
 <details>
 <summary>How do I protect FFmate with a username and password?</summary>
 
-Start the server with `--basic-auth`, e.g. `ffmate server --basic-auth="admin:secret"`. Every request then needs the username and password: the API, the Web UI, the Swagger UI, `/health` and `/metrics`. The browser asks for them when opening the Web UI. Scripts and other programs can use an [API key](/docs/api-keys.md) instead of the password.
+Start the server with `--basic-auth`, e.g. `ffmate server --basic-auth="admin:secret"`. The API, the Web UI and `/metrics` then need the username and password. `/health`, `/api/v1/version` and the Swagger UI stay open. The browser asks for them when opening the Web UI. Scripts and other programs can use an [API key](/docs/api-keys.md) instead of the password.
 
 Learn more → [`--basic-auth`](/docs/flags#basic-auth)
 </details>
@@ -177,7 +177,7 @@ Learn more → [Task Properties](/docs/tasks#task-properties)
 <details>
 <summary>What happens to running tasks when FFmate stops or crashes?</summary>
 
-When FFmate starts again, it sets the tasks it was running to `DONE_ERROR` with the error `client disconnected during execution`. In a [cluster](/docs/clustering), the other FFmate instances do this after about 60 seconds. Restart those tasks to run them again.
+When FFmate starts again, it sets its tasks in `PRE_PROCESSING`, `RUNNING` or `POST_PROCESSING` to `DONE_ERROR` with the error `client disconnected during execution`. In a [cluster](/docs/clustering), the other FFmate instances do this after about 60 seconds. A task with `retries` left goes back into the queue. Restart the others to run them again.
 
 Learn more → [Clustering](/docs/clustering)
 </details>
@@ -319,7 +319,7 @@ Learn more → [Debugging](/docs/debugging)
 <details>
 <summary>How do I check that FFmate is running, e.g. from Kubernetes or a load balancer?</summary>
 
-Use `GET /health`. It returns `200` with `{"status":"ok"}` once FFmate is ready, and `500` otherwise. For Prometheus, FFmate also provides counters at `GET /metrics`.
+Use `GET /health`. It returns `200` with `{"status":"ok"}` once FFmate is ready, and `500` otherwise. It needs no username or password. For Prometheus, FFmate also provides counters at `GET /metrics`.
 
 Learn more → [Health Endpoint](/docs/ffmate-internals#health-endpoint)
 </details>
