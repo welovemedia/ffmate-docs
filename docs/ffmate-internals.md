@@ -119,6 +119,7 @@ FFmate supports two types of webhooks:
     ```json
     {
       "event": "event.name.here",
+      "timestamp": "2025-02-13T14:05:32Z",
       "data": { ... }
     }
     ```
@@ -188,7 +189,7 @@ FFmate comes with a built-in **health endpoint** that shows if an FFmate instanc
 
 #### When to Check It
 
-This endpoint is meant for **automated health checks**. Tools like **Kubernetes**, **Docker Swarm**, or any **load balancer** can ping it to decide if an FFmate instance is ready to take traffic or still alive. If FFmate runs with [`--basic-auth`](/docs/flags.md#basic-auth), the health check needs the username and password too.
+This endpoint is meant for **automated health checks**. Tools like **Kubernetes**, **Docker Swarm**, or any **load balancer** can ping it to decide if an FFmate instance is ready to take traffic or still alive. The health check needs no username or password, also when FFmate runs with [`--basic-auth`](/docs/flags.md#basic-auth).
 
 ::: info
 This is a check of one FFmate instance. FFmate only starts if it can connect to the database, but the health check doesn't test the connection again on each request. It also doesn’t confirm the state of other FFmate instances in a [cluster](/docs/clustering.md).
@@ -209,7 +210,7 @@ This endpoint lists all FFmate instances that are connected to the database and 
 **Query Parameters:**
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
-- **`perPage`** *[optional]* – Defines how many FFmate instances should be included in each page. Default: `100`.
+- **`perPage`** *[optional]* – Defines how many FFmate instances should be included in each page. Default: `100`. Maximum: `100`.
 
 #### Responses
 
@@ -402,7 +403,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
     ```
 
 *   **REST API GaugeVec**
-    *   `ffmate_rest_api{method, path}` – Counts all incoming HTTP requests, labeled by the HTTP method and the API route path.
+    *   `ffmate_rest_api{method, path}` – Counts all incoming HTTP requests, labeled by the HTTP method and the API route. Routes with a `uuid` share one series, for example `/api/v1/tasks/{uuid}`.
 
     #### Example
     ```plain
@@ -410,6 +411,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
     # TYPE ffmate_rest_api gauge
     ffmate_rest_api{method="GET",path="/api/v1/tasks"} 5
     ffmate_rest_api{method="POST",path="/api/v1/tasks"} 10
+    ffmate_rest_api{method="GET",path="/api/v1/tasks/{uuid}"} 7
     ```
 
 *   **Other GaugeVecs**
