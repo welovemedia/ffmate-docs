@@ -9,7 +9,25 @@ An overview of new features, enhancements, and bug fixes for each version.
 
 ## Version 2.2.0
 
+### Breaking Changes
+
+- **Deleting Running Tasks**
+  `DELETE /api/v1/tasks/{uuid}` now responds with `412` while a task is `PRE_PROCESSING`, `RUNNING` or `POST_PROCESSING`, and the task keeps running. Cancel the task before deleting it. For details, see [Deleting a Task](/docs/tasks.md#deleting-a-task).
+  <!-- commits: a0538f7a8, bb515dbe9 -->
+
+- **Webhook Event Names**
+  FFmate now rejects unknown webhook events with `422`. Tasks accept `task.*` events, presets accept `task.*` and `preset.*` events, and global webhooks accept every event in the list. Check the `event` values in your scripts before upgrading. For details, see [Webhooks](/docs/webhooks.md#direct-webhooks).
+  <!-- commits: 34b1073f0 -->
+
+- **Sidecar Import**
+  A sidecar import now changes only `name`, `command`, `inputFile`, `outputFile`, `metadata`, `priority` and `labels`. Scripts that set other properties, such as `webhooks` or `retries`, must set them when creating the task. For details, see [Importing a Task's Sidecar](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar).
+  <!-- commits: ac4abbe3f -->
+
 ### New Features
+
+- **Webhook Timestamp**
+  Every webhook body now has a `timestamp` in UTC, e.g. `2025-02-13T14:05:32Z`. Retries of the same event carry the same value. For details, see [Webhook Payload](/docs/webhooks.md#webhook-payload).
+  <!-- commits: 5db9b8c0d -->
 
 - **API Keys**
   With `--basic-auth` on, scripts and other programs can call the REST API with an API key in the `X-API-Key` header instead of the username and password. Each key has the access level `read` or `write`. A `read` key can look at tasks, presets, watchfolders and webhooks but not change them. A key can be rotated or deleted on its own, through `/api/v1/apikeys` or the new **API keys** page in the Web UI. For details, see [API Keys](/docs/api-keys.md).
@@ -19,15 +37,77 @@ An overview of new features, enhancements, and bug fixes for each version.
   The task details in the Web UI now show the labels of the FFmate instance that ran the task, next to its version, operating system and architecture. For details, see [Task Details](/docs/web-ui.md#task-details).
   <!-- commits: e39f91369 (ffmate-ui 0585d88ae) -->
 
+### Changes
+
+- **Open Health, Version and Swagger Routes**
+  With `--basic-auth` on, `/health`, `/api/v1/version` and the Swagger UI now work without a username and password. Docker and Kubernetes health checks no longer need credentials. For details, see [--basic-auth](/docs/flags.md#basic-auth).
+  <!-- commits: 548281f32 -->
+
+- **REST API Metric per Route**
+  `ffmate_rest_api` now counts requests per route, e.g. `/api/v1/tasks/{uuid}`, instead of creating a new series for every `uuid`. Dashboards that filter on a single task's path need the route instead. For details, see [Metrics](/docs/ffmate-internals.md#metrics).
+  <!-- commits: ce9065508 -->
+
 ### Bug Fixes
+
+- **Canceling Tasks**
+  A canceled task now stays `DONE_CANCELED` and FFmpeg stops at once, also when the cancel goes through another FFmate instance in a cluster. `task.updated` and `batch.finished` fire only once per cancel. For details, see [Canceling a Task](/docs/tasks.md#canceling-a-task).
+  <!-- commits: c34f337ca, 4fc18d421 -->
+
+- **Tasks in a Cluster**
+  Each queued task now runs on only one FFmate instance. Before, several FFmate instances could pick up the same task. For details, see [Clustering](/docs/clustering.md#tasks-in-a-cluster).
+  <!-- commits: f67536fb6 -->
+
+- **Interrupted Pre- and Post-Processing**
+  Tasks in `PRE_PROCESSING` or `POST_PROCESSING` on a crashed FFmate instance are now set to `DONE_ERROR` too. These tasks and interrupted `RUNNING` tasks now fire `task.updated` and go back into the queue if they have `retries` left. For details, see [When an FFmate Instance Fails](/docs/clustering.md#when-an-ffmate-instance-fails).
+  <!-- commits: c1056763b -->
+
+- **Webhook Retries and Timeout**
+  FFmate now retries webhooks answered with a non-2xx status and waits at most 10 seconds per try. Before, only network errors were retried and a server that never replied blocked the delivery. For details, see [Webhooks](/docs/webhooks.md).
+  <!-- commits: 819e93dfc -->
+
+- **Output Path With `${UUID}`**
+  An `outputFile` with `${UUID}` or a time wildcard now has the same value in pre-processing, FFmpeg and post-processing. Before, a pre-processing script got a different path than the file FFmpeg wrote. For details, see [Wildcards](/docs/wildcards.md#unique-identifier).
+  <!-- commits: e7b5ed94b -->
+
+- **Chained FFmpeg Commands**
+  Commands chained with `&&` now run, and `&&` inside a quoted file name stays part of the name. For details, see [Wildcards](/docs/wildcards.md).
+  <!-- commits: 5affedb43 -->
+
+- **Script Errors**
+  A pre- or post-processing script that can't start now fails with `failed to start script` and the reason. A script that fails without error output now shows its exit status. For details, see [How Exit Codes Work](/docs/pre-post-prcessing.md#how-exit-codes-work).
+  <!-- commits: 9c051bf46 -->
+
+- **Watchfolder Scans**
+  `growthChecks` now waits for the full number of scans, a changed `interval` applies without a restart, and `error` shows the last failed scan until a scan succeeds. `interval` below `1` and negative `growthChecks` are rejected with `422`. For details, see [Watchfolder Properties](/docs/watchfolder.md#watchfolder-properties).
+  <!-- commits: 65eaf3d6a, 2b45c7ef7, 9c0f22be9, 0b4cd3a9f -->
+
+- **Files Without a Task**
+  A watchfolder now writes a `.lock` file only after the task exists. If the preset is missing, FFmate tries the file again at a later scan. For details, see [How Watchfolders Work](/docs/watchfolder.md#how-watchfolders-work).
+  <!-- commits: 098a493cf -->
+
+- **Watchfolders in a Cluster**
+  A new watchfolder now reaches every FFmate instance within about 5 seconds, and an FFmate instance without a matching label no longer blocks its scan. For details, see [Watchfolders in a Cluster](/docs/clustering.md#watchfolders-in-a-cluster).
+  <!-- commits: ac4abbe3f -->
+
+- **Swagger Try It Out**
+  **Try it out** now calls the host and port the Swagger UI was opened from. Before, it always called `localhost`. For details, see [Swagger](/docs/swagger.md).
+  <!-- commits: c9a968bdc -->
+
+- **Clients Pagination**
+  `GET /api/v1/clients` now handles `page` and `perPage` and responds with `422` for invalid values. Before, it responded with `500`. For details, see [Client Endpoint](/docs/ffmate-internals.md#client-endpoint).
+  <!-- commits: dd2e36268 -->
+
+- **Preset Update Log Level**
+  FFmate now logs a preset update as info instead of an error.
+  <!-- commits: 17b079a7f -->
 
 - **Update Notice in the Web UI**
   The Web UI no longer shows **Update available** when FFmate already runs the newest release. Before, it showed the notice on every version.
   <!-- commits: e39f91369 (ffmate-ui 0dcbe526f, 0f23f42a0) -->
 
 - **FFmpeg Path After Startup**
-  `GET /api/v1/clients` and the **Clients** page now show the full FFmpeg path, e.g. `/opt/homebrew/bin/ffmpeg`, as soon as FFmate starts. Before, the path stayed empty for up to 15 seconds, and the Web UI showed **FFmpeg not found** during that time. For details, see [Clients](/docs/web-ui.md#clients).
-  <!-- commits: e39f91369 -->
+  `GET /api/v1/clients` and the **Clients** page now show the full FFmpeg path, e.g. `/opt/homebrew/bin/ffmpeg`, as soon as FFmate starts. Before, the path stayed empty for up to 15 seconds, and the Web UI showed **FFmpeg not found** during that time. If FFmpeg is missing, the path now stays empty until FFmate finds it. For details, see [Clients](/docs/web-ui.md#clients).
+  <!-- commits: e39f91369, 1d1c73235 -->
 
 - **Interrupted Tasks on Startup**
   FFmate no longer logs `failed to clean up running tasks on startup` when it starts again after a crash or stop. The tasks that were running are still set to `DONE_ERROR` with the error `client disconnected during execution`.
