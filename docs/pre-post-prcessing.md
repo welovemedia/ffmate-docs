@@ -39,7 +39,7 @@ When a script finishes running, it returns an **exit code** — a number that te
   - For **pre-processing**, if the script fails, the `ffmpeg` command will *not* run, and the task will be marked as **failed**.
   - For **post-processing**, the `ffmpeg` command will already have completed successfully, but the task will still be marked as **failed** due to the post-processing error.
 
-FFmate saves the script's error output and exit code in the task's `error` field, for example `PreProcessing failed: disk full (exit code: 3)`.
+FFmate saves the script's error output and exit code in the task's `error` field, for example `PreProcessing failed: disk full (exit code: 3)`. If the script can't be started, for example because the file doesn't exist, `error` contains `failed to start script` and the reason.
 ::::
 
 - **`sidecarPath`** *[optional]* – Specifies the path where FFmate should write a JSON "sidecar" file containing detailed information about the current task. This path supports [wildcards](/docs/wildcards.md). Your script can then read this file to get full context and make decisions accordingly. If FFmate can't write the sidecar, the script doesn't run and the task fails.
@@ -113,6 +113,8 @@ This way, the pre-processing script can change how FFmate processes the task. Fo
 - run tools like `ffprobe` or `MediaInfo` and inject the results into the `metadata` object.  
 - adjust the [task’s](/docs/tasks.md#task-properties) command, input file or output file based on resolution, bitrate, or aspect ratio. Change the `raw` value; FFmate resolves the wildcards after the import.  
 
+FFmate imports only `name`, `command`, `inputFile`, `outputFile`, `metadata`, `priority` and `labels`. It ignores changes to every other property, for example `uuid`, `status`, `retries`, `webhooks` or `postProcessing`.
+
 > ⚠️ **Important:**  
 > Only change the **values of existing properties**, and keep each value's type. For example, `priority` must stay a number.  
 > A value with the wrong type makes the FFmate task fail.
@@ -122,23 +124,24 @@ This way, the pre-processing script can change how FFmate processes the task. Fo
 This section outlines how FFmate runs a task, showing where pre- and post-processing scripts fit, how wildcards are resolved, where the sidecar import happens, and how errors are handled.
 
 1. **Task Queued** — A new task is created (directly or via a watchfolder).
-2. **Pre-Processing (if defined)**
+2. **Task Started**: FFmate resolves wildcards in `inputFile` and `outputFile` once. Pre-processing, FFmpeg and post-processing all use these values.
+3. **Optional Pre-Processing**
    - FFmate resolves wildcards in `sidecarPath` (if defined) and writes the task sidecar JSON. If the sidecar can't be written, the task status is set to `DONE_ERROR` and processing stops.
    - FFmate resolves wildcards in `scriptPath`.
    - FFmate executes the pre-processing script.
    - If the script fails (non-zero exit code), the task status is set to `DONE_ERROR` and processing stops. The script error is saved in the task's `error` field.
    - **If `importSidecar` is true:** FFmate re-imports the updated sidecar JSON after the script finishes. If re-import fails, the task is set to `DONE_ERROR`.
-3. **FFmpeg Processing**
-   - If pre-processing was successful (or not defined), FFmate resolves wildcards for the main command, input file, and output file.
+4. **FFmpeg Processing**
+   - If pre-processing was successful or isn't defined, FFmate resolves wildcards in the main command. If a sidecar import changed the input or output file, FFmate resolves that file again.
    - FFmate creates the output file's folder if it doesn't exist.
    - FFmate executes the FFmpeg command.
    - If FFmpeg fails, the task status is set to `DONE_ERROR` and processing stops. Post-processing will not run.
-4. **Post-Processing (if defined)**
+5. **Optional Post-Processing**
    - Assuming FFmpeg completed successfully, FFmate resolves wildcards in `sidecarPath` (if defined) and writes the task sidecar JSON (now including final output paths).
    - FFmate resolves wildcards in `scriptPath`.
    - FFmate executes the post-processing script.
    - If the script fails (non-zero exit code), the task status is set to `DONE_ERROR`. The script error is saved in the task's `error` field.
-5. **Task Completion**
+6. **Task Completion**
    - If post-processing was successful (or not defined), the task status is set to `DONE_SUCCESSFUL`.
 
 If a task is canceled while a pre- or post-processing script is running, the script runs to the end. The task status changes to `DONE_CANCELED` right away and stays that way. When a task is canceled during pre-processing, FFmpeg doesn't run.
