@@ -107,7 +107,7 @@ After you create a watchfolder, FFmate responds with a JSON object that includes
 - **`name`** – A name for the watchfolder.  
 - **`description`** *[optional]* – A description of what this watchfolder does.  
 - **`interval`** – How many seconds FFmate waits between scans of the folder. Minimum: `1`.  
-- **`growthChecks`** – The number of consecutive scans a file must keep the same size before FFmate creates a task. Minimum: `0`.  
+- **`growthChecks`** – The number of consecutive scans a file must keep the same size before FFmate creates a task. In a [cluster](/docs/clustering.md#watchfolders-in-a-cluster), each FFmate instance counts its own scans. Minimum: `0`.  
 - **`preset`** – The `uuid` of the [preset](/docs/presets.md) FFmate uses for every task this watchfolder creates.  
 - **`path`** – The **absolute path** of the directory to monitor.  
 - **`suspended`** *[optional]* – A boolean flag that pauses watchfolder scanning. When set to `true`, FFmate temporarily stops detecting and processing files in the folder.
