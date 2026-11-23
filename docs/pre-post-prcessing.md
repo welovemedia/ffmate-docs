@@ -49,7 +49,7 @@ FFmate saves the script's error output and exit code in the task's `error` field
   - **What’s in the sidecar file?**  
     The sidecar JSON contains a snapshot of the task at the time the script runs. Empty properties are left out.
 
-    - For **pre-processing**, this includes the raw input and output paths and command, task metadata, UUID, name, priority, and more. Wildcards in these aren't resolved yet.
+    - For **pre-processing**, this includes the raw command, the raw and resolved input and output paths, task metadata, `uuid`, name, priority and more. Wildcards in `command` aren't resolved yet.
 
   #### Example:
 
@@ -61,10 +61,12 @@ FFmate saves the script's error output and exit code in the task's `error` field
       "raw": "-i ${INPUT_FILE} -c:v libx264 -preset fast ${OUTPUT_FILE}"
     },
     "inputFile": {
-      "raw": "/watch/My Epic Movie.mov"
+      "raw": "/watch/My Epic Movie.mov",
+      "resolved": "/watch/My Epic Movie.mov"
     },
     "outputFile": {
-      "raw": "/output/${INPUT_FILE_BASENAME}.mp4"
+      "raw": "/output/${INPUT_FILE_BASENAME}.mp4",
+      "resolved": "/output/My Epic Movie.mp4"
     },
     "metadata": {
       "show": "My Awesome Show",
@@ -95,7 +97,7 @@ FFmate saves the script's error output and exit code in the task's `error` field
   }
   ```
 
-    - For **post-processing**, it also includes the resolved command, input file and output file. The task status at this point is `POST_PROCESSING`. It changes to `DONE_SUCCESSFUL` once the post-processing script completes without errors.
+    - For **post-processing**, it also includes the resolved command. The task status at this point is `POST_PROCESSING`. It changes to `DONE_SUCCESSFUL` once the post-processing script completes without errors.
 
 
 ### Importing a Task’s Sidecar
