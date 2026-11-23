@@ -182,7 +182,7 @@ FFmate comes with a built-in **health endpoint** that shows if an FFmate instanc
   {"status":"ok"}
   ```
 
-* **500 Internal Server Error** — The FFmate instance isn’t ready yet, e.g. during startup.
+* **500 Internal Server Error**: The FFmate instance is shutting down. While it starts, `/health` doesn't accept connections until it can answer with `200`.
   ```json
   {"status":"error"}
   ```
@@ -321,7 +321,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
 *   **Task Gauges**
     *   `ffmate_task_created` – Total number of tasks added to the queue.
     *   `ffmate_task_deleted` – Total number of tasks that have been deleted.
-    *   `ffmate_task_updated` – Total number of times a task's data has been updated (e.g., status change, progress update).
+    *   `ffmate_task_updated` – Number of tasks set to `DONE_ERROR` after their FFmate instance stopped unexpectedly, plus every retry of a failed task. Other status changes and progress updates aren't counted.
     *   `ffmate_task_canceled` – Total number of tasks that have been explicitly canceled by a user.
     *   `ffmate_task_restarted` – Total number of tasks that have been restarted.
 
@@ -331,7 +331,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
     # TYPE ffmate_task_created gauge
     ffmate_task_created 18
     ffmate_task_deleted 4
-    ffmate_task_updated 155
+    ffmate_task_updated 3
     ffmate_task_canceled 1
     ffmate_task_restarted 1
     ```

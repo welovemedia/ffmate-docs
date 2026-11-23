@@ -179,6 +179,8 @@ Learn more → [Task Properties](/docs/tasks#task-properties)
 
 When FFmate starts again, it sets its tasks in `PRE_PROCESSING`, `RUNNING` or `POST_PROCESSING` to `DONE_ERROR` with the error `client disconnected during execution`. In a [cluster](/docs/clustering), the other FFmate instances do this after about 60 seconds. A task with `retries` left goes back into the queue. Restart the others to run them again.
 
+With SQLite, this step can fail with `failed to clean up running tasks on startup: database is locked`. The tasks then stay `RUNNING`, but FFmpeg isn't running. Cancel them, then restart or delete them.
+
 Learn more → [Clustering](/docs/clustering)
 </details>
 
@@ -319,7 +321,7 @@ Learn more → [Debugging](/docs/debugging)
 <details>
 <summary>How do I check that FFmate is running, e.g. from Kubernetes or a load balancer?</summary>
 
-Use `GET /health`. It returns `200` with `{"status":"ok"}` once FFmate is ready, and `500` otherwise. It needs no username or password. For Prometheus, FFmate also provides counters at `GET /metrics`.
+Use `GET /health`. It returns `200` with `{"status":"ok"}` once FFmate is ready, and `500` while FFmate shuts down. It doesn't test the database connection, so it stays `200` if the database goes down later. It needs no username or password. For Prometheus, FFmate also provides counters at `GET /metrics`.
 
 Learn more → [Health Endpoint](/docs/ffmate-internals#health-endpoint)
 </details>
