@@ -56,7 +56,7 @@ With the default `0.0.0.0` and no `--basic-auth`, FFmate accepts API requests fr
 *   **Example:** `ffmate server --basic-auth="admin:a-long-random-password"`
 *   **What's protected:** the API, Web UI, WebSocket (`/api/v1/ws`) and `/metrics`. Requests without valid credentials get `401 Unauthorized`. `/health`, `/api/v1/version` and the Swagger UI stay open without credentials.
 *   **Calling the API:** send the credentials with every request, e.g. `curl -u admin:a-long-random-password http://ffmate-host:3000/api/v1/tasks`.
-*   **API keys:** scripts and other programs can send an [API key](/docs/api-keys.md) in the `X-API-Key` header instead of the username and password. API keys only work with `--basic-auth`.
+*   **API keys:** scripts and applications can send an [API key](/docs/api-keys.md) in the `X-API-Key` header instead of using basic auth. API keys only work with `--basic-auth`.
 *   **Health checks and monitoring:** Docker or Kubernetes health checks and load balancers can call `/health` without credentials. The Prometheus scrape config needs them for `/metrics` (`basic_auth`).
 *   **Clusters:** set `--basic-auth` on **every** FFmate instance. All FFmate instances share one database, so a task created through one unprotected FFmate instance can be picked up by any other.
 

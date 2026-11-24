@@ -250,7 +250,7 @@ The **API key rotated** dialog shows the new key. The previous key stops working
 
 ### Deleting an API Key
 
-Hover over an API key and click the **delete** icon, then confirm. Programs that use the key can no longer connect to FFmate.
+Hover over an API key and click the **delete** icon, then confirm. Applications that use the key can no longer connect to FFmate.
 
 <ZoomImg src="/img/ffmate-apikeys-delete.webp" alt="FFmate API keys page with the delete icon highlighted on the right of the hovered API key Monitoring dashboard."/>
 
