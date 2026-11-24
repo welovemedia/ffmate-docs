@@ -98,7 +98,7 @@ FFmate clustering uses PostgreSQL transactions to make sure watchfolders don’t
 - At the next interval the **cycle repeats**, and a different FFmate instance may claim the watchfolder. This guarantees that only one FFmate instance processes a watchfolder at a time, even if many are watching.
 - A watchfolder with [`labels`](/docs/watchfolder.md#watchfolder-properties) is only claimed and scanned by FFmate instances with a matching label.
 - A watchfolder created on one FFmate instance reaches the others within about 5 seconds.
-- Each FFmate instance counts [`growthChecks`](/docs/watchfolder.md#watchfolder-properties) only for its own scans, so a file can take longer to get a task. With `growthChecks` set to `3`, `interval` set to `2` and three FFmate instances, a task took 5 to 11 seconds.
+- At each interval, only one FFmate instance scans a watchfolder, and each FFmate instance counts [`growthChecks`](/docs/watchfolder.md#watchfolder-properties) separately. FFmate creates a task for a file only after one FFmate instance has seen it unchanged for the full number of checks, so this can take longer than with a single FFmate instance.
 
 ## Heartbeats
 
