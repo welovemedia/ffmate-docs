@@ -115,6 +115,10 @@ An overview of new features, enhancements, and bug fixes for each version.
   FFmate no longer logs `failed to clean up running tasks on startup: bad parameter or other API misuse` when it starts.
   <!-- commits: 685ed7c8a -->
 
+- **In-Memory Database**
+  FFmate started with `--database=":memory:"` now keeps all its data in one database. Requests no longer fail with `no such table`. For details, see [--database](/docs/flags.md#database).
+  <!-- commits: 7b6035a41 -->
+
 ## Version 2.1.1 (06-11-2026)
 
 ### Changes
