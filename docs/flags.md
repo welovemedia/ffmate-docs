@@ -99,6 +99,8 @@ The Web UI receives live updates over a WebSocket connection (`/api/v1/ws`), so 
       FFmate server --database="C:\Users\YourName\AppData\Roaming\ffmate\data.sqlite"
       ```
 
+  * **In memory:** With `--database=":memory:"`, FFmate keeps the SQLite database in memory and writes no file. All tasks, presets, watchfolders and webhooks are gone when FFmate stops. For example, a quick test then leaves no database file behind.
+
   * **PostgreSQL URI:** FFmate supports **PostgreSQL** for clusters of several FFmate instances. If you pass a `URI` starting with `postgresql://` to `--database`, FFmate automatically switches into **cluster mode**, allowing all FFmate instances to share the same database.
   
   * **Connection URI:**
