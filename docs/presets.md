@@ -100,7 +100,7 @@ When you create a preset, you define parameters that are automatically applied t
     *   **`scriptPath`**: The full path to the script or executable to run.
     *   **`sidecarPath`**: The full path to the JSON file that contains all task data. 
 
-- **`webhooks`** *[optional]* – Direct webhook targets for this preset. Each entry needs an `event` and a `url`.
+- **`webhooks`** *[optional]* – Direct webhook targets for this preset. Each entry needs an `event` and a `url`. `event` must be a `preset.*` or `task.*` event from [Direct Webhooks](/docs/webhooks.md#direct-webhooks). Any other event is rejected with `422`.
     *   Entries for `preset.created`, `preset.updated` or `preset.deleted` fire when this preset changes.
     *   Entries for `task.created`, `task.updated` or `task.deleted` are copied into every task created from this preset. For example, they can notify a project management tool whenever the task's status changes.
 

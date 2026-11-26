@@ -17,7 +17,7 @@ Each global webhook sends one [event](#global-webhook-events) to one URL. Severa
 ### Direct Webhooks
 **Direct webhooks** belong to a single task or preset and only report on that task or preset. You can add them **directly to tasks** when submitting via the [api](/docs/tasks.md#creating-a-task), or to an FFmate [preset](/docs/presets.md#creating-a-preset). On a preset, `task.*` webhooks are copied to every task created from that preset, and `preset.*` webhooks fire when that preset changes.
 
-Direct webhooks are only available for the following events:
+Direct webhooks are only available for the following events. A task accepts the task events, and a preset accepts both. Any other event is rejected with `422`.
 
 ### Task Events
 
@@ -40,7 +40,7 @@ Global and direct webhooks can work together. For example:
  
 - You might configure a global webhook for `task.created`, `task.updated`, and `task.deleted` that points to a central endpoint, e.g. `https://ffmate.io/webhooks/global`.  
 - For certain tasks submitted via the API, you can attach extra direct webhooks for those same events, e.g. `https://welovemedia.io/hooks/task-events`.  
-- Direct webhooks can be set when you create the task, or added later in the pre-processing step using the [sidecar re-import feature](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar).
+- Direct webhooks are set when you create the task or preset. A [sidecar import](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar) can't change them.
 
 
 ## Creating a Webhook
@@ -56,7 +56,7 @@ curl -X POST http://localhost:3000/api/v1/webhooks \
      }'
 ```
 
-Use one of the [global webhook events](#global-webhook-events) as `event`. FFmate saves any name, but a webhook with a name that isn't on that list never fires. `url` must be a valid URL, otherwise FFmate responds with `422`.
+Use one of the [global webhook events](#global-webhook-events) as `event`. FFmate responds with `422` for any other name and for an invalid `url`.
 
 After you create a webhook, FFmate responds with a JSON object containing the `uuid` of the newly created webhook, its `event` and `url`, and `createdAt` / `updatedAt` as date-time strings. A `webhook.created` event is also fired via [webhooks](#webhook-events)
 
@@ -131,6 +131,8 @@ When the event is triggered, FFmate sends a `POST` request to your specified URL
 }
 ```
 
+`timestamp` is the UTC time FFmate first sent the event. Retries of the same event carry the same value.
+
 ## Listing all Webhooks
 
 To get a list of all available webhooks, send a `GET` request to the FFmate API
@@ -202,7 +204,7 @@ Here's what your endpoint should do:
 
    FFmate waits for your server to reply before considering the webhook delivered. If your server responds with an HTTP status in the `2xx` range, FFmate treats the webhook as successfully delivered.
 
-   If your server times out or sends back a non-2xx (like `500 Internal Server Error`), FFmate will try again. It retries sending the webhook up to **three times**, with increasing delays:
+   FFmate waits up to **10 seconds** for each reply. If your server doesn't answer in that time or sends back a non-2xx status like `500 Internal Server Error`, FFmate tries again. It retries the webhook up to **three times**, with increasing delays:
 
    * After **3** seconds.
    * Then after **5** seconds.
@@ -210,13 +212,13 @@ Here's what your endpoint should do:
 
 ## Webhook logs
 
-FFmate records every webhook that gets an answer from your server, for global and direct webhooks. For each one, it stores:
+FFmate records every try that gets an answer from your server, for global and direct webhooks. A webhook answered with `500` four times has 4 records. For each one, FFmate stores:
 
 * the `event` and target `url`.
 * the exact request headers and body sent.
 * the HTTP status code, response headers, and response body returned by your server.
 
-If your server can't be reached, even after all retries, nothing is recorded here. FFmate writes the error to its log instead.
+A try that gets no answer within 10 seconds isn't recorded. If all tries fail, FFmate writes the error to its log.
 
 You can fetch this history through the API or UI:
 

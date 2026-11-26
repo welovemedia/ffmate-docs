@@ -50,13 +50,14 @@ With the default `0.0.0.0` and no `--basic-auth`, FFmate accepts API requests fr
 ### `--basic-auth` {#basic-auth}
 
 *   **Syntax:** `--basic-auth <username:password>` or `--basic-auth="<username:password>"`
-*   **Purpose:** Protects the API, Web UI, WebSocket, Swagger, `/health` and `/metrics` with HTTP basic authentication.
+*   **Purpose:** Protects the API, Web UI, WebSocket and `/metrics` with HTTP basic authentication.
 *   **Value:** `username:password`. Everything after the first `:` is the password. FFmate exits on startup if the value has no `:`.
 *   **Default:** Disabled (no authentication).
 *   **Example:** `ffmate server --basic-auth="admin:a-long-random-password"`
-*   **What's protected:** every route — the API, Web UI, WebSocket (`/api/v1/ws`), Swagger, `/health` and `/metrics`. Requests without valid credentials get `401 Unauthorized`.
+*   **What's protected:** the API, Web UI, WebSocket (`/api/v1/ws`) and `/metrics`. Requests without valid credentials get `401 Unauthorized`. `/health`, `/api/v1/version` and the Swagger UI stay open without credentials.
 *   **Calling the API:** send the credentials with every request, e.g. `curl -u admin:a-long-random-password http://ffmate-host:3000/api/v1/tasks`.
-*   **Health checks and monitoring:** anything that calls FFmate automatically also needs the credentials. That includes Docker or Kubernetes health checks, load balancers, and the Prometheus scrape config (`basic_auth`).
+*   **API keys:** scripts and applications can send an [API key](/docs/api-keys.md) in the `X-API-Key` header instead of using basic auth. API keys only work with `--basic-auth`.
+*   **Health checks and monitoring:** Docker or Kubernetes health checks and load balancers can call `/health` without credentials. The Prometheus scrape config needs them for `/metrics` (`basic_auth`).
 *   **Clusters:** set `--basic-auth` on **every** FFmate instance. All FFmate instances share one database, so a task created through one unprotected FFmate instance can be picked up by any other.
 
 ::: warning Basic auth doesn't encrypt anything
@@ -97,6 +98,8 @@ The Web UI receives live updates over a WebSocket connection (`/api/v1/ws`), so 
       # Windows example
       FFmate server --database="C:\Users\YourName\AppData\Roaming\ffmate\data.sqlite"
       ```
+
+  * **In memory:** With `--database=":memory:"`, FFmate keeps the SQLite database in memory and writes no file. All tasks, presets, watchfolders and webhooks are gone when FFmate stops. For example, a quick test then leaves no database file behind.
 
   * **PostgreSQL URI:** FFmate supports **PostgreSQL** for clusters of several FFmate instances. If you pass a `URI` starting with `postgresql://` to `--database`, FFmate automatically switches into **cluster mode**, allowing all FFmate instances to share the same database.
   

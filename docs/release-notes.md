@@ -7,6 +7,118 @@ description: "Changes in every FFmate release: breaking changes, new features, c
 
 An overview of new features, enhancements, and bug fixes for each version.
 
+## Version 2.2.0
+
+### New Features
+
+- **Webhook Timestamp**
+  Every webhook payload now includes a `timestamp` in UTC. For details, see [Webhook Payload](/docs/webhooks.md#webhook-payload).
+  <!-- commits: 5db9b8c0d -->
+
+- **API Keys**
+  Added support for API keys to access the REST API. API keys can be created in the Web UI or through the REST API. For details, see [API Keys](/docs/api-keys.md).
+  <!-- commits: b2eab6014 (ffmate-ui cb3f2e6ec) -->
+
+- **FFmate Instance Labels in Task Details**
+  Task details in the Web UI now show the labels of the FFmate instance that ran the task. For details, see [Task Details](/docs/web-ui.md#task-details).
+  <!-- commits: e39f91369 (ffmate-ui 0585d88ae) -->
+
+### Changes
+
+- **Health, Version and Swagger Endpoints**
+  `/health`, `/api/v1/version` and the Swagger UI are now publicly accessible and no longer require a username and password. For details, see [--basic-auth](/docs/flags.md#basic-auth).
+  <!-- commits: 548281f32 -->
+
+- **API Metrics**
+  The `ffmate_rest_api` metric at `/metrics` now counts requests per endpoint, e.g. `/api/v1/tasks/{uuid}`, instead of counting every task's URL separately. For details, see [Metrics](/docs/ffmate-internals.md#metrics).
+  <!-- commits: ce9065508 -->
+
+- **Webhook Retries**
+  Webhooks are now also retried when the receiver responds with a status other than `2xx`. Each try times out after 10 seconds. For details, see [Webhooks](/docs/webhooks.md).
+  <!-- commits: 819e93dfc -->
+
+### Bug Fixes
+
+- **Deleting Running Tasks**
+  FFmate no longer deletes a task while it is running and responds with `412` instead. For details, see [Deleting a Task](/docs/tasks.md#deleting-a-task).
+  <!-- commits: a0538f7a8, bb515dbe9 -->
+
+- **Webhook Event Names**
+  Webhooks now accept only the events listed in the docs. Unknown event names are rejected with `422`. For details, see [Webhooks](/docs/webhooks.md#direct-webhooks).
+  <!-- commits: 34b1073f0 -->
+
+- **Sidecar Import**
+  Importing a sidecar now updates only the name, command, input and output files, metadata, priority and labels. For details, see [Importing a Task's Sidecar](/docs/pre-post-prcessing.md#importing-a-task-s-sidecar).
+  <!-- commits: ac4abbe3f -->
+
+- **Canceling Tasks**
+  When a task is canceled, FFmate now stops FFmpeg right away. For details, see [Canceling a Task](/docs/tasks.md#canceling-a-task).
+  <!-- commits: c34f337ca, 4fc18d421 -->
+
+- **Tasks in a Cluster**
+  In a cluster, two FFmate instances no longer pick up and run the same task. For details, see [Clustering](/docs/clustering.md#tasks-in-a-cluster).
+  <!-- commits: f67536fb6 -->
+
+- **Interrupted Tasks**
+  When an FFmate instance crashes, its running, pre-processing and post-processing tasks are now set to `DONE_ERROR` and retried if they have `retries` left. For details, see [When an FFmate Instance Fails](/docs/clustering.md#when-an-ffmate-instance-fails).
+  <!-- commits: c1056763b -->
+
+- **Output File Wildcards**
+  When `${UUID}` or a time wildcard is used in `outputFile`, it now resolves to the same value during pre-processing, task execution and post-processing. For details, see [Wildcards](/docs/wildcards.md#unique-identifier).
+  <!-- commits: e7b5ed94b -->
+
+- **Chained FFmpeg Commands**
+  FFmpeg commands chained with `&&`, e.g. for two-pass encoding, now run one after the other. File names that contain `&&` no longer break the command. For details, see [FFmpeg Path](/docs/wildcards.md#ffmpeg-path).
+  <!-- commits: 5affedb43 -->
+
+- **Script Errors**
+  When a pre- or post-processing script fails, the task's `error` now shows the reason, e.g. `failed to start script` when the script can't be found. For details, see [How Exit Codes Work](/docs/pre-post-prcessing.md#how-exit-codes-work).
+  <!-- commits: 9c051bf46 -->
+
+- **Watchfolder Scans**
+  Watchfolders now run all `growthChecks` before picking up a file. A changed `interval` now applies from the next scan. For details, see [Watchfolder Properties](/docs/watchfolder.md#watchfolder-properties).
+  <!-- commits: 65eaf3d6a, 2b45c7ef7, 9c0f22be9, 0b4cd3a9f -->
+
+- **Watchfolder Task Creation**
+  If a watchfolder can't create a task for a file, e.g. because its preset is missing, it now tries the file again at a later scan. For details, see [How Watchfolders Work](/docs/watchfolder.md#how-watchfolders-work).
+  <!-- commits: 098a493cf -->
+
+- **Watchfolders in a Cluster**
+  In a cluster, a new watchfolder now runs on every FFmate instance within a few seconds. For details, see [Watchfolders in a Cluster](/docs/clustering.md#watchfolders-in-a-cluster).
+  <!-- commits: ac4abbe3f -->
+
+- **Watchfolder Labels in a Cluster**
+  An FFmate instance whose labels don't match a watchfolder no longer blocks the other FFmate instances from scanning it. For details, see [Watchfolders in a Cluster](/docs/clustering.md#watchfolders-in-a-cluster).
+  <!-- commits: ac4abbe3f -->
+
+- **Swagger UI**
+  Requests sent with **Try it out** in the Swagger UI now go to the address the Swagger UI was opened from, instead of always to `localhost`. For details, see [Swagger](/docs/swagger.md).
+  <!-- commits: c9a968bdc -->
+
+- **Clients Pagination**
+  Pagination with `page` and `perPage` now works in `GET /api/v1/clients`. For details, see [Client Endpoint](/docs/ffmate-internals.md#client-endpoint).
+  <!-- commits: dd2e36268 -->
+
+- **Preset Update**
+  Updating a preset no longer logs an error.
+  <!-- commits: 17b079a7f -->
+
+- **Update Notice in the Web UI**
+  The Web UI now shows **Update available** only when a newer release exists.
+  <!-- commits: e39f91369 (ffmate-ui 0dcbe526f, 0f23f42a0) -->
+
+- **FFmpeg Path on the Clients Page**
+  The **Clients** page and `GET /api/v1/clients` now show the FFmpeg path right after FFmate starts. For details, see [Clients](/docs/web-ui.md#clients).
+  <!-- commits: e39f91369, 1d1c73235 -->
+
+- **Startup Error Message**
+  FFmate no longer logs `failed to clean up running tasks on startup: bad parameter or other API misuse` when it starts.
+  <!-- commits: 685ed7c8a -->
+
+- **In-Memory Database**
+  FFmate started with `--database=":memory:"` now keeps all its data in one database. Requests no longer fail with `no such table`. For details, see [--database](/docs/flags.md#database).
+  <!-- commits: 7b6035a41 -->
+
 ## Version 2.1.1 (06-11-2026)
 
 ### Changes

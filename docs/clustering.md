@@ -96,7 +96,9 @@ FFmate clustering uses PostgreSQL transactions to make sure watchfolders don’t
 
 - At each watchfolder **interval**, every FFmate instance **queries** the database for the watchfolder. The first one to claim it scans the folder. The others see that it's already claimed and skip it until the next interval.
 - At the next interval the **cycle repeats**, and a different FFmate instance may claim the watchfolder. This guarantees that only one FFmate instance processes a watchfolder at a time, even if many are watching.
-- A watchfolder with [`labels`](/docs/watchfolder.md#watchfolder-properties) is only scanned by FFmate instances with a matching label.
+- A watchfolder with [`labels`](/docs/watchfolder.md#watchfolder-properties) is only claimed and scanned by FFmate instances with a matching label.
+- A watchfolder created on one FFmate instance reaches the others within about 5 seconds.
+- At each interval, only one FFmate instance scans a watchfolder, and each FFmate instance counts [`growthChecks`](/docs/watchfolder.md#watchfolder-properties) separately. FFmate creates a task for a file only after one FFmate instance has seen it unchanged for the full number of checks, so this can take longer than with a single FFmate instance.
 
 ## Heartbeats
 
@@ -106,9 +108,9 @@ Every FFmate instance sends a small “`I’m alive`” signal to the cluster ab
 
 Clustering improves scalability and resilience, but it **isn’t a full high-availability setup**. If an FFmate instance fails, its running tasks don’t move to another FFmate instance automatically.
 
-If an FFmate instance goes down mid-transcode, the others notice that its heartbeats have stopped. After about **60 seconds**, they set its running tasks to `DONE_ERROR` with the error `client disconnected during execution`. If the FFmate instance starts again before that, it does the same for its own tasks on startup.
+If an FFmate instance goes down mid-transcode, the others notice that its heartbeats have stopped. After about **60 seconds**, they set its tasks in `PRE_PROCESSING`, `RUNNING` or `POST_PROCESSING` to `DONE_ERROR` with the error `client disconnected during execution`. If the FFmate instance starts again before that, it does the same for its own tasks on startup.
 
-To run such a task again, **restart** it in the Web UI or via the API. That moves it back to `QUEUED` for another FFmate instance to pick up.
+A task with `retries` left goes back into the queue. To run any other such task again, **restart** it in the Web UI or via the API. That moves it back to `QUEUED` for another FFmate instance to pick up.
 
 ## Cluster Debugging
 

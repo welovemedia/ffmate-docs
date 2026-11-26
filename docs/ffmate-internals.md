@@ -119,6 +119,7 @@ FFmate supports two types of webhooks:
     ```json
     {
       "event": "event.name.here",
+      "timestamp": "2025-02-13T14:05:32Z",
       "data": { ... }
     }
     ```
@@ -181,14 +182,14 @@ FFmate comes with a built-in **health endpoint** that shows if an FFmate instanc
   {"status":"ok"}
   ```
 
-* **500 Internal Server Error** — The FFmate instance isn’t ready yet, e.g. during startup.
+* **500 Internal Server Error**: The FFmate instance is shutting down. While it starts, `/health` doesn't accept connections until it can answer with `200`.
   ```json
   {"status":"error"}
   ```
 
 #### When to Check It
 
-This endpoint is meant for **automated health checks**. Tools like **Kubernetes**, **Docker Swarm**, or any **load balancer** can ping it to decide if an FFmate instance is ready to take traffic or still alive. If FFmate runs with [`--basic-auth`](/docs/flags.md#basic-auth), the health check needs the username and password too.
+This endpoint is meant for **automated health checks**. Tools like **Kubernetes**, **Docker Swarm**, or any **load balancer** can ping it to decide if an FFmate instance is ready to take traffic or still alive. The health check needs no username or password, also when FFmate runs with [`--basic-auth`](/docs/flags.md#basic-auth).
 
 ::: info
 This is a check of one FFmate instance. FFmate only starts if it can connect to the database, but the health check doesn't test the connection again on each request. It also doesn’t confirm the state of other FFmate instances in a [cluster](/docs/clustering.md).
@@ -209,7 +210,7 @@ This endpoint lists all FFmate instances that are connected to the database and 
 **Query Parameters:**
 
 - **`page`** *[optional]* – Specifies which page of results to retrieve. Default: `0`.
-- **`perPage`** *[optional]* – Defines how many FFmate instances should be included in each page. Default: `100`.
+- **`perPage`** *[optional]* – Defines how many FFmate instances should be included in each page. Default: `100`. Maximum: `100`.
 
 #### Responses
 
@@ -320,7 +321,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
 *   **Task Gauges**
     *   `ffmate_task_created` – Total number of tasks added to the queue.
     *   `ffmate_task_deleted` – Total number of tasks that have been deleted.
-    *   `ffmate_task_updated` – Total number of times a task's data has been updated (e.g., status change, progress update).
+    *   `ffmate_task_updated` – Number of tasks set to `DONE_ERROR` after their FFmate instance stopped unexpectedly, plus every retry of a failed task. Other status changes and progress updates aren't counted.
     *   `ffmate_task_canceled` – Total number of tasks that have been explicitly canceled by a user.
     *   `ffmate_task_restarted` – Total number of tasks that have been restarted.
 
@@ -330,7 +331,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
     # TYPE ffmate_task_created gauge
     ffmate_task_created 18
     ffmate_task_deleted 4
-    ffmate_task_updated 155
+    ffmate_task_updated 3
     ffmate_task_canceled 1
     ffmate_task_restarted 1
     ```
@@ -402,7 +403,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
     ```
 
 *   **REST API GaugeVec**
-    *   `ffmate_rest_api{method, path}` – Counts all incoming HTTP requests, labeled by the HTTP method and the API route path.
+    *   `ffmate_rest_api{method, path}` – Counts all incoming HTTP requests, labeled by the HTTP method and the API route. Routes with a `uuid` share one series, for example `/api/v1/tasks/{uuid}`.
 
     #### Example
     ```plain
@@ -410,6 +411,7 @@ Each FFmate instance counts only its own events, starting from `0` every time it
     # TYPE ffmate_rest_api gauge
     ffmate_rest_api{method="GET",path="/api/v1/tasks"} 5
     ffmate_rest_api{method="POST",path="/api/v1/tasks"} 10
+    ffmate_rest_api{method="GET",path="/api/v1/tasks/{uuid}"} 7
     ```
 
 *   **Other GaugeVecs**

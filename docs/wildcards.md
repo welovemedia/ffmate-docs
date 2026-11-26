@@ -306,6 +306,9 @@ curl -X POST http://localhost:3000/api/v1/tasks \
 ```sh
 /volumes/ffmate/processed/550e8400-e29b-41d4-a716-446655440000_video.mp4
 ```
+
+FFmate resolves `inputFile` and `outputFile` once, when the task starts. A `${UUID}` in `outputFile` stays the same for pre-processing, FFmpeg and post-processing.
+
 ## System Information
 
 These wildcards return the **operating system name** and **CPU architecture**.
